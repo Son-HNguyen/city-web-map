@@ -1,5 +1,18 @@
 # Change Log
 
+### 2.0.0 - Active [[Demo Link]](https://www.3dcitydb.org/city-web-map/2.0.0)
+
+##### NEW
+
+* NodeJS
+
+* AngularJS
+
+* Bootstrap
+
+* CesiumJS v1.76.0
+
+
 ### 1.9.0 - Released [[Demo Link]](https://www.3dcitydb.org/3dcitydb-web-map/1.9.0/3dwebclient/index.html)
 
 ##### NEW
