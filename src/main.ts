@@ -24,6 +24,7 @@
  */
 
 import {enableProdMode} from "@angular/core";
+import {MatDialog} from "@angular/material/dialog";
 import {platformBrowserDynamic} from "@angular/platform-browser-dynamic";
 import * as Cesium from "cesium";
 

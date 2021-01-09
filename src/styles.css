@@ -38,11 +38,13 @@ html, body, div[appCesium] {
   background-size: cover;
   background: #0074D9 url(resources/images/GPS_on_ori.png) no-repeat center center;
 }
+
 .tracking-pos-ori-activated,
 .tracking-pos-ori-activated:hover {
   background-size: cover;
   background: #0074D9 url(resources/images/GPS_on_pos_ori.png) no-repeat center center;
 }
+
 .tracking-deactivated,
 .tracking-deactivated:hover,
 .tracking-ori-deactivated,
@@ -53,4 +55,13 @@ html, body, div[appCesium] {
   background-size: cover;
   background-position: center center;
   background-repeat: no-repeat;
+}
+
+html, body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
 }

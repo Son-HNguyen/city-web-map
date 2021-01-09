@@ -6,29 +6,24 @@
   <base href="/">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 </head>
 <body>
-<!-- Vertically centered and scrollable modal template -->
-<div class="modal fade" id="modalTemplate" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="modalTemplateTitle">Modal title</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body" id="modalTemplateContent"></div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" id="modalTemplateSecondaryButton">OK</button>
-        <button type="button" class="btn btn-primary" id="modalTemplatePrimaryButton">OK</button>
-      </div>
-    </div>
-  </div>
-</div>
-
 <!-- GPS button -->
-<button id="gpsButton" type="button" class="cesium-button"></button>
+<button id="gpsButton" type="button" class="cesium-button" style="display: none;"></button>
+
+<!-- Dialog contents -->
+<app-dialog></app-dialog>
 
 <!-- Cesium root application -->
 <app-root></app-root>
+
+<!-- Toolbox -->
+<app-toolbox></app-toolbox>
+
+<!-- Widgets -->
+<app-widgets></app-widgets>
+
 </body>
 </html>

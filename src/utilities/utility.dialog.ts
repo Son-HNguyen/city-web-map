@@ -23,130 +23,57 @@
  *
  */
 
-import {Modal} from "bootstrap";
-import {UtilityDialogOption} from "./utility.dialog.option";
+import {DialogConfirmContent, DialogConfirmFunction, DialogErrorContent, DialogInfoContent, DialogInfoFunction, DialogWarningContent, DialogWarningFunction} from "../app/dialog/dialog.function";
 
 export class UtilityDialog {
-
-  /**
-   * Open a dialog pop-up (which is Bootstrap Modal).
-   * Title, content and the button name(s) are required.
-   */
-  public static open(option: UtilityDialogOption): void {
-    if (option.title != null && option.content != null && option.buttons != null) {
-      let modal: any = document.getElementById("modalTemplate");
-      if (modal == null) return;
-      let modalBootstrap = new Modal(modal);
-      modalBootstrap.show();
-
-      let title = document.getElementById("modalTemplateTitle");
-      if (title == null) return;
-      title.textContent = option.title;
-
-      let content = document.getElementById("modalTemplateContent");
-      if (content == null) return;
-      content.innerHTML = option.content;
-
-      if (option.buttons === 1 || ((<any>option.buttons).primary != null) && ((<any>option.buttons).secondary == null) || (<any>option.buttons).secondary === "") {
-        // Only one button
-        let primaryButton = document.getElementById("modalTemplatePrimaryButton");
-        if (primaryButton == null) return;
-        if (option.buttons === 1) {
-          primaryButton.textContent = "OK";
-        } else {
-          primaryButton.textContent = (<any>option.buttons).primary;
-        }
-
-        primaryButton.setAttribute("data-bs-dismiss", "modal");
-
-        // Hide secondary button
-        let secondaryButton = document.getElementById("modalTemplateSecondaryButton");
-        if (secondaryButton == null) return;
-        secondaryButton.classList.add("d-none");
-      } else if (option.buttons === 2 || ((<any>option.buttons).primary != null) && (<any>option.buttons).secondary != null) {
-        // Two buttons
-        let primaryButton = document.getElementById("modalTemplatePrimaryButton");
-        if (primaryButton == null) return;
-        if (option.buttons === 2) {
-          primaryButton.textContent = "Yes";
-        } else {
-          primaryButton.textContent = (<any>option.buttons).primary;
-        }
-        primaryButton.setAttribute("data-bs-dismiss", "modal");
-
-        let secondaryButton = document.getElementById("modalTemplateSecondaryButton");
-        if (secondaryButton == null) return;
-        if (option.buttons === 2) {
-          secondaryButton.textContent = "No";
-        } else {
-          secondaryButton.textContent = (<any>option.buttons).secondary;
-        }
-
-        secondaryButton.setAttribute("data-bs-dismiss", "modal");
-
-        // Show secondary button
-        secondaryButton.classList.remove("d-none");
-      }
-    }
-  }
-
   /**
    * Open an info pop-up with given content.
    */
   public static info(content: string): void {
-    let option: UtilityDialogOption = {
-      title: "Information",
-      content: content,
-      buttons: {
-        primary: "OK",
-        secondary: ""
+    DialogInfoFunction.dialog.open(DialogInfoContent, {
+      data: {
+        message: content
       }
-    };
-    UtilityDialog.open(option);
+    });
   }
 
   /**
    * Open an error pop-up with given content.
    */
   public static error(content: string): void {
-    let option: UtilityDialogOption = {
-      title: "Error",
-      content: content,
-      buttons: {
-        primary: "OK",
-        secondary: ""
+    DialogWarningFunction.dialog.open(DialogErrorContent, {
+      data: {
+        message: content
       }
-    };
-    UtilityDialog.open(option);
+    });
   }
 
   /**
    * Open an warning pop-up with given content.
    */
   public static warn(content: string): void {
-    let option: UtilityDialogOption = {
-      title: "Warning",
-      content: content,
-      buttons: {
-        primary: "OK",
-        secondary: ""
+    DialogWarningFunction.dialog.open(DialogWarningContent, {
+      data: {
+        message: content
       }
-    };
-    UtilityDialog.open(option);
+    });
   }
 
   /**
    * Open an dialog pop-up and ask for confirmation.
    */
-  public static confirm(content: string): void {
-    let option: UtilityDialogOption = {
-      title: "Confirm",
-      content: content,
-      buttons: {
-        primary: "Yes",
-        secondary: "No"
+  public static confirm(content: string): boolean {
+    const dialogRef = DialogConfirmFunction.dialog.open(DialogConfirmContent, {
+      data: {
+        message: content
       }
-    };
-    UtilityDialog.open(option);
+    });
+
+    let confirmed: boolean = false;
+    dialogRef.afterClosed().subscribe(result => {
+      confirmed = dialogRef.componentInstance.data.confirmed;
+    });
+
+    return confirmed;
   }
 }

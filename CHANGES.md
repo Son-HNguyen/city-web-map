@@ -8,7 +8,7 @@
 
 * AngularJS
 
-* Bootstrap
+* Angular Material
 
 * CesiumJS v1.76.0
 
