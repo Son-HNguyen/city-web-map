@@ -8,6 +8,7 @@ import {MatIconModule} from "@angular/material/icon";
 import {_MatMenuDirectivesModule, MatMenuModule} from "@angular/material/menu";
 import {BrowserModule} from "@angular/platform-browser";
 import {NgModule} from "@angular/core";
+import {CookieService} from "ngx-cookie-service";
 
 import {AppRoutingModule} from "./app-routing.module";
 import {AppComponent} from "./app.component";
@@ -72,6 +73,7 @@ import {WidgetsFunction} from "./widgets/widgets.function";
   ],
   providers: [
     {provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: {appearance: "fill"}},
+    CookieService,
     LogService,
     LogPublishersService
   ]
