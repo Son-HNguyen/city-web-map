@@ -24,17 +24,11 @@
  */
 
 import {enableProdMode} from "@angular/core";
-import {MatDialog} from "@angular/material/dialog";
 import {platformBrowserDynamic} from "@angular/platform-browser-dynamic";
-import * as Cesium from "cesium";
 
 import {AppModule} from "./app/app.module";
 import {environment as env} from "./environments/environment";
-import {UtilityDialog} from "./utilities/utility.dialog";
 
-import {UtilityOS} from "./utilities/utility.os";
-import {ExtensionMobile} from "./extensions/extension.mobile";
-import {ExtensionDesktop} from "./extensions/extension.desktop";
 
 if (env.production) {
   enableProdMode();
@@ -46,9 +40,9 @@ platformBrowserDynamic().bootstrapModule(AppModule)
 (<any>window)["CESIUM_BASE_URL"] = "src/assets/cesium/";
 
 // Init settings first, then init client
-initSettings(initClient);
+initSettings();
 
-function initSettings(callback: () => void): void {
+function initSettings(): void {
 
   // Set default input parameter value and bind the view and model
   let addLayerViewModel = {
@@ -70,10 +64,4 @@ function initSettings(callback: () => void): void {
     maxSizeOfCachedTiles: 200,
     maxCountOfVisibleTiles: 200
   };
-
-  callback();
-}
-
-function initClient(): void {
-
 }

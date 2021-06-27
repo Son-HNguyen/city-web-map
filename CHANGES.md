@@ -4,13 +4,26 @@
 
 ##### NEW
 
-* NodeJS
+* Cookies for camera settings (default expiration 7 days)
 
-* AngularJS
+##### CHANGES
 
-* Angular Material
+* Starting from v2.0.0, the project has been renamed to **City Web Map**.
 
-* CesiumJS v1.76.0
+* Complete overhaul of the source code:
+  * NodeJS
+  * AngularJS
+  * Angular Material
+  * CesiumJS v1.76.0
+  * Dialog
+  * GPS
+
+* Complete overhaul of the GUI:
+  * Toolbox
+  * Widgets
+  * Mobile/Desktop version
+  
+
 
 
 ### 1.9.0 - Released [[Demo Link]](https://www.3dcitydb.org/3dcitydb-web-map/1.9.0/3dwebclient/index.html)
