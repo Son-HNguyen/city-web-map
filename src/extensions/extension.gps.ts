@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 /*
  *
  *  * City Web Map
@@ -23,9 +24,9 @@
  *
  */
 
-import * as Cesium from "cesium";
-import {UtilityDialog} from "../utilities/utility.dialog";
-import {environment as ENV} from "../environments/environment";
+import * as Cesium from 'cesium';
+import {UtilityDialog} from '../utilities/utility.dialog';
+import {environment as ENV} from '../environments/environment';
 
 /**
  * GPS Geolocation with device orientation in real-time.
@@ -55,21 +56,22 @@ export class ExtensionGPS {
   }
 
   private createGPSButton(): void {
-    let scope = this;
+    const scope = this;
 
-    const button = document.getElementById("gpsButton");
-    if (button == null) return;
-    button.className = "cesium-button cesium-toolbar-button tracking-deactivated";
-    button.title = "View GPS (single-click: one time, double-click: real-time)";
+    const button = document.getElementById('gpsButton');
+    if (button == null) {return;}
+    button.className = 'cesium-button cesium-toolbar-button tracking-deactivated';
+    button.title = 'View GPS (single-click: one time, double-click: real-time)';
 
     // replace the 3D/2D button with this GPS button
-    const customCesiumViewerToolbar = document.getElementsByClassName("cesium-viewer-toolbar")[0];
-    const customGlobeButton = customCesiumViewerToolbar.getElementsByClassName("cesium-sceneModePicker-wrapper cesium-toolbar-button")[0];
+    const customCesiumViewerToolbar = document.getElementsByClassName('cesium-viewer-toolbar')[0];
+    const customGlobeButton = customCesiumViewerToolbar.getElementsByClassName('cesium-sceneModePicker-wrapper cesium-toolbar-button')[0];
     customCesiumViewerToolbar.replaceChild(button, customGlobeButton);
 
     if (scope._isMobile) {
       // remove home button
-      const customHomeButton = customCesiumViewerToolbar.getElementsByClassName("cesium-button cesium-toolbar-button cesium-home-button")[0];
+      const customHomeButton =
+        customCesiumViewerToolbar.getElementsByClassName('cesium-button cesium-toolbar-button cesium-home-button')[0];
       customCesiumViewerToolbar.removeChild(customHomeButton);
 
       // remove info button
@@ -81,65 +83,65 @@ export class ExtensionGPS {
     let holdStart = 0;
     let holdTime = 0;
     if (scope._isMobile) {
-      button.addEventListener("touchstart", function (evt) {
+      button.addEventListener('touchstart', evt => {
         holdStart = Date.now();
       }, false);
-      button.addEventListener("touchend", function (evt) {
+      button.addEventListener('touchend', evt => {
         holdTime = Date.now() - holdStart;
         scope._longPress = holdTime >= scope._touchHoldDuration;
       }, false);
     } else {
-      button.addEventListener("mousedown", function (evt) {
+      button.addEventListener('mousedown', evt => {
         holdStart = Date.now();
       }, false);
-      window.addEventListener("mouseup", function (evt) {
+      window.addEventListener('mouseup', evt => {
         holdTime = Date.now() - holdStart;
         scope._longPress = holdTime >= scope._touchHoldDuration;
       }, false);
     }
 
     // --------------------------MOUSE CLICK EVENT-------------------------
-    button.onclick = function () {
+    button.onclick = () => {
       if (scope._liveTrackingActivated) {
         scope._liveTrackingActivated = false;
         scope.stopTracking();
       }
 
       if (!scope._longPress) {
-        const object = document.getElementById("gpsButton");
-        if (object == null) return;
+        const object = document.getElementById('gpsButton');
+        if (object == null) {return;}
         // distinguish between double-click and single-click
         // https://stackoverflow.com/questions/5497073/how-to-differentiate-single-click-event-and-double-click-event#answer-16033129
-        if (object.getAttribute("data-double-click") == null) {
-          object.setAttribute("data-double-click", "1");
-          setTimeout(function () {
-            if (object.getAttribute("data-double-click") === "1") {
+        if (object.getAttribute('data-double-click') == null) {
+          object.setAttribute('data-double-click', '1');
+          setTimeout(() => {
+            if (object.getAttribute('data-double-click') === '1') {
               scope.handleClick();
             }
-            object.removeAttribute("data-double-click");
+            object.removeAttribute('data-double-click');
           }, 500);
-        } else if (object.getAttribute("data-triple-click") == null) {
-          object.setAttribute("data-triple-click", "1");
-          setTimeout(function () {
-            if (object.getAttribute("data-triple-click") === "1") {
+        } else if (object.getAttribute('data-triple-click') == null) {
+          object.setAttribute('data-triple-click', '1');
+          setTimeout(() => {
+            if (object.getAttribute('data-triple-click') === '1') {
               scope.handleDClick();
             }
-            object.removeAttribute("data-double-click");
-            object.removeAttribute("data-triple-click");
+            object.removeAttribute('data-double-click');
+            object.removeAttribute('data-triple-click');
           }, 500);
         } else {
-          object.removeAttribute("data-double-click");
-          object.removeAttribute("data-triple-click");
+          object.removeAttribute('data-double-click');
+          object.removeAttribute('data-triple-click');
           scope.handleTClick();
         }
       } else {
-        const restartView = function (_callback: () => void): void {
+        const restartView = (_callback: () => void): void => {
           scope._firstActivated = false;
           ENV.cesiumCamera.cancelFlight();
           _callback();
         };
 
-        restartView(function (): void {
+        restartView((): void => {
           ENV.cesiumCamera.flyTo({
             destination: Cesium.Cartesian3.fromRadians(
               ENV.cesiumCamera.positionCartographic.longitude,
@@ -160,17 +162,17 @@ export class ExtensionGPS {
    * Handle single-click.
    */
   private handleClick(): void {
-    let scope = this;
+    const scope = this;
 
     if (scope._liveTrackingActivated) {
       scope._liveTrackingActivated = false;
       scope.stopTracking();
     } else {
-      const button = document.getElementById("gpsButton");
-      if (button == null) return;
-      button.classList.remove("tracking-ori-activated");
-      button.classList.remove("tracking-pos-ori-activated");
-      button.classList.add("tracking-deactivated");
+      const button = document.getElementById('gpsButton');
+      if (button == null) {return;}
+      button.classList.remove('tracking-ori-activated');
+      button.classList.remove('tracking-pos-ori-activated');
+      button.classList.add('tracking-deactivated');
 
       // one time tracking
       scope.startTracking();
@@ -181,7 +183,7 @@ export class ExtensionGPS {
    * Handle double-click.
    */
   private handleDClick(): void {
-    let scope = this;
+    const scope = this;
 
     if (scope._liveTrackingActivated) {
       scope._liveTrackingActivated = false;
@@ -190,11 +192,11 @@ export class ExtensionGPS {
       scope._liveTrackingActivated = true;
       scope._watchPos = false;
 
-      const button = document.getElementById("gpsButton");
-      if (button == null) return;
-      button.classList.remove("tracking-deactivated");
-      button.classList.remove("tracking-ori-deactivated");
-      button.classList.add("tracking-ori-activated");
+      const button = document.getElementById('gpsButton');
+      if (button == null) {return;}
+      button.classList.remove('tracking-deactivated');
+      button.classList.remove('tracking-ori-deactivated');
+      button.classList.add('tracking-ori-activated');
 
       // tracking in intervals of miliseconds
       scope.startTracking();
@@ -205,7 +207,7 @@ export class ExtensionGPS {
    * Handle triple-click.
    */
   private handleTClick(): void {
-    let scope = this;
+    const scope = this;
 
     if (scope._liveTrackingActivated) {
       scope._liveTrackingActivated = false;
@@ -214,11 +216,11 @@ export class ExtensionGPS {
       scope._liveTrackingActivated = true;
       scope._watchPos = true;
 
-      const button = document.getElementById("gpsButton");
-      if (button == null) return;
-      button.classList.remove("tracking-deactivated");
-      button.classList.remove("tracking-pos-ori-deactivated");
-      button.classList.add("tracking-pos-ori-activated");
+      const button = document.getElementById('gpsButton');
+      if (button == null) {return;}
+      button.classList.remove('tracking-deactivated');
+      button.classList.remove('tracking-pos-ori-deactivated');
+      button.classList.add('tracking-pos-ori-activated');
 
       // tracking in intervals of miliseconds
       scope.startTracking();
@@ -226,33 +228,28 @@ export class ExtensionGPS {
   }
 
   private startTracking(): void {
-    let scope = this;
+    const scope = this;
 
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(showPosition, showError);
-    } else {
-      UtilityDialog.error("Geolocation is not supported by this browser.");
-    }
-
-    function showPosition(position: any): void {
-      getLocation();
-
-      function getLocation(): void {
+    const showPosition = (position: any): void => {
+      const getLocation = (): void => {
         if (window.DeviceOrientationEvent) {
-          window.addEventListener("deviceorientation", function auxOrientation(event) {
+          const auxOrientation = (event: DeviceOrientationEvent) => {
             flyToLocationWithOrientation(position, event);
-            setTimeout(function () {
+            setTimeout(() => {
               // one-time event
-              window.removeEventListener("deviceorientation", auxOrientation, false);
+              window.removeEventListener('deviceorientation', auxOrientation, false);
             }, scope._timerMilliseconds);
-          }, false);
+          };
+          window.addEventListener('deviceorientation', auxOrientation, false);
         } else {
-          UtilityDialog.error("Exact geolocation is not supported by this device.");
+          UtilityDialog.error('Exact geolocation is not supported by this device.');
           flyToLocationWithOrientation(position, event);
         }
-      }
+      };
 
-      function flyToLocationWithOrientation(position: any, ori: any): void {
+      getLocation();
+
+      const flyToLocationWithOrientation = (toPosition: any, ori: any): void => {
         let oriAlpha = 0;
         let oriBeta = 0;
         let oriGamma = 0;
@@ -265,7 +262,7 @@ export class ExtensionGPS {
           angle = 360 - ori.alpha;
         }
 
-        if (typeof scope._savedAlpha !== "undefined") {
+        if (typeof scope._savedAlpha !== 'undefined') {
           const diffAngle = angle - scope._savedAlpha;
           if (diffAngle > 180) {
             angle -= 360;
@@ -277,16 +274,32 @@ export class ExtensionGPS {
         oriAlpha = Cesium.Math.toRadians(angle);
         scope._savedAlpha = oriAlpha;
 
+        const setFirstPersonView = () => {
+          if (!scope._firstActivated) {
+            oriBeta = 0;
+          } else {
+            oriBeta = ENV.cesiumCamera.pitch;
+          }
+          oriGamma = 0;
+          oriHeight = 2;
+        };
+
+        const setDebugView = () => {
+          oriBeta = Cesium.Math.toRadians(-90);
+          oriGamma = 0;
+          oriHeight = 150;
+        };
+
         // change view if specified in URL
-        const Url = require("url-parse");
-        const paraUrl = (new Url(window.location.href, true)).query["viewMode"];
+        const URL = require('url-parse');
+        const paraUrl = (new URL(window.location.href, true)).query.viewMode;
         if (paraUrl) {
           switch (paraUrl.toLowerCase()) {
-            case "fpv":
+            case 'fpv':
               // first person view
               setFirstPersonView();
               break;
-            case "debug":
+            case 'debug':
               // debug view
               setDebugView();
               break;
@@ -299,77 +312,67 @@ export class ExtensionGPS {
           setFirstPersonView();
         }
 
-        function setFirstPersonView() {
-          if (!scope._firstActivated) {
-            oriBeta = 0;
-          } else {
-            oriBeta = ENV.cesiumCamera.pitch;
-          }
-          oriGamma = 0;
-          oriHeight = 2;
-        }
-
-        function setDebugView() {
-          oriBeta = Cesium.Math.toRadians(-90);
-          oriGamma = 0;
-          oriHeight = 150;
-        }
-
         ENV.cesiumCamera.flyTo({
-          destination: Cesium.Cartesian3.fromDegrees(position.coords.longitude, position.coords.latitude, oriHeight),
+          destination: Cesium.Cartesian3.fromDegrees(toPosition.coords.longitude, toPosition.coords.latitude, oriHeight),
           orientation: {
             heading: oriAlpha,
             pitch: oriBeta,
             roll: oriGamma
           },
-          complete: function () {
+          complete: () => {
             scope._firstActivated = true;
             if (scope._liveTrackingActivated) {
               if (!scope._longPress) {
                 // real-time tracking
-                scope._timer = setTimeout(function () {
+                scope._timer = setTimeout(() => {
                   if (scope._watchPos) {
                     // also check position in real-time
                     scope.startTracking();
                   } else {
                     // only check orientation in real-time
-                    showPosition(position);
+                    showPosition(toPosition);
                   }
                 }, scope._timerMilliseconds);
               }
             }
           }
         });
-      }
-    }
+      };
+    };
 
-    function showError(error: any) {
+    const showError = (error: any) => {
       switch (error.code) {
         case error.PERMISSION_DENIED:
-          UtilityDialog.error("Geolocation denied by user.");
+          UtilityDialog.error('Geolocation denied by user.');
           break;
         case error.POSITION_UNAVAILABLE:
-          UtilityDialog.error("Location information is unavailable.");
+          UtilityDialog.error('Location information is unavailable.');
           break;
         case error.TIMEOUT:
-          UtilityDialog.error("Location request has timed out.");
+          UtilityDialog.error('Location request has timed out.');
           break;
         case error.UNKNOWN_ERROR:
-          UtilityDialog.error("An unknown error has occurred while requesting location information.");
+          UtilityDialog.error('An unknown error has occurred while requesting location information.');
           break;
       }
+    };
+
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(showPosition, showError);
+    } else {
+      UtilityDialog.error('Geolocation is not supported by this browser.');
     }
   }
 
   private stopTracking(): void {
-    let scope = this;
+    const scope = this;
 
     scope._watchPos = false;
 
-    const button = document.getElementById("gpsButton");
-    if (button == null) return;
-    button.classList.remove("tracking-activated");
-    button.classList.add("tracking-deactivated");
+    const button = document.getElementById('gpsButton');
+    if (button == null) {return;}
+    button.classList.remove('tracking-activated');
+    button.classList.add('tracking-deactivated');
 
     clearTimeout(scope._timer);
   }

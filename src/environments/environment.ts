@@ -2,16 +2,16 @@
 // `ng build --prod` replaces `environment.ts` with `environment.prod.ts`.
 // The list of file replacements can be found in `angular.json`.
 
-let Cesium = require("cesium");
+const cesium = require('cesium');
 
 export const environment = {
   production: false,
-  Cesium: Cesium,
-  cesiumViewer: Cesium.Viewer,
-  cesiumCamera: Cesium.Camera,
+  cesium,
+  cesiumViewer: cesium.Viewer,
+  cesiumCamera: cesium.Camera,
   cookieExpireDefault: 7,
   cookieNames: {
-    cameraPosition: "cameraPosition"
+    cameraPosition: 'cameraPosition'
   }
 };
 

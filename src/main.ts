@@ -23,11 +23,11 @@
  *
  */
 
-import {enableProdMode} from "@angular/core";
-import {platformBrowserDynamic} from "@angular/platform-browser-dynamic";
+import {enableProdMode} from '@angular/core';
+import {platformBrowserDynamic} from '@angular/platform-browser-dynamic';
 
-import {AppModule} from "./app/app.module";
-import {environment as env} from "./environments/environment";
+import {AppModule} from './app/app.module';
+import {environment as env} from './environments/environment';
 
 
 if (env.production) {
@@ -37,31 +37,30 @@ if (env.production) {
 platformBrowserDynamic().bootstrapModule(AppModule)
   .catch(err => console.error(err));
 
-(<any>window)["CESIUM_BASE_URL"] = "src/assets/cesium/";
+(window as any).CESIUM_BASE_URL = 'src/assets/cesium/';
 
-// Init settings first, then init client
-initSettings();
-
-function initSettings(): void {
-
+const initSettings = (): void => {
   // Set default input parameter value and bind the view and model
-  let addLayerViewModel = {
-    url: "",
-    name: "",
-    layerDataType: "",
+  const addLayerViewModel = {
+    url: '',
+    name: '',
+    layerDataType: '',
     layerProxy: false,
     layerClampToGround: true,
-    gltfVersion: "",
-    thematicDataUrl: "",
-    thematicDataSourceType: "",
-    tableType: "",
+    gltfVersion: '',
+    thematicDataUrl: '',
+    thematicDataSourceType: '',
+    tableType: '',
     // googleSheetsApiKey: "",
     // googleSheetsRanges: "",
     // googleSheetsClientId: "",
-    cityobjectsJsonUrl: "",
+    cityobjectsJsonUrl: '',
     minLodPixels: 0,
     maxLodPixels: 0,
     maxSizeOfCachedTiles: 200,
     maxCountOfVisibleTiles: 200
   };
-}
+};
+
+// Init settings first, then init client
+initSettings();

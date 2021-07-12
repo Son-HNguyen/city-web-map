@@ -23,14 +23,22 @@
  *
  */
 
-import {DialogConfirmContent, DialogConfirmFunction, DialogErrorContent, DialogInfoContent, DialogInfoFunction, DialogWarningContent, DialogWarningFunction} from "../app/dialog/dialog.function";
+import {
+  DialogConfirmContentComponent,
+  DialogConfirmComponent,
+  DialogErrorContentComponent,
+  DialogInfoContentComponent,
+  DialogInfoComponent,
+  DialogWarningContentComponent,
+  DialogWarningComponent
+} from '../app/dialog/dialog.function';
 
 export class UtilityDialog {
   /**
    * Open an info pop-up with given content.
    */
   public static info(content: string): void {
-    DialogInfoFunction.dialog.open(DialogInfoContent, {
+    DialogInfoComponent.dialog.open(DialogInfoContentComponent, {
       data: {
         message: content
       }
@@ -41,7 +49,7 @@ export class UtilityDialog {
    * Open an error pop-up with given content.
    */
   public static error(content: string): void {
-    DialogWarningFunction.dialog.open(DialogErrorContent, {
+    DialogWarningComponent.dialog.open(DialogErrorContentComponent, {
       data: {
         message: content
       }
@@ -52,7 +60,7 @@ export class UtilityDialog {
    * Open an warning pop-up with given content.
    */
   public static warn(content: string): void {
-    DialogWarningFunction.dialog.open(DialogWarningContent, {
+    DialogWarningComponent.dialog.open(DialogWarningContentComponent, {
       data: {
         message: content
       }
@@ -63,13 +71,13 @@ export class UtilityDialog {
    * Open an dialog pop-up and ask for confirmation.
    */
   public static confirm(content: string): boolean {
-    const dialogRef = DialogConfirmFunction.dialog.open(DialogConfirmContent, {
+    const dialogRef = DialogConfirmComponent.dialog.open(DialogConfirmContentComponent, {
       data: {
         message: content
       }
     });
 
-    let confirmed: boolean = false;
+    let confirmed = false;
     dialogRef.afterClosed().subscribe(result => {
       confirmed = dialogRef.componentInstance.data.confirmed;
     });

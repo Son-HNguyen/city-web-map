@@ -21,16 +21,16 @@
  * limitations under the License.
  */
 
-import {LogService} from "../app/log/log.service";
-import {environment as ENV} from "../environments/environment";
+import {LogService} from '../app/log/log.service';
+import {environment as ENV} from '../environments/environment';
 
 export interface CesiumCameraPosition {
-  latitude: number,
-  longitude: number,
-  height: number,
-  heading: number,
-  pitch: number,
-  roll: number
+  latitude: number;
+  longitude: number;
+  height: number;
+  heading: number;
+  pitch: number;
+  roll: number;
 }
 
 export class UtilityCamera {
@@ -38,22 +38,22 @@ export class UtilityCamera {
    * Return the current Cesium camera position.
    */
   static getPosition(): CesiumCameraPosition {
-    let cesiumCamera = ENV.cesiumViewer.scene.camera;
-    let position = ENV.Cesium.Ellipsoid.WGS84.cartesianToCartographic(cesiumCamera.position);
-    let latitude = ENV.Cesium.Math.toDegrees(position.latitude);
-    let longitude = ENV.Cesium.Math.toDegrees(position.longitude);
-    let height = position.height;
-    let heading = ENV.Cesium.Math.toDegrees(cesiumCamera.heading);
-    let pitch = ENV.Cesium.Math.toDegrees(cesiumCamera.pitch);
-    let roll = ENV.Cesium.Math.toDegrees(cesiumCamera.roll);
+    const cesiumCamera = ENV.cesiumViewer.scene.camera;
+    const position = ENV.cesium.Ellipsoid.WGS84.cartesianToCartographic(cesiumCamera.position);
+    const latitude = ENV.cesium.Math.toDegrees(position.latitude);
+    const longitude = ENV.cesium.Math.toDegrees(position.longitude);
+    const height = position.height;
+    const heading = ENV.cesium.Math.toDegrees(cesiumCamera.heading);
+    const pitch = ENV.cesium.Math.toDegrees(cesiumCamera.pitch);
+    const roll = ENV.cesium.Math.toDegrees(cesiumCamera.roll);
 
-    let result: CesiumCameraPosition = {
-      latitude: latitude,
-      longitude: longitude,
-      height: height,
-      heading: heading,
-      pitch: pitch,
-      roll: roll
+    const result: CesiumCameraPosition = {
+      latitude,
+      longitude,
+      height,
+      heading,
+      pitch,
+      roll
     };
 
     return result;
@@ -64,11 +64,12 @@ export class UtilityCamera {
    */
   static flyToPosition(cesiumCameraPosition: CesiumCameraPosition): void {
     ENV.cesiumCamera.flyTo({
-      destination: ENV.Cesium.Cartesian3.fromDegrees(cesiumCameraPosition.longitude, cesiumCameraPosition.latitude, cesiumCameraPosition.height),
+      destination: ENV.cesium.Cartesian3.fromDegrees(
+        cesiumCameraPosition.longitude, cesiumCameraPosition.latitude, cesiumCameraPosition.height),
       orientation: {
-        heading: ENV.Cesium.Math.toRadians(cesiumCameraPosition.heading),
-        pitch: ENV.Cesium.Math.toRadians(cesiumCameraPosition.pitch),
-        roll: ENV.Cesium.Math.toRadians(cesiumCameraPosition.roll)
+        heading: ENV.cesium.Math.toRadians(cesiumCameraPosition.heading),
+        pitch: ENV.cesium.Math.toRadians(cesiumCameraPosition.pitch),
+        roll: ENV.cesium.Math.toRadians(cesiumCameraPosition.roll)
       }
     });
   }

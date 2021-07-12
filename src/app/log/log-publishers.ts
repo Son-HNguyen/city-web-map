@@ -1,13 +1,13 @@
 // Source: https://www.codemag.com/article/1711021/Logging-in-Angular-Applications
 
-import {Observable, of} from "rxjs";
-import {LogEntry} from "./log.service";
+import {Observable, of} from 'rxjs';
+import {LogEntry} from './log.service';
 
 export abstract class LogPublisher {
   location: string | undefined;
 
   abstract log(record: LogEntry):
-    Observable<boolean>
+    Observable<boolean>;
 
   abstract clear(): Observable<boolean>;
 }
@@ -31,25 +31,25 @@ export class LogLocalStorage extends LogPublisher {
     super();
 
     // Set location
-    this.location = "logging";
+    this.location = 'logging';
   }
 
   // Append log entry to local storage
   log(entry: LogEntry): Observable<boolean> {
-    let ret: boolean = false;
+    let ret = false;
     let values: LogEntry[] = [];
 
     try {
       // Get previous values from local storage
-      if (typeof this.location === "string") {
-        values = JSON.parse(<string>localStorage.getItem(this.location)) || [];
+      if (typeof this.location === 'string') {
+        values = JSON.parse(localStorage.getItem(this.location) as string) || [];
       }
 
       // Add new log entry to array
       values.push(entry);
 
       // Store array into local storage
-      if (typeof this.location === "string") {
+      if (typeof this.location === 'string') {
         localStorage.setItem(this.location, JSON.stringify(values));
       }
 
@@ -65,7 +65,7 @@ export class LogLocalStorage extends LogPublisher {
 
   // Clear all log entries from local storage
   clear(): Observable<boolean> {
-    if (typeof this.location === "string") {
+    if (typeof this.location === 'string') {
       localStorage.removeItem(this.location);
     }
     return of(true);

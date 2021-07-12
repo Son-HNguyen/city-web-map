@@ -21,11 +21,11 @@
  * limitations under the License.
  */
 
-import {Component} from "@angular/core";
+import {Component} from '@angular/core';
 
 @Component({
-  selector: "app-toolbox",
-  templateUrl: "toolbox.content.html"
+  selector: 'app-toolbox',
+  templateUrl: 'toolbox.content.html'
 })
-export class ToolboxFunction {
+export class ToolboxComponent {
 }

@@ -1,12 +1,12 @@
-let Cesium = require("cesium");
+const cesium = require('cesium');
 
 export const environment = {
   production: false,
-  Cesium: Cesium,
-  cesiumViewer: Cesium.Viewer,
-  cesiumCamera: Cesium.Camera,
+  cesium,
+  cesiumViewer: cesium.Viewer,
+  cesiumCamera: cesium.Camera,
   cookieExpireDefault: 7,
   cookieNames: {
-    cameraPosition: "cameraPosition"
+    cameraPosition: 'cameraPosition'
   }
 };

@@ -21,11 +21,11 @@
  * limitations under the License.
  */
 
-import {Component} from "@angular/core";
+import {Component} from '@angular/core';
 
 @Component({
-  selector: "app-widgets",
-  templateUrl: "widgets.content.html"
+  selector: 'app-widgets',
+  templateUrl: 'widgets.content.html'
 })
-export class WidgetsFunction {
+export class WidgetsComponent {
 }

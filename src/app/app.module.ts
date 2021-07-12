@@ -1,51 +1,60 @@
-import {HttpClientModule} from "@angular/common/http";
-import {FormsModule, ReactiveFormsModule} from "@angular/forms";
-import {MatButtonModule} from "@angular/material/button";
-import {MatNativeDateModule} from "@angular/material/core";
-import {MatDialogModule} from "@angular/material/dialog";
-import {MAT_FORM_FIELD_DEFAULT_OPTIONS, MatFormFieldModule} from "@angular/material/form-field";
-import {MatIconModule} from "@angular/material/icon";
-import {_MatMenuDirectivesModule, MatMenuModule} from "@angular/material/menu";
-import {BrowserModule} from "@angular/platform-browser";
-import {NgModule} from "@angular/core";
-import {CookieService} from "ngx-cookie-service";
+import {HttpClientModule} from '@angular/common/http';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import {MatButtonModule} from '@angular/material/button';
+import {MatNativeDateModule} from '@angular/material/core';
+import {MatDialogModule} from '@angular/material/dialog';
+import {MAT_FORM_FIELD_DEFAULT_OPTIONS, MatFormFieldModule} from '@angular/material/form-field';
+import {MatIconModule} from '@angular/material/icon';
+import {_MatMenuDirectivesModule, MatMenuModule} from '@angular/material/menu';
+import {BrowserModule} from '@angular/platform-browser';
+import {NgModule} from '@angular/core';
+import {CookieService} from 'ngx-cookie-service';
 
-import {AppRoutingModule} from "./app-routing.module";
-import {AppComponent} from "./app.component";
-import {CesiumDirective} from "./cesium.directive";
-import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
-import {DialogConfirmContent, DialogConfirmFunction, DialogErrorContent, DialogErrorFunction, DialogInfoContent, DialogInfoFunction, DialogWarningContent, DialogWarningFunction} from "./dialog/dialog.function";
-import {LogPublishersService} from "./log/log-publishers.service";
-import {LogService} from "./log/log.service";
-import { ToolboxFunction } from './toolbox/toolbox.function';
-import {WidgetsFunction} from "./widgets/widgets.function";
+import {AppRoutingModule} from './app-routing.module';
+import {AppComponent} from './app.component';
+import {CesiumDirective} from './cesium.directive';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import {
+  DialogConfirmContentComponent,
+  DialogConfirmComponent,
+  DialogErrorContentComponent,
+  DialogErrorComponent,
+  DialogInfoContentComponent,
+  DialogInfoComponent,
+  DialogWarningContentComponent,
+  DialogWarningComponent
+} from './dialog/dialog.function';
+import {LogPublishersService} from './log/log-publishers.service';
+import {LogService} from './log/log.service';
+import { ToolboxComponent } from './toolbox/toolbox.component';
+import {WidgetsComponent} from './widgets/widgets.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     CesiumDirective,
-    DialogInfoContent,
-    DialogInfoFunction,
-    DialogConfirmContent,
-    DialogConfirmFunction,
-    DialogWarningContent,
-    DialogWarningFunction,
-    DialogErrorContent,
-    DialogErrorFunction,
-    ToolboxFunction,
-    WidgetsFunction
+    DialogInfoContentComponent,
+    DialogInfoComponent,
+    DialogConfirmContentComponent,
+    DialogConfirmComponent,
+    DialogWarningContentComponent,
+    DialogWarningComponent,
+    DialogErrorContentComponent,
+    DialogErrorComponent,
+    ToolboxComponent,
+    WidgetsComponent
   ],
   entryComponents: [
-    DialogInfoContent,
-    DialogInfoFunction,
-    DialogConfirmContent,
-    DialogConfirmFunction,
-    DialogWarningContent,
-    DialogWarningFunction,
-    DialogErrorContent,
-    DialogErrorFunction,
-    ToolboxFunction,
-    WidgetsFunction
+    DialogInfoContentComponent,
+    DialogInfoComponent,
+    DialogConfirmContentComponent,
+    DialogConfirmComponent,
+    DialogWarningContentComponent,
+    DialogWarningComponent,
+    DialogErrorContentComponent,
+    DialogErrorComponent,
+    ToolboxComponent,
+    WidgetsComponent
   ],
   imports: [
     BrowserModule,
@@ -64,15 +73,15 @@ import {WidgetsFunction} from "./widgets/widgets.function";
   ],
   bootstrap: [
     AppComponent,
-    DialogInfoFunction,
-    DialogConfirmFunction,
-    DialogWarningFunction,
-    DialogErrorFunction,
-    ToolboxFunction,
-    WidgetsFunction
+    DialogInfoComponent,
+    DialogConfirmComponent,
+    DialogWarningComponent,
+    DialogErrorComponent,
+    ToolboxComponent,
+    WidgetsComponent
   ],
   providers: [
-    {provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: {appearance: "fill"}},
+    {provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: {appearance: 'fill'}},
     CookieService,
     LogService,
     LogPublishersService

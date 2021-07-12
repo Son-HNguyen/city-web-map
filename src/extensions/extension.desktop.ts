@@ -30,22 +30,22 @@ export class ExtensionDesktop {
   }
 
   private adjustNavigationDiv(): void {
-    let scope = this;
+    const scope = this;
 
     // bring the navigation div to the background
-    let loop1 = window.setInterval(function () {
-      const navDiv = document.getElementById("navigationDiv");
+    const loop1 = window.setInterval(() => {
+      const navDiv = document.getElementById('navigationDiv');
       if (navDiv != null) {
-        navDiv.style.zIndex = "0";
+        navDiv.style.zIndex = '0';
         clearInterval(loop1);
       }
     }, 10);
 
     // bring the infobox to the foreground
-    let loop2 = window.setInterval(function () {
-      const infobox = document.getElementsByClassName("cesium-infoBox cesium-infoBox-visible")[0];
+    const loop2 = window.setInterval(() => {
+      const infobox = document.getElementsByClassName('cesium-infoBox cesium-infoBox-visible')[0];
       if (infobox != null) {
-        (<HTMLElement>infobox).style.zIndex = "1000";
+        (infobox as HTMLElement).style.zIndex = '1000';
         clearInterval(loop2);
       }
     }, 10);

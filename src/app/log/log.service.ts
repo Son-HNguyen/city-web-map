@@ -1,23 +1,23 @@
 // Source: https://www.codemag.com/article/1711021/Logging-in-Angular-Applications
 
-import {Injectable} from "@angular/core";
-import {LogPublisher} from "./log-publishers";
-import {LogPublishersService} from "./log-publishers.service";
+import {Injectable} from '@angular/core';
+import {LogPublisher} from './log-publishers';
+import {LogPublishersService} from './log-publishers.service';
 
 export enum LogLevel {
-  All = 0,
-  Debug = 1,
-  Info = 2,
-  Warn = 3,
-  Error = 4,
-  Fatal = 5,
-  Off = 6
+  all = 0,
+  debug = 1,
+  info = 2,
+  warn = 3,
+  error = 4,
+  fatal = 5,
+  off = 6
 }
 
 @Injectable()
 export class LogService {
-  level: LogLevel = LogLevel.All;
-  logWithDate: boolean = true;
+  level: LogLevel = LogLevel.all;
+  logWithDate = true;
   publishers: LogPublisher[];
 
   constructor(private publishersService: LogPublishersService) {
@@ -26,46 +26,46 @@ export class LogService {
   }
 
   debug(msg: string, ...optionalParams: any[]) {
-    this.writeToLog(msg, LogLevel.Debug, optionalParams);
+    this.writeToLog(msg, LogLevel.debug, optionalParams);
   }
 
   info(msg: string, ...optionalParams: any[]) {
-    this.writeToLog(msg, LogLevel.Info, optionalParams);
+    this.writeToLog(msg, LogLevel.info, optionalParams);
   }
 
   warn(msg: string, ...optionalParams: any[]) {
-    this.writeToLog(msg, LogLevel.Warn, optionalParams);
+    this.writeToLog(msg, LogLevel.warn, optionalParams);
   }
 
   error(msg: string, ...optionalParams: any[]) {
-    this.writeToLog(msg, LogLevel.Error, optionalParams);
+    this.writeToLog(msg, LogLevel.error, optionalParams);
   }
 
   fatal(msg: string, ...optionalParams: any[]) {
-    this.writeToLog(msg, LogLevel.Fatal, optionalParams);
+    this.writeToLog(msg, LogLevel.fatal, optionalParams);
   }
 
   log(msg: string, ...optionalParams: any[]) {
-    this.writeToLog(msg, LogLevel.All, optionalParams);
+    this.writeToLog(msg, LogLevel.all, optionalParams);
   }
 
   private writeToLog(msg: string, level: LogLevel, params: any[]) {
     if (this.shouldLog(level)) {
-      let entry: LogEntry = new LogEntry();
+      const entry: LogEntry = new LogEntry();
       entry.message = msg;
       entry.level = level;
       entry.extraInfo = params;
       entry.logWithDate = this.logWithDate;
 
-      for (let logger of this.publishers) {
+      for (const logger of this.publishers) {
         logger.log(entry).subscribe(response => console.log(response));
       }
     }
   }
 
   private shouldLog(level: LogLevel): boolean {
-    let ret: boolean = false;
-    if ((level >= this.level && level !== LogLevel.Off) || this.level === LogLevel.All) {
+    let ret = false;
+    if ((level >= this.level && level !== LogLevel.off) || this.level === LogLevel.all) {
       ret = true;
     }
     return ret;
@@ -75,37 +75,37 @@ export class LogService {
 export class LogEntry {
   // Public Properties
   entryDate: Date = new Date();
-  message: string = "";
-  level: LogLevel = LogLevel.Debug;
+  message = '';
+  level: LogLevel = LogLevel.debug;
   extraInfo: any[] = [];
-  logWithDate: boolean = true;
+  logWithDate = true;
 
   buildLogString(): string {
-    let ret: string = "";
+    let ret = '';
 
     if (this.logWithDate) {
-      ret = new Date() + " - ";
+      ret = new Date() + ' - ';
     }
 
-    ret += "Type: " + LogLevel[this.level];
-    ret += " - Message: " + this.message;
+    ret += 'Type: ' + LogLevel[this.level];
+    ret += ' - Message: ' + this.message;
     if (this.extraInfo.length) {
-      ret += " - Extra Info: " + this.formatParams(this.extraInfo);
+      ret += ' - Extra Info: ' + this.formatParams(this.extraInfo);
     }
 
     return ret;
   }
 
   private formatParams(params: any[]): string {
-    let ret: string = params.join(",");
+    let ret: string = params.join(',');
 
     // Is there at least one object in the array?
-    if (params.some(p => typeof p == "object")) {
-      ret = "";
+    if (params.some(p => typeof p == 'object')) {
+      ret = '';
 
       // Build comma-delimited string
-      for (let item of params) {
-        ret += JSON.stringify(item) + ",";
+      for (const item of params) {
+        ret += JSON.stringify(item) + ',';
       }
     }
 

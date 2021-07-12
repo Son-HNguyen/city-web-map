@@ -21,9 +21,9 @@
  * limitations under the License.
  */
 
-import {Component, Inject} from "@angular/core";
-import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from "@angular/material/dialog";
-import {LogService} from "../log/log.service";
+import {Component, Inject} from '@angular/core';
+import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
+import {LogService} from '../log/log.service';
 
 /**
  * Information dialog
@@ -34,23 +34,23 @@ export interface DialogInfoData {
 }
 
 @Component({
-  selector: "app-dialog",
-  templateUrl: "dialog.button.html"
+  selector: 'app-dialog',
+  templateUrl: 'dialog.button.html'
 })
-export class DialogInfoFunction {
+export class DialogInfoComponent {
   static dialog: MatDialog;
 
   constructor(dialog: MatDialog) {
-    DialogInfoFunction.dialog = dialog;
+    DialogInfoComponent.dialog = dialog;
   }
 }
 
 @Component({
-  templateUrl: "dialog.info.content.html"
+  templateUrl: 'dialog.info.content.html'
 })
-export class DialogInfoContent {
+export class DialogInfoContentComponent {
   constructor(
-    public dialogRef: MatDialogRef<DialogInfoContent>,
+    public dialogRef: MatDialogRef<DialogInfoContentComponent>,
     @Inject(MAT_DIALOG_DATA) public data: DialogInfoData,
     public logger: LogService) {
     this.logger.info(this.data.message);
@@ -70,23 +70,23 @@ export interface DialogConfirmData extends DialogInfoData {
 }
 
 @Component({
-  selector: "app-dialog",
-  templateUrl: "dialog.button.html"
+  selector: 'app-dialog',
+  templateUrl: 'dialog.button.html'
 })
-export class DialogConfirmFunction {
+export class DialogConfirmComponent {
   static dialog: MatDialog;
 
   constructor(dialog: MatDialog) {
-    DialogConfirmFunction.dialog = dialog;
+    DialogConfirmComponent.dialog = dialog;
   }
 }
 
 @Component({
-  templateUrl: "dialog.confirm.content.html"
+  templateUrl: 'dialog.confirm.content.html'
 })
-export class DialogConfirmContent {
+export class DialogConfirmContentComponent {
   constructor(
-    public dialogRef: MatDialogRef<DialogConfirmContent>,
+    public dialogRef: MatDialogRef<DialogConfirmContentComponent>,
     @Inject(MAT_DIALOG_DATA) public data: DialogConfirmData,
     public logger: LogService) {
     this.logger.info(this.data.message);
@@ -103,7 +103,7 @@ export class DialogConfirmContent {
   }
 
   private onClick(): void {
-    this.logger.debug("User's confirmation: " + this.data.confirmed);
+    this.logger.debug('User\'s confirmation: ' + this.data.confirmed);
     this.dialogRef.close();
   }
 }
@@ -112,27 +112,26 @@ export class DialogConfirmContent {
  * Warning dialog
  */
 
-export interface DialogWarningData extends DialogInfoData {
-}
+export type DialogWarningData = DialogInfoData;
 
 @Component({
-  selector: "app-dialog",
-  templateUrl: "dialog.button.html"
+  selector: 'app-dialog',
+  templateUrl: 'dialog.button.html'
 })
-export class DialogWarningFunction {
+export class DialogWarningComponent {
   static dialog: MatDialog;
 
   constructor(dialog: MatDialog) {
-    DialogWarningFunction.dialog = dialog;
+    DialogWarningComponent.dialog = dialog;
   }
 }
 
 @Component({
-  templateUrl: "dialog.warning.content.html"
+  templateUrl: 'dialog.warning.content.html'
 })
-export class DialogWarningContent {
+export class DialogWarningContentComponent {
   constructor(
-    public dialogRef: MatDialogRef<DialogWarningContent>,
+    public dialogRef: MatDialogRef<DialogWarningContentComponent>,
     @Inject(MAT_DIALOG_DATA) public data: DialogWarningData,
     public logger: LogService) {
     this.logger.warn(this.data.message);
@@ -147,27 +146,26 @@ export class DialogWarningContent {
  * Error dialog
  */
 
-export interface DialogErrorData extends DialogInfoData {
-}
+export type DialogErrorData = DialogInfoData;
 
 @Component({
-  selector: "app-dialog",
-  templateUrl: "dialog.button.html"
+  selector: 'app-dialog',
+  templateUrl: 'dialog.button.html'
 })
-export class DialogErrorFunction {
+export class DialogErrorComponent {
   static dialog: MatDialog;
 
   constructor(dialog: MatDialog) {
-    DialogErrorFunction.dialog = dialog;
+    DialogErrorComponent.dialog = dialog;
   }
 }
 
 @Component({
-  templateUrl: "dialog.error.content.html"
+  templateUrl: 'dialog.error.content.html'
 })
-export class DialogErrorContent {
+export class DialogErrorContentComponent {
   constructor(
-    public dialogRef: MatDialogRef<DialogErrorContent>,
+    public dialogRef: MatDialogRef<DialogErrorContentComponent>,
     @Inject(MAT_DIALOG_DATA) public data: DialogErrorData,
     public logger: LogService) {
     this.logger.error(this.data.message);

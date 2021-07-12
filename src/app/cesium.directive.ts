@@ -1,14 +1,14 @@
-import {Directive, ElementRef, OnInit} from "@angular/core";
-import {CookieService} from "ngx-cookie-service";
-import {environment, environment as ENV} from "../environments/environment";
-import {ExtensionDesktop} from "../extensions/extension.desktop";
-import {ExtensionMobile} from "../extensions/extension.mobile";
-import {UtilityCamera} from "../utilities/utility.camera";
-import {UtilityOS} from "../utilities/utility.os";
-import {LogService} from "./log/log.service";
+import {Directive, ElementRef, OnInit} from '@angular/core';
+import {CookieService} from 'ngx-cookie-service';
+import {environment, environment as ENV} from '../environments/environment';
+import {ExtensionDesktop} from '../extensions/extension.desktop';
+import {ExtensionMobile} from '../extensions/extension.mobile';
+import {UtilityCamera} from '../utilities/utility.camera';
+import {UtilityOS} from '../utilities/utility.os';
+import {LogService} from './log/log.service';
 
 @Directive({
-  selector: "[appCesium]"
+  selector: '[appCesium]'
 })
 export class CesiumDirective implements OnInit {
 
@@ -28,23 +28,23 @@ export class CesiumDirective implements OnInit {
 
   private initBasicCesiumComponents(): Promise<boolean> {
     return new Promise<boolean>((resolve, reject) => {
-      if (this.el == null) return;
-      this.el.nativeElement.id = "cesiumContainer";
-      const Url = require("url-parse");
-      const shadows = (new Url(window.location.href, true)).query["shadows"];
-      const terrainShadows = (new Url(window.location.href, true)).query["terrainShadows"];
-      const clock = new ENV.Cesium.Clock({
+      if (this.el == null) {return;}
+      this.el.nativeElement.id = 'cesiumContainer';
+      const URL = require('url-parse');
+      const shadows = (new URL(window.location.href, true)).query.shadows;
+      const terrainShadows = (new URL(window.location.href, true)).query.terrainShadows;
+      const clock = new ENV.cesium.Clock({
         shouldAnimate: true
       });
 
-      ENV.cesiumViewer = new ENV.Cesium.Viewer("cesiumContainer", {
-        selectedImageryProviderViewModel: ENV.Cesium.createDefaultImageryProviderViewModels()[1],
+      ENV.cesiumViewer = new ENV.cesium.Viewer('cesiumContainer', {
+        selectedImageryProviderViewModel: ENV.cesium.createDefaultImageryProviderViewModels()[1],
         timeline: true,
         animation: true,
         fullscreenButton: false,
-        shadows: (shadows == "true"),
-        terrainShadows: parseInt(terrainShadows),
-        clockViewModel: new ENV.Cesium.ClockViewModel(clock)
+        shadows: (shadows === 'true'),
+        terrainShadows: parseInt(terrainShadows, 10),
+        clockViewModel: new ENV.cesium.ClockViewModel(clock)
       });
 
       ENV.cesiumCamera = ENV.cesiumViewer.scene.camera;
@@ -73,10 +73,14 @@ export class CesiumDirective implements OnInit {
 
   private readCookies(): Promise<boolean> {
     return new Promise<boolean>((resolve, reject) => {
-      this.logService!.info("Resume camera location from the last session. " +
-        "You can change this behaviour in the settings.");
-      UtilityCamera.flyToPosition(JSON.parse(this.cookieService!.get(ENV.cookieNames.cameraPosition)));
-      resolve(true);
+      if (this.logService != null) {
+        this.logService.info('Resume camera location from the last session. ' +
+          'You can change this behaviour in the settings.');
+        if (this.cookieService != null) {
+          UtilityCamera.flyToPosition(JSON.parse(this.cookieService.get(ENV.cookieNames.cameraPosition)));
+          resolve(true);
+        }
+      }
     });
   }
 }

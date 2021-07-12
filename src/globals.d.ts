@@ -49,10 +49,10 @@
 //   maxCountOfVisibleTiles: number
 // }
 
-declare var addSplashWindowModel: SplashWindowModel;
+declare let addSplashWindowModel: SplashWindowModel;
 
 interface SplashWindowModel {
-  url: string,
-  showOnStart: boolean
+  url: string;
+  showOnStart: boolean;
 }
 

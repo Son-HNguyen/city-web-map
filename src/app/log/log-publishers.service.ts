@@ -1,18 +1,18 @@
 // Source: https://www.codemag.com/article/1711021/Logging-in-Angular-Applications
 
-import {Injectable} from "@angular/core";
+import {Injectable} from '@angular/core';
 
-import {LogPublisher, LogConsole, LogLocalStorage} from "./log-publishers";
+import {LogPublisher, LogConsole, LogLocalStorage} from './log-publishers';
 
 @Injectable()
 export class LogPublishersService {
+  // Public properties
+  publishers: LogPublisher[] = [];
+
   constructor() {
     // Build publishers arrays
     this.buildPublishers();
   }
-
-  // Public properties
-  publishers: LogPublisher[] = [];
 
   // Build publishers array
   buildPublishers(): void {
