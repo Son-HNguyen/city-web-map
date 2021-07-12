@@ -7,11 +7,8 @@
       "node"
     ]
   },
-  "files": [
-    "src/main.ts",
-    "src/polyfills.ts"
-  ],
   "include": [
-    "src/**/*.d.ts"
+    "src",
+    "node_modules/@types/jasmine/index.d.ts"
   ]
 }
