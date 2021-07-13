@@ -33,7 +33,7 @@
               "src/assets"
             ],
             "styles": [
-              "node_modules/@angular/material/prebuilt-themes/pink-bluegrey.css",
+              "./node_modules/@angular/material/prebuilt-themes/pink-bluegrey.css",
               "node_modules/cesium/Build/Cesium/Widgets/widgets.css",
               "src/styles.css"
             ],
@@ -60,7 +60,7 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "5mb",
+                  "maximumWarning": "10mb",
                   "maximumError": "10mb"
                 },
                 {
@@ -101,7 +101,7 @@
               "src/assets"
             ],
             "styles": [
-              "node_modules/@angular/material/prebuilt-themes/pink-bluegrey.css",
+              "./node_modules/@angular/material/prebuilt-themes/pink-bluegrey.css",
               "src/styles.css"
             ],
             "scripts": []
