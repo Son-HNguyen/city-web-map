@@ -21,6 +21,8 @@
  * limitations under the License.
  */
 
+/*eslint-env es6*/
+
 //https://stackoverflow.com/questions/56181443/how-can-i-run-angular-app-on-node-server
 
 const express = require('express');

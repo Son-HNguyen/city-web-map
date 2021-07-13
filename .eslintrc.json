@@ -13,32 +13,27 @@
           "tsconfig.json",
           "e2e/tsconfig.json"
         ],
-        "createDefaultProgram": true,
-        "ecmaVersion": 2017
-      },
-      "env": {
-        "es6": true
+        "createDefaultProgram": true
       },
       "extends": [
-        "plugin:@angular-eslint/ng-cli-compat",
-        "plugin:@angular-eslint/ng-cli-compat--formatting-add-on",
+        "plugin:@angular-eslint/recommended",
         "plugin:@angular-eslint/template/process-inline-templates"
       ],
       "rules": {
-        "@angular-eslint/component-selector": [
-          "error",
-          {
-            "type": "element",
-            "prefix": "app",
-            "style": "kebab-case"
-          }
-        ],
         "@angular-eslint/directive-selector": [
           "error",
           {
             "type": "attribute",
             "prefix": "app",
             "style": "camelCase"
+          }
+        ],
+        "@angular-eslint/component-selector": [
+          "error",
+          {
+            "type": "element",
+            "prefix": "app",
+            "style": "kebab-case"
           }
         ]
       }
