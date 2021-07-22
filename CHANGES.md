@@ -4,6 +4,7 @@
 
 ##### NEW
 
+* Added ``Dockerfile``
 * Cookies for camera settings (default expiration 7 days)
 
 ##### CHANGES
