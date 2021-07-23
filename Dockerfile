@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1
 
-ARG node_version=latest
+ARG node_version=16.5.0
 ARG angular_cli_version=12.1.3
 
 FROM node:$node_version
