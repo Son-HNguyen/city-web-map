@@ -2,6 +2,25 @@
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 11.0.5.
 
+## Run using Docker
+
+Pull the image:
+```bash
+docker pull sonnguyentum/city-web-map:latest
+```
+
+Start the container (here to publish via port 3001 at host):
+```bash
+docker run -dit \
+       --name city-web-map \
+       -p 3001:3001 \
+       sonnguyentum/city-web-map:latest
+```
+
+The web client is now available using the URL:
+
+http://localhost:3001
+
 ## Run using NodeJS
 
 Build the project:

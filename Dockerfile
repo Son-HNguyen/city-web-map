@@ -18,8 +18,12 @@ RUN npm install
 # Copy sources
 COPY . .
 
-# Prepare for publishing
-EXPOSE 4200
+# Prepare for publishing via NodeJS
+EXPOSE 3001
+
+# Build for production (saved in directory dist)
+RUN ng build --configuration production
 
 # This will be executed while running the container
-CMD [ "ng", "serve", "--host", "0.0.0.0" ]
+# CMD [ "ng", "serve", "--host", "0.0.0.0" ]
+CMD [ "node", "server.js" ]
