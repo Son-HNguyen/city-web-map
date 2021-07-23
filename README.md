@@ -2,6 +2,19 @@
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 11.0.5.
 
+## Run using NodeJS
+
+Build the project:
+```bash
+ng build --configuration production
+```
+The build will be stored by default 
+in the directory [dist/city-web-map](dist/city-web-map).
+Then run the server:
+```bash
+node server.js
+```
+
 ## Development server
 
 Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.

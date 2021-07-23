@@ -40,6 +40,14 @@
             "scripts": [
               "node_modules/jquery/dist/jquery.min.js",
               "node_modules/cesium/Build/Cesium/Cesium.js"
+            ],
+            "allowedCommonJsDependencies": [
+              "assert",
+              "cesium",
+              "http",
+              "https",
+              "stream",
+              "zlib"
             ]
           },
           "configurations": {

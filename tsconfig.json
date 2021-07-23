@@ -19,11 +19,19 @@
     "lib": [
       "ES2020",
       "dom"
-    ]
+    ],
+    "paths": {
+      "assert": ["node_modules/assert"],
+      "cesium": ["node_modules/cesium"],
+      "http": ["node_modules/stream-http"],
+      "https": ["node_modules/https-browserify"],
+      "stream": ["node_modules/stream-browserify"],
+      "zlib": ["node_modules/browserify-zlib"]
+    }
   },
   "angularCompilerOptions": {
     "strictInjectionParameters": true,
     "strictInputAccessModifiers": true,
     "strictTemplates": true
-  }
+  },
 }
