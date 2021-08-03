@@ -32,6 +32,20 @@ html, body, div[appCesium] {
   overflow: hidden;
 }
 
+/* Hide default Cesium widgets */
+.cesium-viewer-toolbar, /* geocoder, home button, base layer picker, image provider */
+.cesium-viewer-animationContainer, /* the clock animation */
+.cesium-viewer-timelineContainer, /* timeline */
+.cesium-viewer-bottom /* logo information */
+{
+  display: none;
+}
+.cesium-viewer-fullscreenContainer /* fullscreen button */
+{
+  position: absolute;
+  top: -999em;
+}
+
 /* GPS button */
 .tracking-ori-activated,
 .tracking-ori-activated:hover {
