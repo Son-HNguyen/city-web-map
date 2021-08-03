@@ -1,6 +1,6 @@
 import {Directive, ElementRef, OnInit} from '@angular/core';
 import {CookieService} from 'ngx-cookie-service';
-import {environment, environment as ENV} from '../environments/environment';
+import {environment as ENV} from '../environments/environment';
 import {ExtensionDesktop} from '../extensions/extension.desktop';
 import {ExtensionMobile} from '../extensions/extension.mobile';
 import {UtilityCamera} from '../utilities/utility.camera';
@@ -18,8 +18,6 @@ export class CesiumDirective implements OnInit {
   async ngOnInit() {
     // Initialize clock, Cesium viewer, camera, etc.
     await this.initBasicCesiumComponents();
-    // Initialize GUI components used for both desktop and mobile
-    await this.initGUICommon();
     // Tailor GUI components depending on the OS
     await this.initGUISpecific();
     // Process cookies saved from the last session
@@ -28,32 +26,32 @@ export class CesiumDirective implements OnInit {
 
   private initBasicCesiumComponents(): Promise<boolean> {
     return new Promise<boolean>((resolve, reject) => {
-      if (this.el == null) {return;}
+      if (this.el == null) {
+        return;
+      }
+
       this.el.nativeElement.id = 'cesiumContainer';
+
+      // Init Cesium camera
+      // TODO Central manager for URL parameters
       const URL = require('url-parse');
       const shadows = (new URL(window.location.href, true)).query.shadows;
       const terrainShadows = (new URL(window.location.href, true)).query.terrainShadows;
-      const clock = new ENV.cesium.Clock({
-        shouldAnimate: true
-      });
-
       ENV.cesiumViewer = new ENV.cesium.Viewer('cesiumContainer', {
-        selectedImageryProviderViewModel: ENV.cesium.createDefaultImageryProviderViewModels()[1],
-        timeline: true,
-        animation: true,
-        fullscreenButton: false,
+        // TODO Hardcoded imagery provider?
+        //selectedImageryProviderViewModel: ENV.cesium.createDefaultImageryProviderViewModels()[1],
         shadows: (shadows === 'true'),
         terrainShadows: parseInt(terrainShadows, 10),
-        clockViewModel: new ENV.cesium.ClockViewModel(clock)
+        timeline: false,
+        animation: false,
+        fullscreenButton: false
       });
 
       ENV.cesiumCamera = ENV.cesiumViewer.scene.camera;
-      resolve(true);
-    });
-  }
 
-  private initGUICommon(): Promise<boolean> {
-    return new Promise<boolean>((resolve, reject) => {
+      // Init ion access token
+      // TODO Get token from URL parameter OR session/cookie?
+      //ENV.cesium.Ion.defaultAccessToken = '';
 
       resolve(true);
     });

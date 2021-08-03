@@ -1,7 +1,7 @@
 import {HttpClientModule} from '@angular/common/http';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {MatButtonModule} from '@angular/material/button';
-import {MatNativeDateModule} from '@angular/material/core';
+import {MatNativeDateModule, MatOptionModule} from '@angular/material/core';
 import {MatDialogModule} from '@angular/material/dialog';
 import {MAT_FORM_FIELD_DEFAULT_OPTIONS, MatFormFieldModule} from '@angular/material/form-field';
 import {MatIconModule} from '@angular/material/icon';
@@ -26,8 +26,13 @@ import {
 } from './dialog/dialog.function';
 import {LogPublishersService} from './log/log-publishers.service';
 import {LogService} from './log/log.service';
-import { ToolboxComponent } from './toolbox/toolbox.component';
-import {WidgetsComponent} from './widgets/widgets.component';
+import {GridsterModule} from "angular-gridster2";
+import {MatSelectModule} from "@angular/material/select";
+import { MenuComponent } from './menu/menu.component';
+import { NavComponent } from './nav/nav.component';
+import { InfoComponent } from './info/info.component';
+import { StatusComponent } from './status/status.component';
+import { ListComponent } from './list/list.component';
 
 @NgModule({
   declarations: [
@@ -41,8 +46,11 @@ import {WidgetsComponent} from './widgets/widgets.component';
     DialogWarningComponent,
     DialogErrorContentComponent,
     DialogErrorComponent,
-    ToolboxComponent,
-    WidgetsComponent
+    MenuComponent,
+    NavComponent,
+    InfoComponent,
+    StatusComponent,
+    ListComponent
   ],
   entryComponents: [
     DialogInfoContentComponent,
@@ -52,9 +60,7 @@ import {WidgetsComponent} from './widgets/widgets.component';
     DialogWarningContentComponent,
     DialogWarningComponent,
     DialogErrorContentComponent,
-    DialogErrorComponent,
-    ToolboxComponent,
-    WidgetsComponent
+    DialogErrorComponent
   ],
   imports: [
     BrowserModule,
@@ -69,16 +75,17 @@ import {WidgetsComponent} from './widgets/widgets.component';
     MatButtonModule,
     _MatMenuDirectivesModule,
     MatIconModule,
-    MatMenuModule
+    MatMenuModule,
+    GridsterModule,
+    MatSelectModule,
+    MatOptionModule
   ],
   bootstrap: [
     AppComponent,
     DialogInfoComponent,
     DialogConfirmComponent,
     DialogWarningComponent,
-    DialogErrorComponent,
-    ToolboxComponent,
-    WidgetsComponent
+    DialogErrorComponent
   ],
   providers: [
     {provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: {appearance: 'fill'}},
