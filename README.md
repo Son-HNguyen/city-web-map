@@ -36,7 +36,17 @@ node server.js
 
 ## Development server
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+For development:
+```bash
+ng serve --configuration developmenet
+``` 
+For production:
+```bash
+ng serve --configuration production
+# or ng serve by default
+``` 
+
+Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
 
 ## Code scaffolding
 
