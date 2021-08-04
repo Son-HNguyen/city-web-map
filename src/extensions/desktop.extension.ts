@@ -23,7 +23,7 @@
  *
  */
 
-export class ExtensionDesktop {
+export class DesktopExtension {
 
   constructor() {
     this.adjustNavigationDiv();

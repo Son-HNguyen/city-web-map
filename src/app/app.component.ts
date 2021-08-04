@@ -1,8 +1,8 @@
 import {ChangeDetectionStrategy, Component, HostListener, OnInit, ViewEncapsulation} from '@angular/core';
 import {CookieService} from 'ngx-cookie-service';
-import {environment as ENV} from '../environments/environment';
-import {CesiumCameraPosition, UtilityCamera} from '../utilities/utility.camera';
 import {CompactType, GridsterConfig, GridsterItem, GridType} from "angular-gridster2";
+import {GlobalService} from "../global.service";
+import {UtilityService} from "../utils.service";
 
 @Component({
   selector: 'app-root',
@@ -16,12 +16,19 @@ export class AppComponent implements OnInit {
   options!: GridsterConfig;
   dashboard!: Array<GridsterItem>;
 
-  constructor(private cookieService: CookieService) {
+  constructor(
+    private cookieService?: CookieService,
+    private GLOBALS?: GlobalService,
+    private UTILS?: UtilityService) {
   }
 
   @HostListener('window:beforeunload', ['$event'])
   beforeUnloadHandler(event: any) {
-    this.cookieService.set(ENV.cookieNames.cameraPosition, JSON.stringify(UtilityCamera.getPosition()), ENV.cookieExpireDefault);
+    this.cookieService!.set(
+      this.GLOBALS!.cookieNames.cameraPosition,
+      JSON.stringify(this.UTILS!.camera.getCurrentPosition()), this.GLOBALS!.cookieExpireDefault);
+    //Workspace.updateWorkspace(currentWorkspace);
+    //this.cookieService.set(ENV.cookieNames.workspace, currentWorkspace.toString(), ENV.cookieExpireDefault);
   }
 
   ngOnInit(): void {
@@ -39,34 +46,16 @@ export class AppComponent implements OnInit {
       }
     };
 
+    // TODO Add/remove apps depending on the OS
     this.dashboard = [
-      // Menu on the left
-      {cols: 2, rows: 20, y: 0, x: 0},
-      // Widgets on top
-      {cols: 13, rows: 2, y: 0, x: 2},
-      // Widgets on the right
-      {cols: 5, rows: 10, y: 0, x: 15},
-      {cols: 5, rows: 10, y: 10, x: 15},
-      // Widgets at the bottom
-      {cols: 13, rows: 2, y: 18, x: 2},
-      // Cesium app in the center
-      {cols: 13, rows: 16, y: 2, x: 2}
+      {cols: 3, rows: 5, y: 0, x: 0}, // Layer list
+      {cols: 3, rows: 12, y: 5, x: 0}, // Context menu
+      {cols: 3, rows: 3, y: 17, x: 0}, // Menu
+      {cols: 12, rows: 2, y: 0, x: 3}, // Nav
+      {cols: 5, rows: 10, y: 0, x: 15}, // Info
+      {cols: 5, rows: 10, y: 10, x: 15}, // View list
+      {cols: 12, rows: 2, y: 18, x: 3}, // Status
+      {cols: 12, rows: 16, y: 2, x: 3} // Cesium app
     ];
-  }
-
-  changedOptions(): void {
-    if (this.options.api && this.options.api.optionsChanged) {
-      this.options.api.optionsChanged();
-    }
-  }
-
-  removeItem($event: MouseEvent | TouchEvent, item: GridsterItem): void {
-    $event.preventDefault();
-    $event.stopPropagation();
-    this.dashboard.splice(this.dashboard.indexOf(item), 1);
-  }
-
-  addItem(): void {
-    this.dashboard.push({x: 0, y: 0, cols: 1, rows: 1});
   }
 }

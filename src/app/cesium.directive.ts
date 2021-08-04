@@ -1,18 +1,23 @@
 import {Directive, ElementRef, OnInit} from '@angular/core';
 import {CookieService} from 'ngx-cookie-service';
-import {environment as ENV} from '../environments/environment';
-import {ExtensionDesktop} from '../extensions/extension.desktop';
-import {ExtensionMobile} from '../extensions/extension.mobile';
-import {UtilityCamera} from '../utilities/utility.camera';
-import {UtilityOS} from '../utilities/utility.os';
+import {DesktopExtension} from '../extensions/desktop.extension';
+import {MobileExtension} from '../extensions/mobile.extension';
 import {LogService} from './log/log.service';
+import * as cesium from "cesium";
+import {GlobalService} from "../global.service";
+import {UtilityService} from "../utils.service";
 
 @Directive({
   selector: '[appCesium]'
 })
 export class CesiumDirective implements OnInit {
 
-  constructor(private cookieService?: CookieService, private logService?: LogService, private el?: ElementRef) {
+  constructor(
+    private cookieService?: CookieService,
+    private logService?: LogService,
+    private el?: ElementRef,
+    private GLOBALS?: GlobalService,
+    private UTILS?: UtilityService) {
   }
 
   async ngOnInit() {
@@ -37,7 +42,7 @@ export class CesiumDirective implements OnInit {
       const URL = require('url-parse');
       const shadows = (new URL(window.location.href, true)).query.shadows;
       const terrainShadows = (new URL(window.location.href, true)).query.terrainShadows;
-      ENV.cesiumViewer = new ENV.cesium.Viewer('cesiumContainer', {
+      this.GLOBALS!.cesiumViewer = new cesium.Viewer('cesiumContainer', {
         // TODO Hardcoded imagery provider?
         //selectedImageryProviderViewModel: ENV.cesium.createDefaultImageryProviderViewModels()[1],
         shadows: (shadows === 'true'),
@@ -47,11 +52,11 @@ export class CesiumDirective implements OnInit {
         fullscreenButton: false
       });
 
-      ENV.cesiumCamera = ENV.cesiumViewer.scene.camera;
+      this.GLOBALS!.cesiumCamera = this.GLOBALS!.cesiumViewer.scene.camera;
 
       // Init ion access token
       // TODO Get token from URL parameter OR session/cookie?
-      //ENV.cesium.Ion.defaultAccessToken = '';
+      //cesium.Ion.defaultAccessToken = '';
 
       resolve(true);
     });
@@ -60,10 +65,10 @@ export class CesiumDirective implements OnInit {
   private initGUISpecific(): Promise<boolean> {
     return new Promise<boolean>((resolve, reject) => {
       // Adjust GUI and program behaviours towards current operating systems
-      if (UtilityOS.isMobile()) {
-        new ExtensionMobile();
+      if (this.UTILS!.os.isMobile()) {
+        new MobileExtension();
       } else {
-        new ExtensionDesktop();
+        new DesktopExtension();
       }
       resolve(true);
     });
@@ -75,7 +80,8 @@ export class CesiumDirective implements OnInit {
         this.logService.info('Resume camera location from the last session. ' +
           'You can change this behaviour in the settings.');
         if (this.cookieService != null) {
-          UtilityCamera.flyToPosition(JSON.parse(this.cookieService.get(ENV.cookieNames.cameraPosition)));
+          this.UTILS!.camera.flyToPosition(JSON.parse(this.cookieService.get(this.GLOBALS!.cookieNames.cameraPosition)));
+          //UtilityCamera.flyToPosition(JSON.parse(this.cookieService.get(ENV.cookieNames.workspace)).lastLocation);
           resolve(true);
         }
       }

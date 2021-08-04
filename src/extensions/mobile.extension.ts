@@ -24,15 +24,24 @@
  *
  */
 
-import {ExtensionGPS} from './extension.gps';
-import {UtilityOS} from '../utilities/utility.os';
+import {GpsExtension} from './gps.extension';
+import {GlobalService} from "../global.service";
+import {UtilityService} from "../utils.service";
+import {AppModule} from "../app/app.module";
+import {Injectable} from "@angular/core";
 
-export class ExtensionMobile {
+@Injectable()
+export class MobileExtension {
   // GPS functionalities, including geolocation and device orientation
-  private _gps: ExtensionGPS;
+  private _gps: GpsExtension;
+  private GLOBALS: GlobalService;
+  private UTILS: UtilityService;
 
   constructor() {
-    this._gps = new ExtensionGPS(true);
+    this.GLOBALS = AppModule.injector.get(GlobalService);
+    this.UTILS = AppModule.injector.get(UtilityService);
+
+    this._gps = new GpsExtension(true);
 
     this.setDistanceLegend();
     this.setLoadingIndicator();
@@ -130,7 +139,7 @@ export class ExtensionMobile {
 
     const infobox = document.getElementsByClassName('cesium-infoBox')[0];
     infobox.classList.add('infobox-full');
-    if (UtilityOS.getMobileOS() === 'iOS') {
+    if (this.UTILS.os.getMobileOS() === 'iOS') {
       infobox.classList.add('infobox-full-ios');
     }
   };
@@ -146,7 +155,7 @@ export class ExtensionMobile {
     if (uiMenu != null && toolbox != null) {
       uiMenu.style.display = 'block';
       uiMenu.classList.add('uiMenu-full');
-      if (UtilityOS.getMobileOS() === 'iOS') {
+      if (this.UTILS.os.getMobileOS() === 'iOS') {
         uiMenu.classList.add('uiMenu-full-ios');
       }
 
@@ -163,7 +172,7 @@ export class ExtensionMobile {
     const splashWindow = document.getElementById('splashwindow_iframe');
     if (splashWindow != null) {
       splashWindow.classList.add('splash-wrapper-mobile');
-      if (UtilityOS.getMobileOS() === 'iOS') {
+      if (this.UTILS.os.getMobileOS() === 'iOS') {
         splashWindow.classList.add('splash-wrapper-mobile-ios');
       }
 
@@ -184,7 +193,7 @@ export class ExtensionMobile {
         const splashWindowIframeContent: any = document.getElementById('splashwindow_iframe_content');
         if (splashWindowIframeContent != null) {
           splashWindowIframeContent.src = mobileContentUrl;
-          addSplashWindowModel.url = mobileContentUrl;
+          this.GLOBALS.addSplashWindowModel.url = mobileContentUrl;
         }
       });
     }
@@ -200,11 +209,11 @@ export class ExtensionMobile {
     }
   };
 
-  get gps(): ExtensionGPS {
+  get gps(): GpsExtension {
     return this._gps;
   }
 
-  set gps(value: ExtensionGPS) {
+  set gps(value: GpsExtension) {
     this._gps = value;
   }
 }

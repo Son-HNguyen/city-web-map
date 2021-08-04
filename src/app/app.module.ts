@@ -7,7 +7,7 @@ import {MAT_FORM_FIELD_DEFAULT_OPTIONS, MatFormFieldModule} from '@angular/mater
 import {MatIconModule} from '@angular/material/icon';
 import {_MatMenuDirectivesModule, MatMenuModule} from '@angular/material/menu';
 import {BrowserModule} from '@angular/platform-browser';
-import {NgModule} from '@angular/core';
+import {Injector, NgModule} from '@angular/core';
 import {CookieService} from 'ngx-cookie-service';
 
 import {AppRoutingModule} from './app-routing.module';
@@ -28,11 +28,15 @@ import {LogPublishersService} from './log/log-publishers.service';
 import {LogService} from './log/log.service';
 import {GridsterModule} from "angular-gridster2";
 import {MatSelectModule} from "@angular/material/select";
-import { MenuComponent } from './menu/menu.component';
-import { NavComponent } from './nav/nav.component';
-import { InfoComponent } from './info/info.component';
-import { StatusComponent } from './status/status.component';
-import { ListComponent } from './list/list.component';
+import {MenuComponent} from './menu/menu.component';
+import {NavComponent} from './nav/nav.component';
+import {InfoComponent} from './info/info.component';
+import {StatusComponent} from './status/status.component';
+import {MenuContextComponent} from './menu-context/menu-context.component';
+import {ViewListComponent} from './view-list/view-list.component';
+import {LayerListComponent} from './layer-list/layer-list.component';
+import {GlobalService} from "../global.service";
+import {UtilityService} from "../utils.service";
 
 @NgModule({
   declarations: [
@@ -50,7 +54,9 @@ import { ListComponent } from './list/list.component';
     NavComponent,
     InfoComponent,
     StatusComponent,
-    ListComponent
+    MenuContextComponent,
+    ViewListComponent,
+    LayerListComponent
   ],
   entryComponents: [
     DialogInfoContentComponent,
@@ -91,8 +97,19 @@ import { ListComponent } from './list/list.component';
     {provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: {appearance: 'fill'}},
     CookieService,
     LogService,
-    LogPublishersService
+    LogPublishersService,
+    GlobalService,
+    UtilityService
   ]
 })
 export class AppModule {
+  /**
+   * Allows for retrieving singletons using `AppModule.injector.get(MyService)`
+   * This is good to prevent injecting the service as constructor parameter.
+   * https://stackoverflow.com/questions/39101865/angular-2-inject-dependency-outside-constructor
+   */
+  static injector: Injector;
+  constructor(injector: Injector) {
+    AppModule.injector = injector;
+  }
 }

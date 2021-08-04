@@ -25,13 +25,16 @@
  */
 
 import * as Cesium from 'cesium';
-import {UtilityDialog} from '../utilities/utility.dialog';
-import {environment as ENV} from '../environments/environment';
+import {GlobalService} from "../global.service";
+import {UtilityService} from "../utils.service";
+import {Injectable} from "@angular/core";
+import {AppModule} from "../app/app.module";
 
 /**
  * GPS Geolocation with device orientation in real-time.
  */
-export class ExtensionGPS {
+@Injectable()
+export class GpsExtension {
   private _liveTrackingActivated: boolean;
   private _timer: any;
   private _timerMilliseconds: number; // duration between clicks in ms
@@ -41,8 +44,14 @@ export class ExtensionGPS {
   private _touchHoldDuration: number; // touch press duration in ms
   private _longPress: boolean;
   private _isMobile: boolean;
+  private GLOBALS: GlobalService;
+  private UTILS: UtilityService;
 
-  constructor(isMobile: boolean) {
+  constructor(
+    isMobile: boolean) {
+    this.GLOBALS = AppModule.injector.get(GlobalService);
+    this.UTILS = AppModule.injector.get(UtilityService);
+
     this._liveTrackingActivated = false;
     this._timer = undefined;
     this._timerMilliseconds = 350;
@@ -59,7 +68,9 @@ export class ExtensionGPS {
     const scope = this;
 
     const button = document.getElementById('gpsButton');
-    if (button == null) {return;}
+    if (button == null) {
+      return;
+    }
     button.className = 'cesium-button cesium-toolbar-button tracking-deactivated';
     button.title = 'View GPS (single-click: one time, double-click: real-time)';
 
@@ -109,7 +120,9 @@ export class ExtensionGPS {
 
       if (!scope._longPress) {
         const object = document.getElementById('gpsButton');
-        if (object == null) {return;}
+        if (object == null) {
+          return;
+        }
         // distinguish between double-click and single-click
         // https://stackoverflow.com/questions/5497073/how-to-differentiate-single-click-event-and-double-click-event#answer-16033129
         if (object.getAttribute('data-double-click') == null) {
@@ -137,18 +150,18 @@ export class ExtensionGPS {
       } else {
         const restartView = (_callback: () => void): void => {
           scope._firstActivated = false;
-          ENV.cesiumCamera.cancelFlight();
+          this.GLOBALS.cesiumCamera.cancelFlight();
           _callback();
         };
 
         restartView((): void => {
-          ENV.cesiumCamera.flyTo({
+          this.GLOBALS.cesiumCamera.flyTo({
             destination: Cesium.Cartesian3.fromRadians(
-              ENV.cesiumCamera.positionCartographic.longitude,
-              ENV.cesiumCamera.positionCartographic.latitude,
+              this.GLOBALS.cesiumCamera.positionCartographic.longitude,
+              this.GLOBALS.cesiumCamera.positionCartographic.latitude,
               250),
             orientation: {
-              heading: ENV.cesiumCamera.heading,
+              heading: this.GLOBALS.cesiumCamera.heading,
               pitch: Cesium.Math.toRadians(-75),
               roll: 0
             }
@@ -169,7 +182,9 @@ export class ExtensionGPS {
       scope.stopTracking();
     } else {
       const button = document.getElementById('gpsButton');
-      if (button == null) {return;}
+      if (button == null) {
+        return;
+      }
       button.classList.remove('tracking-ori-activated');
       button.classList.remove('tracking-pos-ori-activated');
       button.classList.add('tracking-deactivated');
@@ -193,7 +208,9 @@ export class ExtensionGPS {
       scope._watchPos = false;
 
       const button = document.getElementById('gpsButton');
-      if (button == null) {return;}
+      if (button == null) {
+        return;
+      }
       button.classList.remove('tracking-deactivated');
       button.classList.remove('tracking-ori-deactivated');
       button.classList.add('tracking-ori-activated');
@@ -217,7 +234,9 @@ export class ExtensionGPS {
       scope._watchPos = true;
 
       const button = document.getElementById('gpsButton');
-      if (button == null) {return;}
+      if (button == null) {
+        return;
+      }
       button.classList.remove('tracking-deactivated');
       button.classList.remove('tracking-pos-ori-deactivated');
       button.classList.add('tracking-pos-ori-activated');
@@ -242,7 +261,7 @@ export class ExtensionGPS {
           };
           window.addEventListener('deviceorientation', auxOrientation, false);
         } else {
-          UtilityDialog.error('Exact geolocation is not supported by this device.');
+          this.UTILS.dialog.error('Exact geolocation is not supported by this device.');
           flyToLocationWithOrientation(position, event);
         }
       };
@@ -278,7 +297,7 @@ export class ExtensionGPS {
           if (!scope._firstActivated) {
             oriBeta = 0;
           } else {
-            oriBeta = ENV.cesiumCamera.pitch;
+            oriBeta = this.GLOBALS.cesiumCamera.pitch;
           }
           oriGamma = 0;
           oriHeight = 2;
@@ -312,7 +331,7 @@ export class ExtensionGPS {
           setFirstPersonView();
         }
 
-        ENV.cesiumCamera.flyTo({
+        this.GLOBALS.cesiumCamera.flyTo({
           destination: Cesium.Cartesian3.fromDegrees(toPosition.coords.longitude, toPosition.coords.latitude, oriHeight),
           orientation: {
             heading: oriAlpha,
@@ -343,16 +362,16 @@ export class ExtensionGPS {
     const showError = (error: any) => {
       switch (error.code) {
         case error.PERMISSION_DENIED:
-          UtilityDialog.error('Geolocation denied by user.');
+          this.UTILS.dialog.error('Geolocation denied by user.');
           break;
         case error.POSITION_UNAVAILABLE:
-          UtilityDialog.error('Location information is unavailable.');
+          this.UTILS.dialog.error('Location information is unavailable.');
           break;
         case error.TIMEOUT:
-          UtilityDialog.error('Location request has timed out.');
+          this.UTILS.dialog.error('Location request has timed out.');
           break;
         case error.UNKNOWN_ERROR:
-          UtilityDialog.error('An unknown error has occurred while requesting location information.');
+          this.UTILS.dialog.error('An unknown error has occurred while requesting location information.');
           break;
       }
     };
@@ -360,7 +379,7 @@ export class ExtensionGPS {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(showPosition, showError);
     } else {
-      UtilityDialog.error('Geolocation is not supported by this browser.');
+      this.UTILS.dialog.error('Geolocation is not supported by this browser.');
     }
   }
 
@@ -370,7 +389,9 @@ export class ExtensionGPS {
     scope._watchPos = false;
 
     const button = document.getElementById('gpsButton');
-    if (button == null) {return;}
+    if (button == null) {
+      return;
+    }
     button.classList.remove('tracking-activated');
     button.classList.add('tracking-deactivated');
 

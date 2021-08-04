@@ -23,11 +23,14 @@
  *
  */
 
-export class UtilityOS {
+export class OsUtility {
+  constructor() {
+  }
+
   /**
    * Check if the app is being run on a mobile device.
    */
-  public static isMobile(): boolean {
+  public isMobile(): boolean {
     let check = false;
     (a => {
       // check for "mobile=true" parameter in URL, else check in browser
@@ -47,7 +50,7 @@ export class UtilityOS {
    * Determine the mobile operating system.
    * This function returns one of 'iOS', 'Android', 'Windows Phone', or 'unknown'.
    */
-  public static getMobileOS(): string {
+  public getMobileOS(): string {
     // Source: https://stackoverflow.com/questions/21741841/detecting-ios-android-operating-system#answer-21742107
     const scope = this;
 

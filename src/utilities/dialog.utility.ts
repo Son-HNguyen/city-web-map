@@ -33,11 +33,14 @@ import {
   DialogWarningComponent
 } from '../app/dialog/dialog.function';
 
-export class UtilityDialog {
+export class DialogUtility {
+  constructor() {
+  }
+
   /**
    * Open an info pop-up with given content.
    */
-  public static info(content: string): void {
+  public info(content: string): void {
     DialogInfoComponent.dialog.open(DialogInfoContentComponent, {
       data: {
         message: content
@@ -48,7 +51,7 @@ export class UtilityDialog {
   /**
    * Open an error pop-up with given content.
    */
-  public static error(content: string): void {
+  public error(content: string): void {
     DialogWarningComponent.dialog.open(DialogErrorContentComponent, {
       data: {
         message: content
@@ -59,7 +62,7 @@ export class UtilityDialog {
   /**
    * Open an warning pop-up with given content.
    */
-  public static warn(content: string): void {
+  public warn(content: string): void {
     DialogWarningComponent.dialog.open(DialogWarningContentComponent, {
       data: {
         message: content
@@ -70,7 +73,7 @@ export class UtilityDialog {
   /**
    * Open an dialog pop-up and ask for confirmation.
    */
-  public static confirm(content: string): boolean {
+  public confirm(content: string): boolean {
     const dialogRef = DialogConfirmComponent.dialog.open(DialogConfirmContentComponent, {
       data: {
         message: content
