@@ -40,7 +40,6 @@ export class GlobalService {
     };
     this._cookieExpireDefault = 7;
     this._cookieNames = {
-      cameraPosition: 'cameraPosition',
       workspace: 'workspace'
     };
     this._workspace = new Workspace(
@@ -103,6 +102,5 @@ interface SplashWindowModel {
 }
 
 interface CookieNamesConfig {
-  cameraPosition: string,
   workspace: string
 }

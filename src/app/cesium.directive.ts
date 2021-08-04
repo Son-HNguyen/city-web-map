@@ -79,13 +79,12 @@ export class CesiumDirective implements OnInit {
       if (this.logService != null) {
         this.logService.info('Resume camera location from the last session. ' +
           'You can change this behaviour in the settings.');
-        if (this.cookieService != null) {
-          //this.UTILS!.camera.flyToPosition(JSON.parse(this.cookieService.get(this.GLOBALS!.cookieNames.cameraPosition)));
-          const cookie = this.cookieService.get(this.GLOBALS!.cookieNames.workspace);
-          const savedWorkspace = JSON.parse(cookie);
-          this.UTILS!.camera.flyToPosition(savedWorkspace._lastLocation);
-          resolve(true);
-        }
+      }
+      if (this.cookieService != null) {
+        const cookieWorkspace = this.cookieService.get(this.GLOBALS!.cookieNames.workspace);
+        const objectWorkspace = JSON.parse(cookieWorkspace);
+        this.UTILS!.camera.flyToPosition(objectWorkspace._lastLocation);
+        resolve(true);
       }
     });
   }

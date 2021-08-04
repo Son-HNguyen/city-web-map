@@ -95,9 +95,6 @@ export class AppComponent implements OnInit {
 
   @HostListener('window:beforeunload', ['$event'])
   beforeUnloadHandler(event: any) {
-    // this.cookieService!.set(
-    //   this.GLOBALS!.cookieNames.cameraPosition,
-    //   JSON.stringify(this.UTILS!.camera.getCurrentPosition()), this.GLOBALS!.cookieExpireDefault);
     this.GLOBALS!.workspace.lastLocation = this.UTILS!.camera.getCurrentPosition();
     this.cookieService!.set(
       this.GLOBALS!.cookieNames.workspace,
