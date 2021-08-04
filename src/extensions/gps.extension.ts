@@ -47,8 +47,7 @@ export class GpsExtension {
   private GLOBALS: GlobalService;
   private UTILS: UtilityService;
 
-  constructor(
-    isMobile: boolean) {
+  constructor(isMobile: boolean) {
     this.GLOBALS = AppModule.injector.get(GlobalService);
     this.UTILS = AppModule.injector.get(UtilityService);
 

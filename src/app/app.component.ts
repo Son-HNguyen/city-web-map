@@ -95,11 +95,13 @@ export class AppComponent implements OnInit {
 
   @HostListener('window:beforeunload', ['$event'])
   beforeUnloadHandler(event: any) {
+    // this.cookieService!.set(
+    //   this.GLOBALS!.cookieNames.cameraPosition,
+    //   JSON.stringify(this.UTILS!.camera.getCurrentPosition()), this.GLOBALS!.cookieExpireDefault);
+    this.GLOBALS!.workspace.lastLocation = this.UTILS!.camera.getCurrentPosition();
     this.cookieService!.set(
-      this.GLOBALS!.cookieNames.cameraPosition,
-      JSON.stringify(this.UTILS!.camera.getCurrentPosition()), this.GLOBALS!.cookieExpireDefault);
-    //Workspace.updateWorkspace(currentWorkspace);
-    //this.cookieService.set(ENV.cookieNames.workspace, currentWorkspace.toString(), ENV.cookieExpireDefault);
+      this.GLOBALS!.cookieNames.workspace,
+      this.GLOBALS!.workspace.toString(), this.GLOBALS!.cookieExpireDefault);
   }
 
   ngOnInit(): void {

@@ -26,19 +26,19 @@ import {BaseLayer} from "./BaseLayer";
 import {TerrainLayer} from "./TerrainLayer";
 import {Viewpoint} from "./Viewpoint";
 import {CesiumCameraPosition} from "../utilities/camera.utility";
-import {UtilityService} from "../utils.service";
 
 export class Workspace {
-  public static current: Workspace;
-
   private _title: string;
   private _description: string;
   private _maintainer: string;
+
   private _modelLayers: Array<ModelLayer>;
   private _baseLayers: Array<BaseLayer>;
   private _terrainLayers: Array<TerrainLayer>;
+
   private _viewpoints: Array<Viewpoint>;
   private _lastLocation: CesiumCameraPosition | undefined;
+  private _gridLayout: Array<{}>;
 
   constructor(
     title: string,
@@ -49,7 +49,7 @@ export class Workspace {
     terrainLayers: Array<TerrainLayer>,
     viewpoints: Array<Viewpoint>,
     lastLocation?: CesiumCameraPosition,
-    private UTILS?: UtilityService) {
+    gridLayout?: Array<{}>) {
     this._title = title;
     this._description = description;
     this._maintainer = maintainer
@@ -58,10 +58,7 @@ export class Workspace {
     this._terrainLayers = terrainLayers;
     this._viewpoints = viewpoints;
     this._lastLocation = (lastLocation == null) ? undefined : lastLocation;
-  }
-
-  public updateLocation(): void {
-    this._lastLocation = this.UTILS!.camera.getCurrentPosition();
+    this._gridLayout = (gridLayout == null) ? [] : gridLayout;
   }
 
   public toString(): string {
@@ -130,5 +127,13 @@ export class Workspace {
 
   set lastLocation(value: CesiumCameraPosition | undefined) {
     this._lastLocation = value;
+  }
+
+  get gridLayout(): Array<{}> {
+    return this._gridLayout;
+  }
+
+  set gridLayout(value: Array<{}>) {
+    this._gridLayout = value;
   }
 }

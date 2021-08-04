@@ -1,6 +1,6 @@
 <gridster [options]="options">
   <gridster-item [item]="dashboard[itemPos.menuBar]">
-    <mat-button-toggle-group #group="matButtonToggleGroup">
+    <mat-button-toggle-group #group="matButtonToggleGroup" value="center">
       <mat-button-toggle value="left" aria-label="Globe to left" (change)="changeGridLayout($event.value)">
         <mat-icon>format_align_left</mat-icon>
       </mat-button-toggle>
