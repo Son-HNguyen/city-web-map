@@ -1,26 +1,39 @@
 <gridster [options]="options">
-  <gridster-item [item]="dashboard[0]">
+  <gridster-item [item]="dashboard[itemPos.menuBar]">
+    <mat-button-toggle-group #group="matButtonToggleGroup">
+      <mat-button-toggle value="left" aria-label="Globe to left" (change)="changeGridLayout($event.value)">
+        <mat-icon>format_align_left</mat-icon>
+      </mat-button-toggle>
+      <mat-button-toggle value="center" aria-label="Globe to center" (change)="changeGridLayout($event.value)">
+        <mat-icon>format_align_center</mat-icon>
+      </mat-button-toggle>
+      <mat-button-toggle value="right" aria-label="Globe to right" (change)="changeGridLayout($event.value)">
+        <mat-icon>format_align_right</mat-icon>
+      </mat-button-toggle>
+    </mat-button-toggle-group>
+  </gridster-item>
+  <gridster-item [item]="dashboard[itemPos.layerList]">
     <app-layer-list></app-layer-list>
   </gridster-item>
-  <gridster-item [item]="dashboard[1]">
+  <gridster-item [item]="dashboard[itemPos.menuContext]">
     <app-menu-context></app-menu-context>
   </gridster-item>
-  <gridster-item [item]="dashboard[2]">
+  <gridster-item [item]="dashboard[itemPos.menu]">
     <app-menu></app-menu>
   </gridster-item>
-  <gridster-item [item]="dashboard[3]">
+  <gridster-item [item]="dashboard[itemPos.nav]">
     <app-nav></app-nav>
   </gridster-item>
-  <gridster-item [item]="dashboard[4]">
+  <gridster-item [item]="dashboard[itemPos.info]">
     <app-info></app-info>
   </gridster-item>
-  <gridster-item [item]="dashboard[5]">
+  <gridster-item [item]="dashboard[itemPos.viewList]">
     <app-view-list></app-view-list>
   </gridster-item>
-  <gridster-item [item]="dashboard[6]">
+  <gridster-item [item]="dashboard[itemPos.status]">
     <app-status></app-status>
   </gridster-item>
-  <gridster-item [item]="dashboard[7]">
+  <gridster-item [item]="dashboard[itemPos.globe]">
     <div appCesium class="mat-elevation-z1"></div>
   </gridster-item>
 </gridster>

@@ -37,6 +37,7 @@ import {ViewListComponent} from './view-list/view-list.component';
 import {LayerListComponent} from './layer-list/layer-list.component';
 import {GlobalService} from "../global.service";
 import {UtilityService} from "../utils.service";
+import {MatButtonToggleModule} from "@angular/material/button-toggle";
 
 @NgModule({
   declarations: [
@@ -84,7 +85,8 @@ import {UtilityService} from "../utils.service";
     MatMenuModule,
     GridsterModule,
     MatSelectModule,
-    MatOptionModule
+    MatOptionModule,
+    MatButtonToggleModule
   ],
   bootstrap: [
     AppComponent,

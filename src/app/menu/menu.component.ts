@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import {Component} from '@angular/core';
+import {AppComponent} from "../app.component";
 
 @Component({
   selector: 'app-menu',
@@ -7,6 +8,7 @@ import { Component } from '@angular/core';
 })
 export class MenuComponent {
 
-  constructor() { }
+  constructor() {
+  }
 
 }
