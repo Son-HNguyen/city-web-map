@@ -93,6 +93,33 @@ export class AppComponent implements OnInit {
     };
   }
 
+  @HostListener('document:keydown', ['$event']) onKeyDown(e: KeyboardEvent) {
+    if (e.altKey && e.key === 'g') {
+      e.preventDefault();
+      this.UTILS!.dialog.info('ctrl alt g');
+    }
+    // Save workspace
+    else if (e.ctrlKey && e.key === 's') {
+      e.preventDefault();
+      this.UTILS!.dialog.info('Save workspace');
+    }
+    // Open workspace
+    else if (e.ctrlKey && e.key === 'o') {
+      e.preventDefault();
+      this.UTILS!.dialog.info('Open workspace');
+    }
+    // New workspace
+    else if (e.ctrlKey && e.altKey && e.key === 'n') {
+      e.preventDefault();
+      this.UTILS!.dialog.info('New workspace');
+    }
+    // Cheat sheet
+    else if (e.ctrlKey && e.key === 'F1') {
+      e.preventDefault();
+      document.getElementById("buttonOpenCheatSheet")!.click();
+    }
+  }
+
   @HostListener('window:beforeunload', ['$event'])
   beforeUnloadHandler(event: any) {
     this.GLOBALS!.workspace.lastLocation = this.UTILS!.camera.getCurrentPosition();
@@ -123,6 +150,7 @@ export class AppComponent implements OnInit {
   }
 
   changeGridLayout(value: any) {
+    // TODO Reset a layout when a new layout is selected (to get rid of unwanted changes in the layout)?
     if (this.options.api && this.options.api.optionsChanged) {
       switch (value) {
         case "left": {

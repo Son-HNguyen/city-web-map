@@ -1,6 +1,16 @@
 <gridster [options]="options">
   <gridster-item [item]="dashboard[itemPos.menuBar]">
-    <mat-button-toggle-group #group="matButtonToggleGroup" value="center">
+    <span color="primary"><b>&nbsp;city-web-map&nbsp;</b></span>
+    <button mat-stroked-button matTooltip="Open existing workspace">
+      <span class="material-icons">drive_file_move_rtl</span>&nbsp;Open
+    </button>
+    <button mat-stroked-button matTooltip="Save current workspace">
+      <span class="material-icons">drive_folder_upload</span>&nbsp;Save
+    </button>
+    <button mat-stroked-button matTooltip="Create new workspace">
+      <span class="material-icons">create_new_folder</span>&nbsp;New
+    </button>
+    <mat-button-toggle-group #group="matButtonToggleGroup" value="center" matTooltip="Change application layout">
       <mat-button-toggle value="left" aria-label="Globe to left" (change)="changeGridLayout($event.value)">
         <mat-icon>format_align_left</mat-icon>
       </mat-button-toggle>
@@ -11,6 +21,16 @@
         <mat-icon>format_align_right</mat-icon>
       </mat-button-toggle>
     </mat-button-toggle-group>
+    <button mat-stroked-button matTooltip="Configure application">
+      <span class="material-icons">settings_applications</span>&nbsp;Settings
+    </button>
+    <app-cheat-sheet></app-cheat-sheet>
+    <button mat-stroked-button matTooltip="Show help information">
+      <span class="material-icons">help_center</span>&nbsp;Help
+    </button>
+    <button mat-stroked-button matTooltip="Join us on GitHub">
+      <img src="/assets/images/thirdParty/GitHub-Mark-32px.png" width="30%"/>&nbsp;GitHub
+    </button>
   </gridster-item>
   <gridster-item [item]="dashboard[itemPos.layerList]">
     <app-layer-list></app-layer-list>

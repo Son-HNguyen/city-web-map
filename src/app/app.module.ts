@@ -38,6 +38,9 @@ import {LayerListComponent} from './layer-list/layer-list.component';
 import {GlobalService} from "../global.service";
 import {UtilityService} from "../utils.service";
 import {MatButtonToggleModule} from "@angular/material/button-toggle";
+import {CheatSheetComponent, CheatSheetContentComponent} from './cheat-sheet/cheat-sheet.component';
+import {MatDividerModule} from "@angular/material/divider";
+import {MatTooltipModule} from "@angular/material/tooltip";
 
 @NgModule({
   declarations: [
@@ -57,7 +60,9 @@ import {MatButtonToggleModule} from "@angular/material/button-toggle";
     StatusComponent,
     MenuContextComponent,
     ViewListComponent,
-    LayerListComponent
+    LayerListComponent,
+    CheatSheetComponent,
+    CheatSheetContentComponent
   ],
   entryComponents: [
     DialogInfoContentComponent,
@@ -67,7 +72,9 @@ import {MatButtonToggleModule} from "@angular/material/button-toggle";
     DialogWarningContentComponent,
     DialogWarningComponent,
     DialogErrorContentComponent,
-    DialogErrorComponent
+    DialogErrorComponent,
+    CheatSheetComponent,
+    CheatSheetContentComponent
   ],
   imports: [
     BrowserModule,
@@ -86,14 +93,17 @@ import {MatButtonToggleModule} from "@angular/material/button-toggle";
     GridsterModule,
     MatSelectModule,
     MatOptionModule,
-    MatButtonToggleModule
+    MatButtonToggleModule,
+    MatDividerModule,
+    MatTooltipModule
   ],
   bootstrap: [
     AppComponent,
     DialogInfoComponent,
     DialogConfirmComponent,
     DialogWarningComponent,
-    DialogErrorComponent
+    DialogErrorComponent,
+    CheatSheetComponent
   ],
   providers: [
     {provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: {appearance: 'fill'}},
@@ -111,6 +121,7 @@ export class AppModule {
    * https://stackoverflow.com/questions/39101865/angular-2-inject-dependency-outside-constructor
    */
   static injector: Injector;
+
   constructor(injector: Injector) {
     AppModule.injector = injector;
   }

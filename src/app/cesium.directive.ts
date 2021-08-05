@@ -82,9 +82,11 @@ export class CesiumDirective implements OnInit {
       }
       if (this.cookieService != null) {
         const cookieWorkspace = this.cookieService.get(this.GLOBALS!.cookieNames.workspace);
-        const objectWorkspace = JSON.parse(cookieWorkspace);
-        this.UTILS!.camera.flyToPosition(objectWorkspace._lastLocation);
-        resolve(true);
+        if (cookieWorkspace != null) {
+          const objectWorkspace = JSON.parse(cookieWorkspace);
+          this.UTILS!.camera.flyToPosition(objectWorkspace._lastLocation);
+          resolve(true);
+        }
       }
     });
   }
