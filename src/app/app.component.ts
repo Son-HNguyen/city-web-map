@@ -147,8 +147,8 @@ export class AppComponent implements OnInit {
     };
 
     // TODO Add/remove apps depending on the OS
-    this.dashboard = this.layouts.layoutCenterGlobe.map(x => Object.assign({}, x)); // deep copy!
-    this.itemPos = Object.assign({}, this.itemPosLayouts.layoutCenterGlobe); // deep copy!
+    this.dashboard = this.layouts.layoutCenterGlobe.map(x => Object.assign({}, x)); // deep copy of an array!
+    this.itemPos = Object.assign({}, this.itemPosLayouts.layoutCenterGlobe); // deep copy of an object!
   }
 
   changeGridLayout(value: any) {
