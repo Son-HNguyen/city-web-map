@@ -25,8 +25,8 @@ export class CesiumDirective implements OnInit {
     await this.initBasicCesiumComponents();
     // Tailor GUI components depending on the OS
     await this.initGUISpecific();
-    // Process cookies saved from the last session
-    await this.readCookies();
+    // Load last workspace from cookies
+    await this.UTILS!.workspace.readFromCookies();
   }
 
   private initBasicCesiumComponents(): Promise<boolean> {
@@ -71,23 +71,6 @@ export class CesiumDirective implements OnInit {
         new DesktopExtension();
       }
       resolve(true);
-    });
-  }
-
-  private readCookies(): Promise<boolean> {
-    return new Promise<boolean>((resolve, reject) => {
-      if (this.logService != null) {
-        this.logService.info('Resume camera location from the last session. ' +
-          'You can change this behaviour in the settings.');
-      }
-      if (this.cookieService != null) {
-        const cookieWorkspace = this.cookieService.get(this.GLOBALS!.cookieNames.workspace);
-        if (cookieWorkspace != null) {
-          const objectWorkspace = JSON.parse(cookieWorkspace);
-          this.UTILS!.camera.flyToPosition(objectWorkspace._lastLocation);
-          resolve(true);
-        }
-      }
     });
   }
 }

@@ -29,8 +29,8 @@ import {AppModule} from "../app/app.module";
 @Injectable()
 export class CameraUtility {
   private GLOBALS: GlobalService;
-  constructor() {
-    this.GLOBALS = AppModule.injector.get(GlobalService);
+  constructor(GLOBALS: GlobalService) {
+    this.GLOBALS = GLOBALS;
   }
 
   /**

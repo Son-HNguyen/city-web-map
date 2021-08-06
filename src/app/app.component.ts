@@ -3,6 +3,7 @@ import {CookieService} from 'ngx-cookie-service';
 import {CompactType, DisplayGrid, GridsterConfig, GridsterItem, GridType} from "angular-gridster2";
 import {GlobalService} from "../global.service";
 import {UtilityService} from "../utils.service";
+import {MatSnackBar} from "@angular/material/snack-bar";
 
 @Component({
   selector: 'app-root',
@@ -95,7 +96,7 @@ export class AppComponent implements OnInit {
     };
   }
 
-  @HostListener('document:keydown', ['$event']) onKeyDown(e: KeyboardEvent) {
+  @HostListener('document:keydown', ['$event']) async onKeyDown(e: KeyboardEvent) {
     if (e.altKey && e.key === 'g') {
       e.preventDefault();
       this.UTILS!.dialog.info('ctrl alt g');
@@ -103,7 +104,9 @@ export class AppComponent implements OnInit {
     // Save workspace
     else if (e.ctrlKey && e.key === 's') {
       e.preventDefault();
-      this.UTILS!.dialog.info('Save workspace');
+      // TODO Add option to save in cookie, JSON file, URL, pastebin, etc.
+      await this.UTILS!.workspace.saveToCookies();
+      this.UTILS!.snackBar.show('Workspace saved');
     }
     // Open workspace
     else if (e.ctrlKey && e.key === 'o') {
@@ -123,11 +126,8 @@ export class AppComponent implements OnInit {
   }
 
   @HostListener('window:beforeunload', ['$event'])
-  beforeUnloadHandler(event: any) {
-    this.GLOBALS!.workspace.lastLocation = this.UTILS!.camera.getCurrentPosition();
-    this.cookieService!.set(
-      this.GLOBALS!.cookieNames.workspace,
-      this.GLOBALS!.workspace.toString(), this.GLOBALS!.cookieExpireDefault);
+  async beforeUnloadHandler(event: any) {
+    await this.UTILS!.workspace.saveToCookies();
   }
 
   ngOnInit(): void {

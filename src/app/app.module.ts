@@ -23,7 +23,7 @@ import {
   DialogInfoComponent,
   DialogWarningContentComponent,
   DialogWarningComponent
-} from './dialog/dialog.function';
+} from './dialog/dialog.component';
 import {LogPublishersService} from './log/log-publishers.service';
 import {LogService} from './log/log.service';
 import {GridsterModule} from "angular-gridster2";
@@ -41,6 +41,8 @@ import {MatButtonToggleModule} from "@angular/material/button-toggle";
 import {CheatSheetComponent, CheatSheetContentComponent} from './cheat-sheet/cheat-sheet.component';
 import {MatDividerModule} from "@angular/material/divider";
 import {MatTooltipModule} from "@angular/material/tooltip";
+import {SnackBarComponent, SnackBarContentComponent} from './snack-bar/snack-bar.component';
+import {MatSnackBarModule} from "@angular/material/snack-bar";
 
 @NgModule({
   declarations: [
@@ -62,19 +64,23 @@ import {MatTooltipModule} from "@angular/material/tooltip";
     ViewListComponent,
     LayerListComponent,
     CheatSheetComponent,
-    CheatSheetContentComponent
+    CheatSheetContentComponent,
+    SnackBarComponent,
+    SnackBarContentComponent
   ],
   entryComponents: [
-    DialogInfoContentComponent,
     DialogInfoComponent,
-    DialogConfirmContentComponent,
+    DialogInfoContentComponent,
     DialogConfirmComponent,
-    DialogWarningContentComponent,
+    DialogConfirmContentComponent,
     DialogWarningComponent,
-    DialogErrorContentComponent,
+    DialogWarningContentComponent,
     DialogErrorComponent,
+    DialogErrorContentComponent,
     CheatSheetComponent,
-    CheatSheetContentComponent
+    CheatSheetContentComponent,
+    SnackBarComponent,
+    SnackBarContentComponent
   ],
   imports: [
     BrowserModule,
@@ -95,7 +101,8 @@ import {MatTooltipModule} from "@angular/material/tooltip";
     MatOptionModule,
     MatButtonToggleModule,
     MatDividerModule,
-    MatTooltipModule
+    MatTooltipModule,
+    MatSnackBarModule
   ],
   bootstrap: [
     AppComponent,
@@ -103,7 +110,8 @@ import {MatTooltipModule} from "@angular/material/tooltip";
     DialogConfirmComponent,
     DialogWarningComponent,
     DialogErrorComponent,
-    CheatSheetComponent
+    CheatSheetComponent,
+    SnackBarComponent
   ],
   providers: [
     {provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: {appearance: 'fill'}},
