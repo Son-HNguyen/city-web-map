@@ -25,17 +25,30 @@ import {Injectable} from '@angular/core';
 import {CameraUtility} from "./utilities/camera.utility";
 import {DialogUtility} from "./utilities/dialog.utility";
 import {OsUtility} from "./utilities/os.utility";
+import {SnackBarUtility} from "./utilities/snack-bar.utility";
+import {WorkspaceUtility} from "./utilities/workspace.utility";
+import {CookieService} from "ngx-cookie-service";
+import {LogService} from "./app/log/log.service";
+import {GlobalService} from "./global.service";
 
 @Injectable()
 export class UtilityService {
   private readonly _camera: CameraUtility;
   private readonly _dialog: DialogUtility;
+  private readonly _snackBar: SnackBarUtility;
   private readonly _os: OsUtility;
+  private readonly _workspace: WorkspaceUtility;
 
-  constructor() {
-    this._camera = new CameraUtility();
+  constructor(
+    private cookieService?: CookieService,
+    private logService?: LogService,
+    private GLOBALS?: GlobalService
+  ) {
+    this._camera = new CameraUtility(this.GLOBALS!);
     this._dialog = new DialogUtility();
+    this._snackBar = new SnackBarUtility();
     this._os = new OsUtility();
+    this._workspace = new WorkspaceUtility(this.cookieService!, this.logService!, this.GLOBALS!, this);
   }
 
   get camera(): CameraUtility {
@@ -46,7 +59,15 @@ export class UtilityService {
     return this._dialog;
   }
 
+  get snackBar(): SnackBarUtility {
+    return this._snackBar;
+  }
+
   get os(): OsUtility {
     return this._os;
+  }
+
+  get workspace(): WorkspaceUtility {
+    return this._workspace;
   }
 }
