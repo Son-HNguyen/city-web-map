@@ -3,7 +3,6 @@ import {CookieService} from 'ngx-cookie-service';
 import {CompactType, DisplayGrid, GridsterConfig, GridsterItem, GridType} from "angular-gridster2";
 import {GlobalService} from "../global.service";
 import {UtilityService} from "../utils.service";
-import {MatSnackBar} from "@angular/material/snack-bar";
 
 @Component({
   selector: 'app-root',
