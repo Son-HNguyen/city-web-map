@@ -31,7 +31,7 @@ import {
   DialogInfoComponent,
   DialogWarningContentComponent,
   DialogWarningComponent
-} from '../app/dialog/dialog.function';
+} from '../app/dialog/dialog.component';
 
 export class DialogUtility {
   constructor() {

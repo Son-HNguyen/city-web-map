@@ -35,7 +35,7 @@ export interface DialogInfoData {
 
 @Component({
   selector: 'app-dialog',
-  templateUrl: 'dialog.button.html'
+  templateUrl: 'dialog.component.html'
 })
 export class DialogInfoComponent {
   static dialog: MatDialog;
@@ -46,7 +46,7 @@ export class DialogInfoComponent {
 }
 
 @Component({
-  templateUrl: 'dialog.info.content.html'
+  templateUrl: 'dialog.info.content.component.html'
 })
 export class DialogInfoContentComponent {
   constructor(
@@ -71,7 +71,7 @@ export interface DialogConfirmData extends DialogInfoData {
 
 @Component({
   selector: 'app-dialog',
-  templateUrl: 'dialog.button.html'
+  templateUrl: 'dialog.component.html'
 })
 export class DialogConfirmComponent {
   static dialog: MatDialog;
@@ -82,7 +82,7 @@ export class DialogConfirmComponent {
 }
 
 @Component({
-  templateUrl: 'dialog.confirm.content.html'
+  templateUrl: 'dialog.confirm.content.component.html'
 })
 export class DialogConfirmContentComponent {
   constructor(
@@ -116,7 +116,7 @@ export type DialogWarningData = DialogInfoData;
 
 @Component({
   selector: 'app-dialog',
-  templateUrl: 'dialog.button.html'
+  templateUrl: 'dialog.component.html'
 })
 export class DialogWarningComponent {
   static dialog: MatDialog;
@@ -127,7 +127,7 @@ export class DialogWarningComponent {
 }
 
 @Component({
-  templateUrl: 'dialog.warning.content.html'
+  templateUrl: 'dialog.warning.content.component.html'
 })
 export class DialogWarningContentComponent {
   constructor(
@@ -150,7 +150,7 @@ export type DialogErrorData = DialogInfoData;
 
 @Component({
   selector: 'app-dialog',
-  templateUrl: 'dialog.button.html'
+  templateUrl: 'dialog.component.html'
 })
 export class DialogErrorComponent {
   static dialog: MatDialog;
@@ -161,7 +161,7 @@ export class DialogErrorComponent {
 }
 
 @Component({
-  templateUrl: 'dialog.error.content.html'
+  templateUrl: 'dialog.error.content.component.html'
 })
 export class DialogErrorContentComponent {
   constructor(
