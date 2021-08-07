@@ -35,7 +35,6 @@ import {StatusComponent} from './status/status.component';
 import {MenuContextComponent} from './menu-context/menu-context.component';
 import {ViewListComponent} from './view-list/view-list.component';
 import {LayerListComponent} from './layer-list/layer-list.component';
-import {GlobalService} from "../global.service";
 import {UtilityService} from "../utils.service";
 import {MatButtonToggleModule} from "@angular/material/button-toggle";
 import {CheatSheetComponent, CheatSheetContentComponent} from './cheat-sheet/cheat-sheet.component';
@@ -43,6 +42,8 @@ import {MatDividerModule} from "@angular/material/divider";
 import {MatTooltipModule} from "@angular/material/tooltip";
 import {SnackBarComponent, SnackBarContentComponent} from './snack-bar/snack-bar.component';
 import {MatSnackBarModule} from "@angular/material/snack-bar";
+import {GlobalService} from "../global.service";
+import { ButtonToggleLayoutComponent } from './button-toggle-layout/button-toggle-layout.component';
 
 @NgModule({
   declarations: [
@@ -66,7 +67,8 @@ import {MatSnackBarModule} from "@angular/material/snack-bar";
     CheatSheetComponent,
     CheatSheetContentComponent,
     SnackBarComponent,
-    SnackBarContentComponent
+    SnackBarContentComponent,
+    ButtonToggleLayoutComponent
   ],
   entryComponents: [
     DialogInfoComponent,

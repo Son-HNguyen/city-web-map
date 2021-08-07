@@ -1,5 +1,5 @@
 <gridster [options]="options">
-  <gridster-item [item]="dashboard[itemPos.menuBar]">
+  <gridster-item [item]="dashboard[itemPos.menuBar]" (itemChange)="layoutChanged()">
     <span color="primary"><b>&nbsp;city-web-map&nbsp;</b></span>
     <button mat-stroked-button matTooltip="Open existing workspace">
       <span class="material-icons">drive_file_move_rtl</span>&nbsp;Open
@@ -10,17 +10,8 @@
     <button mat-stroked-button matTooltip="Create new workspace">
       <span class="material-icons">create_new_folder</span>&nbsp;New
     </button>
-    <mat-button-toggle-group #group="matButtonToggleGroup" value="center" matTooltip="Change application layout">
-      <mat-button-toggle value="left" aria-label="Globe to left" (change)="changeGridLayout($event.value)">
-        <mat-icon>format_align_left</mat-icon>
-      </mat-button-toggle>
-      <mat-button-toggle value="center" aria-label="Globe to center" (change)="changeGridLayout($event.value)">
-        <mat-icon>format_align_center</mat-icon>
-      </mat-button-toggle>
-      <mat-button-toggle value="right" aria-label="Globe to right" (change)="changeGridLayout($event.value)">
-        <mat-icon>format_align_right</mat-icon>
-      </mat-button-toggle>
-    </mat-button-toggle-group>
+    <app-button-toggle-layout (buttonToggleValue)="handleButtonToggleValue($event)" [changedLayout]="changedLayout">
+    </app-button-toggle-layout>
     <button mat-stroked-button matTooltip="Configure application">
       <span class="material-icons">settings_applications</span>&nbsp;Settings
     </button>
@@ -32,28 +23,28 @@
       <img src="/assets/images/thirdParty/GitHub-Mark-32px.png" width="30%"/>&nbsp;GitHub
     </button>
   </gridster-item>
-  <gridster-item [item]="dashboard[itemPos.layerList]">
+  <gridster-item [item]="dashboard[itemPos.layerList]" (itemChange)="layoutChanged()">
     <app-layer-list></app-layer-list>
   </gridster-item>
-  <gridster-item [item]="dashboard[itemPos.menuContext]">
+  <gridster-item [item]="dashboard[itemPos.menuContext]" (itemChange)="layoutChanged()">
     <app-menu-context></app-menu-context>
   </gridster-item>
-  <gridster-item [item]="dashboard[itemPos.menu]">
+  <gridster-item [item]="dashboard[itemPos.menu]" (itemChange)="layoutChanged()">
     <app-menu></app-menu>
   </gridster-item>
-  <gridster-item [item]="dashboard[itemPos.nav]">
+  <gridster-item [item]="dashboard[itemPos.nav]" (itemChange)="layoutChanged()">
     <app-nav></app-nav>
   </gridster-item>
-  <gridster-item [item]="dashboard[itemPos.info]">
+  <gridster-item [item]="dashboard[itemPos.info]" (itemChange)="layoutChanged()">
     <app-info></app-info>
   </gridster-item>
-  <gridster-item [item]="dashboard[itemPos.viewList]">
+  <gridster-item [item]="dashboard[itemPos.viewList]"(itemChange)="layoutChanged()">
     <app-view-list></app-view-list>
   </gridster-item>
-  <gridster-item [item]="dashboard[itemPos.status]">
+  <gridster-item [item]="dashboard[itemPos.status]" (itemChange)="layoutChanged()">
     <app-status></app-status>
   </gridster-item>
-  <gridster-item [item]="dashboard[itemPos.globe]">
+  <gridster-item [item]="dashboard[itemPos.globe]" (itemChange)="layoutChanged()">
     <div appCesium class="mat-elevation-z1"></div>
   </gridster-item>
 </gridster>
