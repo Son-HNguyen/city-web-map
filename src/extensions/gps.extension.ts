@@ -25,10 +25,10 @@
  */
 
 import * as Cesium from 'cesium';
-import {GlobalService} from "../global.service";
 import {UtilityService} from "../utils.service";
 import {Injectable} from "@angular/core";
 import {AppModule} from "../app/app.module";
+import {GlobalService} from "../global.service";
 
 /**
  * GPS Geolocation with device orientation in real-time.
@@ -44,13 +44,12 @@ export class GpsExtension {
   private _touchHoldDuration: number; // touch press duration in ms
   private _longPress: boolean;
   private _isMobile: boolean;
-  private GLOBALS: GlobalService;
   private UTILS: UtilityService;
+  private GLOBALS: GlobalService;
 
   constructor(isMobile: boolean) {
-    this.GLOBALS = AppModule.injector.get(GlobalService);
     this.UTILS = AppModule.injector.get(UtilityService);
-
+    this.GLOBALS = AppModule.injector.get(GlobalService);
     this._liveTrackingActivated = false;
     this._timer = undefined;
     this._timerMilliseconds = 350;
@@ -149,18 +148,18 @@ export class GpsExtension {
       } else {
         const restartView = (_callback: () => void): void => {
           scope._firstActivated = false;
-          this.GLOBALS.cesiumCamera.cancelFlight();
+          this.GLOBALS.CESIUM_CAMERA.cancelFlight();
           _callback();
         };
 
         restartView((): void => {
-          this.GLOBALS.cesiumCamera.flyTo({
+          this.GLOBALS.CESIUM_CAMERA.flyTo({
             destination: Cesium.Cartesian3.fromRadians(
-              this.GLOBALS.cesiumCamera.positionCartographic.longitude,
-              this.GLOBALS.cesiumCamera.positionCartographic.latitude,
+              this.GLOBALS.CESIUM_CAMERA.positionCartographic.longitude,
+              this.GLOBALS.CESIUM_CAMERA.positionCartographic.latitude,
               250),
             orientation: {
-              heading: this.GLOBALS.cesiumCamera.heading,
+              heading: this.GLOBALS.CESIUM_CAMERA.heading,
               pitch: Cesium.Math.toRadians(-75),
               roll: 0
             }
@@ -296,7 +295,7 @@ export class GpsExtension {
           if (!scope._firstActivated) {
             oriBeta = 0;
           } else {
-            oriBeta = this.GLOBALS.cesiumCamera.pitch;
+            oriBeta = this.GLOBALS.CESIUM_CAMERA.pitch;
           }
           oriGamma = 0;
           oriHeight = 2;
@@ -330,7 +329,7 @@ export class GpsExtension {
           setFirstPersonView();
         }
 
-        this.GLOBALS.cesiumCamera.flyTo({
+        this.GLOBALS.CESIUM_CAMERA.flyTo({
           destination: Cesium.Cartesian3.fromDegrees(toPosition.coords.longitude, toPosition.coords.latitude, oriHeight),
           orientation: {
             heading: oriAlpha,

@@ -24,13 +24,15 @@
 import {CookieService} from "ngx-cookie-service";
 import {LogService} from "../app/log/log.service";
 import {UtilityService} from "../utils.service";
+import {Workspace} from "../core/Workspace";
 import {GlobalService} from "../global.service";
+import {GridsterItem} from "angular-gridster2";
 
 export class WorkspaceUtility {
   private cookieService: CookieService;
   private logService: LogService;
-  private GLOBALS: GlobalService;
   private UTILS: UtilityService;
+  private GLOBALS: GlobalService;
 
   constructor(
     cookieService: CookieService,
@@ -47,36 +49,48 @@ export class WorkspaceUtility {
   public readFromCookies(): Promise<boolean> {
     const scope = this;
     return new Promise<boolean>((resolve, reject) => {
-      if (scope.logService != null) {
-        scope.logService.info('Resume camera location from the last session');
+      const workspaceString = scope.cookieService.get(this.GLOBALS.WORKSPACE.COOKIE_NAMES.workspace);
+      if (workspaceString == null || workspaceString === '') {
+        resolve(false);
+        return;
       }
-      if (scope.cookieService != null) {
-        const cookieWorkspace = scope.cookieService.get(scope.GLOBALS!.cookieNames.workspace);
-        if (cookieWorkspace != null) {
-          const objectWorkspace = JSON.parse(cookieWorkspace);
-          scope.UTILS!.camera.flyToPosition(objectWorkspace._lastLocation);
-          resolve(true);
-        }
+      try {
+        // TODO Load saved grid layout
+        this.GLOBALS!.WORKSPACE = Workspace.initFrom(JSON.parse(workspaceString));
+        resolve(true);
+      } catch (e) {
+        scope.logService.info('No previous workspace found');
+        resolve(false);
       }
     });
   }
 
-  public saveToCookies(): Promise<boolean> {
+  public saveToCookies(currentLayout: Array<GridsterItem>): Promise<number> {
     const scope = this;
-    return new Promise<boolean>((resolve, reject) => {
-      if (scope.logService != null) {
-        scope.logService.info('Save current workspace in cookies');
-      }
-      if (scope.cookieService != null) {
-        // Save last location first
-        scope.GLOBALS!.workspace.lastLocation = scope.UTILS!.camera.getCurrentPosition();
-        // Then set cookies
-        scope.cookieService!.set(
-          scope.GLOBALS!.cookieNames.workspace,
-          scope.GLOBALS!.workspace.toString(),
-          scope.GLOBALS!.cookieExpireDefault);
-        resolve(true);
-      }
+    return new Promise<number>((resolve, reject) => {
+      // Save current layout
+      this.GLOBALS.WORKSPACE.gridLayout = currentLayout.map(x => Object.assign({}, x)); // Deep copy of an array!
+
+      // Save last location
+      this.GLOBALS.WORKSPACE.cameraLocation = scope.UTILS.camera.getCurrentPosition();
+
+      // Save grid layout / dashboard
+      // Since the workspace has its grid layout point to dashboard object, they are always in sync -> done
+      // TODO Save space by comparing dashboard with presets and only save preset name
+
+      // Then set cookies
+      scope.cookieService!.set(
+        this.GLOBALS.WORKSPACE.COOKIE_NAMES.workspace,
+        this.GLOBALS.WORKSPACE.toString(),
+        this.GLOBALS.WORKSPACE.COOKIE_EXPIRE);
+
+      // Check cookie size
+      const cookieWorkspace = scope.cookieService.get(this.GLOBALS.WORKSPACE.COOKIE_NAMES.workspace);
+      const Buffer = require('buffer/').Buffer;
+      const bytes = Buffer.byteLength(encodeURI(cookieWorkspace), this.GLOBALS.WORKSPACE.STRING_ENCODING);
+      scope.logService!.info('Save current workspace in cookies, size = ' + bytes + " Bytes");
+
+      resolve(bytes);
     });
   }
 }

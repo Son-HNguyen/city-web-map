@@ -21,14 +21,14 @@
  * limitations under the License.
  */
 
-import {GlobalService} from "../global.service";
 import * as cesium from "cesium";
 import {Injectable} from "@angular/core";
-import {AppModule} from "../app/app.module";
+import {GlobalService} from "../global.service";
 
 @Injectable()
 export class CameraUtility {
   private GLOBALS: GlobalService;
+
   constructor(GLOBALS: GlobalService) {
     this.GLOBALS = GLOBALS;
   }
@@ -36,8 +36,8 @@ export class CameraUtility {
   /**
    * Return the current Cesium camera position.
    */
-  public getCurrentPosition(): CesiumCameraPosition {
-    const cesiumCamera = this.GLOBALS.cesiumViewer.scene.camera;
+  public getCurrentPosition(): CesiumCameraLocation {
+    const cesiumCamera = this.GLOBALS.CESIUM_VIEWER.scene.camera;
     const position = cesium.Ellipsoid.WGS84.cartesianToCartographic(cesiumCamera.position);
     const latitude = cesium.Math.toDegrees(position.latitude);
     const longitude = cesium.Math.toDegrees(position.longitude);
@@ -46,7 +46,7 @@ export class CameraUtility {
     const pitch = cesium.Math.toDegrees(cesiumCamera.pitch);
     const roll = cesium.Math.toDegrees(cesiumCamera.roll);
 
-    const result: CesiumCameraPosition = {
+    const result: CesiumCameraLocation = {
       latitude,
       longitude,
       height,
@@ -61,8 +61,8 @@ export class CameraUtility {
   /**
    * Change the current Cesium camera position.
    */
-  public flyToPosition(cesiumCameraPosition: CesiumCameraPosition): void {
-    this.GLOBALS.cesiumCamera.flyTo({
+  public flyToPosition(cesiumCameraPosition: CesiumCameraLocation): void {
+    this.GLOBALS.CESIUM_CAMERA.flyTo({
       destination: cesium.Cartesian3.fromDegrees(
         cesiumCameraPosition.longitude, cesiumCameraPosition.latitude, cesiumCameraPosition.height),
       orientation: {
@@ -74,7 +74,7 @@ export class CameraUtility {
   }
 }
 
-export interface CesiumCameraPosition {
+export interface CesiumCameraLocation {
   latitude: number;
   longitude: number;
   height: number;

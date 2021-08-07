@@ -4,8 +4,8 @@ import {DesktopExtension} from '../extensions/desktop.extension';
 import {MobileExtension} from '../extensions/mobile.extension';
 import {LogService} from './log/log.service';
 import * as cesium from "cesium";
-import {GlobalService} from "../global.service";
 import {UtilityService} from "../utils.service";
+import {GlobalService} from "../global.service";
 
 @Directive({
   selector: '[appCesium]'
@@ -25,24 +25,25 @@ export class CesiumDirective implements OnInit {
     await this.initBasicCesiumComponents();
     // Tailor GUI components depending on the OS
     await this.initGUISpecific();
-    // Load last workspace from cookies
-    await this.UTILS!.workspace.readFromCookies();
+    // Resume last camera location
+    await this.resumeCamera();
   }
 
   private initBasicCesiumComponents(): Promise<boolean> {
+    const scope = this;
     return new Promise<boolean>((resolve, reject) => {
-      if (this.el == null) {
+      if (scope.el == null) {
         return;
       }
 
-      this.el.nativeElement.id = 'cesiumContainer';
+      scope.el.nativeElement.id = 'cesiumContainer';
 
       // Init Cesium camera
       // TODO Central manager for URL parameters
       const URL = require('url-parse');
       const shadows = (new URL(window.location.href, true)).query.shadows;
       const terrainShadows = (new URL(window.location.href, true)).query.terrainShadows;
-      this.GLOBALS!.cesiumViewer = new cesium.Viewer('cesiumContainer', {
+      this.GLOBALS!.CESIUM_VIEWER = new cesium.Viewer('cesiumContainer', {
         // TODO Hardcoded imagery provider?
         //selectedImageryProviderViewModel: ENV.cesium.createDefaultImageryProviderViewModels()[1],
         shadows: (shadows === 'true'),
@@ -52,7 +53,7 @@ export class CesiumDirective implements OnInit {
         fullscreenButton: false
       });
 
-      this.GLOBALS!.cesiumCamera = this.GLOBALS!.cesiumViewer.scene.camera;
+      this.GLOBALS!.CESIUM_CAMERA = this.GLOBALS!.CESIUM_VIEWER.scene.camera;
 
       // Init ion access token
       // TODO Get token from URL parameter OR session/cookie?
@@ -63,14 +64,28 @@ export class CesiumDirective implements OnInit {
   }
 
   private initGUISpecific(): Promise<boolean> {
+    const scope = this;
     return new Promise<boolean>((resolve, reject) => {
       // Adjust GUI and program behaviours towards current operating systems
-      if (this.UTILS!.os.isMobile()) {
+      if (scope.UTILS!.os.isMobile()) {
         new MobileExtension();
       } else {
         new DesktopExtension();
       }
       resolve(true);
+    });
+  }
+
+  private resumeCamera(): Promise<boolean> {
+    const scope = this;
+    return new Promise<boolean>((resolve, reject) => {
+      if (this.GLOBALS!.WORKSPACE.cameraLocation != null) {
+        if (scope.logService != null) {
+          scope.logService!.info('Resume camera location from the last session');
+        }
+        scope.UTILS!.camera.flyToPosition(this.GLOBALS!.WORKSPACE.cameraLocation);
+        resolve(true);
+      }
     });
   }
 }

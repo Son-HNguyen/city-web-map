@@ -42,8 +42,7 @@ export class UtilityService {
   constructor(
     private cookieService?: CookieService,
     private logService?: LogService,
-    private GLOBALS?: GlobalService
-  ) {
+    private GLOBALS?: GlobalService) {
     this._camera = new CameraUtility(this.GLOBALS!);
     this._dialog = new DialogUtility();
     this._snackBar = new SnackBarUtility();

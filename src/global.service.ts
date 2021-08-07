@@ -21,86 +21,40 @@
  * limitations under the License.
  */
 
-import {Injectable} from '@angular/core';
 import {Workspace} from "./core/Workspace";
+import {Injectable} from "@angular/core";
 
 @Injectable()
 export class GlobalService {
-  private _addSplashWindowModel: SplashWindowModel;
-  private _cesiumViewer: any;
-  private _cesiumCamera: any;
-  private readonly _cookieExpireDefault;
-  private readonly _cookieNames: CookieNamesConfig;
-  private _workspace: Workspace;
+  private _WORKSPACE: Workspace;
+  private _CESIUM_VIEWER: any;
+  private _CESIUM_CAMERA: any;
 
   constructor() {
-    this._addSplashWindowModel = {
-      url: "",
-      showOnStart: true
-    };
-    this._cookieExpireDefault = 7;
-    this._cookieNames = {
-      workspace: 'workspace'
-    };
-    this._workspace = new Workspace(
-      "Workspace title",
-      "Workspace description",
-      "Workspace maintainer",
-      [],
-      [],
-      [],
-      [],
-      undefined,
-      []
-    );
+    this._WORKSPACE = new Workspace();
   }
 
-  get cesiumCamera(): any {
-    return this._cesiumCamera;
+  get WORKSPACE(): Workspace {
+    return this._WORKSPACE;
   }
 
-  set cesiumCamera(value: any) {
-    this._cesiumCamera = value;
+  set WORKSPACE(value: Workspace) {
+    this._WORKSPACE = value;
   }
 
-  get addSplashWindowModel(): SplashWindowModel {
-    return this._addSplashWindowModel;
+  get CESIUM_VIEWER(): any {
+    return this._CESIUM_VIEWER;
   }
 
-  set addSplashWindowModel(value: SplashWindowModel) {
-    this._addSplashWindowModel = value;
+  set CESIUM_VIEWER(value: any) {
+    this._CESIUM_VIEWER = value;
   }
 
-  get cesiumViewer() {
-    return this._cesiumViewer;
+  get CESIUM_CAMERA(): any {
+    return this._CESIUM_CAMERA;
   }
 
-  set cesiumViewer(value) {
-    this._cesiumViewer = value;
+  set CESIUM_CAMERA(value: any) {
+    this._CESIUM_CAMERA = value;
   }
-
-  get cookieExpireDefault() {
-    return this._cookieExpireDefault;
-  }
-
-  get cookieNames(): CookieNamesConfig {
-    return this._cookieNames;
-  }
-
-  get workspace(): Workspace {
-    return this._workspace;
-  }
-
-  set workspace(value: Workspace) {
-    this._workspace = value;
-  }
-}
-
-interface SplashWindowModel {
-  url: string;
-  showOnStart: boolean;
-}
-
-interface CookieNamesConfig {
-  workspace: string
 }

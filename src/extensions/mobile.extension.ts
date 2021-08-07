@@ -25,10 +25,10 @@
  */
 
 import {GpsExtension} from './gps.extension';
-import {GlobalService} from "../global.service";
 import {UtilityService} from "../utils.service";
 import {AppModule} from "../app/app.module";
 import {Injectable} from "@angular/core";
+import {GlobalService} from "../global.service";
 
 @Injectable()
 export class MobileExtension {
@@ -38,9 +38,8 @@ export class MobileExtension {
   private UTILS: UtilityService;
 
   constructor() {
-    this.GLOBALS = AppModule.injector.get(GlobalService);
     this.UTILS = AppModule.injector.get(UtilityService);
-
+    this.GLOBALS = AppModule.injector.get(GlobalService);
     this._gps = new GpsExtension(true);
 
     this.setDistanceLegend();
@@ -193,7 +192,7 @@ export class MobileExtension {
         const splashWindowIframeContent: any = document.getElementById('splashwindow_iframe_content');
         if (splashWindowIframeContent != null) {
           splashWindowIframeContent.src = mobileContentUrl;
-          this.GLOBALS.addSplashWindowModel.url = mobileContentUrl;
+          this.GLOBALS.WORKSPACE.ADD_SPLASH_WINDOW_MODEL.url = mobileContentUrl;
         }
       });
     }

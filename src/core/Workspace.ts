@@ -25,115 +25,332 @@ import {ModelLayer} from "./ModelLayer";
 import {BaseLayer} from "./BaseLayer";
 import {TerrainLayer} from "./TerrainLayer";
 import {Viewpoint} from "./Viewpoint";
-import {CesiumCameraPosition} from "../utilities/camera.utility";
+import {CesiumCameraLocation} from "../utilities/camera.utility";
+import {GridsterItem} from "angular-gridster2";
 
 export class Workspace {
+  // ==============================
+  // METADATA
+  // ==============================
   private _title: string;
   private _description: string;
   private _maintainer: string;
 
+  // ==============================
+  // MODEL LAYERS
+  // ==============================
   private _modelLayers: Array<ModelLayer>;
   private _baseLayers: Array<BaseLayer>;
   private _terrainLayers: Array<TerrainLayer>;
 
+  // ==============================
+  // WIDGETS
+  // ==============================
   private _viewpoints: Array<Viewpoint>;
-  private _lastLocation: CesiumCameraPosition | undefined;
-  private _gridLayout: Array<{}>;
+
+  // ==============================
+  // LAYOUT
+  // ==============================
+  private _gridLayout: Array<GridsterItem>;
+  private readonly _DEFAULT_LAYOUTS: GridLayouts = {
+    layoutLeftGlobe: [
+      {cols: 20, rows: 1, y: 0, x: 0}, // Menu bar
+      {cols: 12, rows: 2, y: 1, x: 0}, // Nav
+      {cols: 12, rows: 2, y: 19, x: 0}, // Status
+      {cols: 5, rows: 10, y: 1, x: 12}, // Info
+      {cols: 5, rows: 10, y: 11, x: 12}, // View list
+      {cols: 3, rows: 5, y: 1, x: 17}, // Layer list
+      {cols: 3, rows: 12, y: 6, x: 17}, // Context menu
+      {cols: 3, rows: 3, y: 18, x: 17}, // Menu
+      {cols: 12, rows: 16, y: 3, x: 0} // Cesium app
+    ],
+    layoutCenterGlobe: [
+      {cols: 20, rows: 1, y: 0, x: 0}, // Menu bar
+      {cols: 3, rows: 5, y: 1, x: 0}, // Layer list
+      {cols: 3, rows: 12, y: 6, x: 0}, // Context menu
+      {cols: 3, rows: 3, y: 18, x: 0}, // Menu
+      {cols: 12, rows: 2, y: 1, x: 3}, // Nav
+      {cols: 5, rows: 10, y: 1, x: 15}, // Info
+      {cols: 5, rows: 10, y: 11, x: 15}, // View list
+      {cols: 12, rows: 2, y: 19, x: 3}, // Status
+      {cols: 12, rows: 16, y: 3, x: 3} // Cesium app
+    ],
+    layoutRightGlobe: [
+      {cols: 20, rows: 1, y: 0, x: 0}, // Menu bar
+      {cols: 3, rows: 5, y: 1, x: 0}, // Layer list
+      {cols: 3, rows: 12, y: 6, x: 0}, // Context menu
+      {cols: 3, rows: 3, y: 18, x: 0}, // Menu
+      {cols: 5, rows: 10, y: 1, x: 3}, // Info
+      {cols: 5, rows: 10, y: 11, x: 3}, // View list
+      {cols: 12, rows: 2, y: 1, x: 8}, // Nav
+      {cols: 12, rows: 2, y: 19, x: 8}, // Status
+      {cols: 12, rows: 16, y: 3, x: 8} // Cesium app
+    ]
+  };
+  private _itemPos: GridItemPos; // Index position of gridster items within a dashboard array
+  private readonly _DEFAULT_ITEM_POS_LAYOUTS: GridItemPositions = {
+    layoutLeftGlobe: {
+      menuBar: 0,
+      nav: 1,
+      status: 2,
+      info: 3,
+      viewList: 4,
+      layerList: 5,
+      menuContext: 6,
+      menu: 7,
+      globe: 8
+    },
+    layoutCenterGlobe: {
+      menuBar: 0,
+      layerList: 1,
+      menuContext: 2,
+      menu: 3,
+      nav: 4,
+      info: 5,
+      viewList: 6,
+      status: 7,
+      globe: 8
+    },
+    layoutRightGlobe: {
+      menuBar: 0,
+      layerList: 1,
+      menuContext: 2,
+      menu: 3,
+      info: 4,
+      viewList: 5,
+      nav: 6,
+      status: 7,
+      globe: 8
+    }
+  };
+
+  // ==============================
+  // COOKIES
+  // ==============================
+  private readonly _COOKIE_EXPIRE = 7;
+  private readonly _COOKIE_NAMES: CookieNamesConfig = {
+    workspace: 'workspace'
+  };
+  private readonly _STRING_ENCODING = 'utf16';
+
+  // ==============================
+  // CESIUM
+  // ==============================
+  private _cameraLocation: CesiumCameraLocation;
+  private readonly _DEFAULT_CAMERA_LOCATION: CesiumCameraLocation = {
+    "latitude": 35.1518351540856,
+    "longitude": -82.50000000000001,
+    "height": 12673564.865952782,
+    "heading": 360,
+    "pitch": -89.90960661587086,
+    "roll": 0
+  };
+
+  // ==============================
+  // OTHERS
+  // ==============================
+  private _ADD_SPLASH_WINDOW_MODEL: SplashWindowModel = {
+    url: "",
+    showOnStart: true
+  };
 
   constructor(
-    title: string,
-    description: string,
-    maintainer: string,
-    modelLayers: Array<ModelLayer>,
-    baseLayers: Array<BaseLayer>,
-    terrainLayers: Array<TerrainLayer>,
-    viewpoints: Array<Viewpoint>,
-    lastLocation?: CesiumCameraPosition,
-    gridLayout?: Array<{}>) {
-    this._title = title;
-    this._description = description;
-    this._maintainer = maintainer
-    this._modelLayers = modelLayers;
-    this._baseLayers = baseLayers;
-    this._terrainLayers = terrainLayers;
-    this._viewpoints = viewpoints;
-    this._lastLocation = (lastLocation == null) ? undefined : lastLocation;
-    this._gridLayout = (gridLayout == null) ? [] : gridLayout;
+    title?: string,
+    description?: string,
+    maintainer?: string,
+    modelLayers?: Array<ModelLayer>,
+    baseLayers?: Array<BaseLayer>,
+    terrainLayers?: Array<TerrainLayer>,
+    viewpoints?: Array<Viewpoint>,
+    gridLayout?: Array<GridsterItem>,
+    itemPos?: GridItemPos,
+    cameraLocation?: CesiumCameraLocation,
+  ) {
+    this._title = (title == null) ? "Workspace title" : title;
+    this._description = (description == null) ? "Workspace description" : description;
+    this._maintainer = (maintainer == null) ? "Workspace maintainer" : maintainer;
+    this._modelLayers = (modelLayers == null) ? [] : modelLayers;
+    this._baseLayers = (baseLayers == null) ? [] : baseLayers;
+    this._terrainLayers = (terrainLayers == null) ? [] : terrainLayers;
+    this._viewpoints = (viewpoints == null) ? [] : viewpoints;
+    this._gridLayout = (gridLayout == null) ? this._DEFAULT_LAYOUTS.layoutCenterGlobe : gridLayout;
+    this._itemPos = (itemPos == null) ? this._DEFAULT_ITEM_POS_LAYOUTS.layoutCenterGlobe : itemPos;
+    this._cameraLocation = (cameraLocation == null) ? this._DEFAULT_CAMERA_LOCATION : cameraLocation;
   }
 
-  public toString(): string {
-    return JSON.stringify(this);
+  static initFrom(workspace: Workspace) {
+    let result = Object.assign(new Workspace(), workspace);
+    return result;
   }
+
+  // Convert only the variables (without constants) into string
+  // The constants can be added later using constructor and Object.assign
+  public toString(): string {
+    const compact = {
+      title: this._title,
+      description: this._description,
+      maintainer: this._maintainer,
+      modelLayers: this._modelLayers,
+      baseLayers: this._baseLayers,
+      terrainLayers: this._terrainLayers,
+      viewpoints: this._viewpoints,
+      gridLayout: this._gridLayout,
+      itemPos: this._itemPos,
+      cameraLocation: this._cameraLocation
+    };
+    return JSON.stringify(compact);;
+  }
+
+  // ==============================
+  // GETTER
+  // ==============================
 
   get title(): string {
     return this._title;
-  }
-
-  set title(value: string) {
-    this._title = value;
   }
 
   get description(): string {
     return this._description;
   }
 
-  set description(value: string) {
-    this._description = value;
-  }
-
   get maintainer(): string {
     return this._maintainer;
-  }
-
-  set maintainer(value: string) {
-    this._maintainer = value;
   }
 
   get modelLayers(): Array<ModelLayer> {
     return this._modelLayers;
   }
 
-  set modelLayers(value: Array<ModelLayer>) {
-    this._modelLayers = value;
-  }
-
   get baseLayers(): Array<BaseLayer> {
     return this._baseLayers;
-  }
-
-  set baseLayers(value: Array<BaseLayer>) {
-    this._baseLayers = value;
   }
 
   get terrainLayers(): Array<TerrainLayer> {
     return this._terrainLayers;
   }
 
-  set terrainLayers(value: Array<TerrainLayer>) {
-    this._terrainLayers = value;
-  }
-
   get viewpoints(): Array<Viewpoint> {
     return this._viewpoints;
+  }
+
+  get gridLayout(): Array<GridsterItem> {
+    return this._gridLayout;
+  }
+
+  get DEFAULT_LAYOUTS(): GridLayouts {
+    return this._DEFAULT_LAYOUTS;
+  }
+
+  get itemPos(): GridItemPos {
+    return this._itemPos;
+  }
+
+  get DEFAULT_ITEM_POS_LAYOUTS(): GridItemPositions {
+    return this._DEFAULT_ITEM_POS_LAYOUTS;
+  }
+
+  get COOKIE_EXPIRE(): number {
+    return this._COOKIE_EXPIRE;
+  }
+
+  get COOKIE_NAMES(): CookieNamesConfig {
+    return this._COOKIE_NAMES;
+  }
+
+  get STRING_ENCODING(): string {
+    return this._STRING_ENCODING;
+  }
+
+  get cameraLocation(): CesiumCameraLocation {
+    return this._cameraLocation;
+  }
+
+  get DEFAULT_CAMERA_LOCATION(): CesiumCameraLocation {
+    return this._DEFAULT_CAMERA_LOCATION;
+  }
+
+  get ADD_SPLASH_WINDOW_MODEL(): SplashWindowModel {
+    return this._ADD_SPLASH_WINDOW_MODEL;
+  }
+
+  // ==============================
+  // SETTER
+  // ==============================
+
+  set title(value: string) {
+    this._title = value;
+  }
+
+  set description(value: string) {
+    this._description = value;
+  }
+
+  set maintainer(value: string) {
+    this._maintainer = value;
+  }
+
+  set modelLayers(value: Array<ModelLayer>) {
+    this._modelLayers = value;
+  }
+
+  set baseLayers(value: Array<BaseLayer>) {
+    this._baseLayers = value;
+  }
+
+  set terrainLayers(value: Array<TerrainLayer>) {
+    this._terrainLayers = value;
   }
 
   set viewpoints(value: Array<Viewpoint>) {
     this._viewpoints = value;
   }
 
-  get lastLocation(): CesiumCameraPosition | undefined {
-    return this._lastLocation;
-  }
-
-  set lastLocation(value: CesiumCameraPosition | undefined) {
-    this._lastLocation = value;
-  }
-
-  get gridLayout(): Array<{}> {
-    return this._gridLayout;
-  }
-
-  set gridLayout(value: Array<{}>) {
+  set gridLayout(value: Array<GridsterItem>) {
     this._gridLayout = value;
   }
+
+  set itemPos(value: GridItemPos) {
+    this._itemPos = value;
+  }
+
+  set cameraLocation(value: CesiumCameraLocation) {
+    this._cameraLocation = value;
+  }
+
+  set ADD_SPLASH_WINDOW_MODEL(value: SplashWindowModel) {
+    this._ADD_SPLASH_WINDOW_MODEL = value;
+  }
+}
+
+export interface GridLayouts {
+  layoutLeftGlobe: Array<GridsterItem>,
+  layoutCenterGlobe: Array<GridsterItem>,
+  layoutRightGlobe: Array<GridsterItem>
+}
+
+export interface GridItemPositions {
+  layoutLeftGlobe: GridItemPos,
+  layoutCenterGlobe: GridItemPos,
+  layoutRightGlobe: GridItemPos
+}
+
+export interface GridItemPos {
+  menuBar: number,
+  layerList: number,
+  menuContext: number,
+  menu: number,
+  nav: number,
+  info: number,
+  viewList: number,
+  status: number,
+  globe: number
+}
+
+export interface CookieNamesConfig {
+  workspace: string
+}
+
+export interface SplashWindowModel {
+  url: string;
+  showOnStart: boolean;
 }
