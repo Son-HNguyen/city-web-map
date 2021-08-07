@@ -33,7 +33,6 @@ import {GlobalService} from "../global.service";
 /**
  * GPS Geolocation with device orientation in real-time.
  */
-@Injectable()
 export class GpsExtension {
   private _liveTrackingActivated: boolean;
   private _timer: any;
@@ -44,12 +43,8 @@ export class GpsExtension {
   private _touchHoldDuration: number; // touch press duration in ms
   private _longPress: boolean;
   private _isMobile: boolean;
-  private UTILS: UtilityService;
-  private GLOBALS: GlobalService;
 
-  constructor(isMobile: boolean) {
-    this.UTILS = AppModule.injector.get(UtilityService);
-    this.GLOBALS = AppModule.injector.get(GlobalService);
+  constructor(isMobile: boolean, private GLOBALS?: GlobalService, private UTILS?: UtilityService) {
     this._liveTrackingActivated = false;
     this._timer = undefined;
     this._timerMilliseconds = 350;
@@ -148,18 +143,18 @@ export class GpsExtension {
       } else {
         const restartView = (_callback: () => void): void => {
           scope._firstActivated = false;
-          this.GLOBALS.CESIUM_CAMERA.cancelFlight();
+          this.GLOBALS!.CESIUM_CAMERA.cancelFlight();
           _callback();
         };
 
         restartView((): void => {
-          this.GLOBALS.CESIUM_CAMERA.flyTo({
+          this.GLOBALS!.CESIUM_CAMERA.flyTo({
             destination: Cesium.Cartesian3.fromRadians(
-              this.GLOBALS.CESIUM_CAMERA.positionCartographic.longitude,
-              this.GLOBALS.CESIUM_CAMERA.positionCartographic.latitude,
+              this.GLOBALS!.CESIUM_CAMERA.positionCartographic.longitude,
+              this.GLOBALS!.CESIUM_CAMERA.positionCartographic.latitude,
               250),
             orientation: {
-              heading: this.GLOBALS.CESIUM_CAMERA.heading,
+              heading: this.GLOBALS!.CESIUM_CAMERA.heading,
               pitch: Cesium.Math.toRadians(-75),
               roll: 0
             }
@@ -259,7 +254,7 @@ export class GpsExtension {
           };
           window.addEventListener('deviceorientation', auxOrientation, false);
         } else {
-          this.UTILS.dialog.error('Exact geolocation is not supported by this device.');
+          this.UTILS!.dialog.error('Exact geolocation is not supported by this device.');
           flyToLocationWithOrientation(position, event);
         }
       };
@@ -295,7 +290,7 @@ export class GpsExtension {
           if (!scope._firstActivated) {
             oriBeta = 0;
           } else {
-            oriBeta = this.GLOBALS.CESIUM_CAMERA.pitch;
+            oriBeta = this.GLOBALS!.CESIUM_CAMERA.pitch;
           }
           oriGamma = 0;
           oriHeight = 2;
@@ -329,7 +324,7 @@ export class GpsExtension {
           setFirstPersonView();
         }
 
-        this.GLOBALS.CESIUM_CAMERA.flyTo({
+        this.GLOBALS!.CESIUM_CAMERA.flyTo({
           destination: Cesium.Cartesian3.fromDegrees(toPosition.coords.longitude, toPosition.coords.latitude, oriHeight),
           orientation: {
             heading: oriAlpha,
@@ -360,16 +355,16 @@ export class GpsExtension {
     const showError = (error: any) => {
       switch (error.code) {
         case error.PERMISSION_DENIED:
-          this.UTILS.dialog.error('Geolocation denied by user.');
+          this.UTILS!.dialog.error('Geolocation denied by user.');
           break;
         case error.POSITION_UNAVAILABLE:
-          this.UTILS.dialog.error('Location information is unavailable.');
+          this.UTILS!.dialog.error('Location information is unavailable.');
           break;
         case error.TIMEOUT:
-          this.UTILS.dialog.error('Location request has timed out.');
+          this.UTILS!.dialog.error('Location request has timed out.');
           break;
         case error.UNKNOWN_ERROR:
-          this.UTILS.dialog.error('An unknown error has occurred while requesting location information.');
+          this.UTILS!.dialog.error('An unknown error has occurred while requesting location information.');
           break;
       }
     };
@@ -377,7 +372,7 @@ export class GpsExtension {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(showPosition, showError);
     } else {
-      this.UTILS.dialog.error('Geolocation is not supported by this browser.');
+      this.UTILS!.dialog.error('Geolocation is not supported by this browser.');
     }
   }
 
