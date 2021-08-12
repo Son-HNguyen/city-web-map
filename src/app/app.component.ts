@@ -3,7 +3,7 @@ import {CookieService} from 'ngx-cookie-service';
 import {CompactType, DisplayGrid, GridsterConfig, GridsterItem, GridType} from "angular-gridster2";
 import {UtilityService} from "../utils.service";
 import {GlobalService} from "../global.service";
-import {GridItemPos} from "../core/Workspace";
+import {GridItemPos, Workspace} from "../core/Workspace";
 import _ = require('lodash');
 
 @Component({
@@ -86,8 +86,8 @@ export class AppComponent implements OnInit {
 
     // TODO Add/remove apps depending on the OS
 
-    this._dashboard = this.GLOBALS!.WORKSPACE.DEFAULT_LAYOUTS.layoutCenterGlobe.map(x => Object.assign({}, x)); // Deep copy of an array!
-    this._itemPos = Object.assign({}, this.GLOBALS!.WORKSPACE.DEFAULT_ITEM_POS_LAYOUTS.layoutCenterGlobe); // Deep copy of an object!
+    this._dashboard = Workspace.DEFAULT_LAYOUTS.layoutCenterGlobe.map(x => Object.assign({}, x)); // Deep copy of an array!
+    this._itemPos = Object.assign({}, Workspace.DEFAULT_ITEM_POS_LAYOUTS.layoutCenterGlobe); // Deep copy of an object!
 
     // Load previous workspace
     await this.UTILS!.workspace.readFromCookies();
@@ -106,20 +106,20 @@ export class AppComponent implements OnInit {
     if (this._options.api && this._options.api.optionsChanged) {
       switch (value) {
         case "left": {
-          this._dashboard = this.GLOBALS!.WORKSPACE.DEFAULT_LAYOUTS.layoutLeftGlobe.map(x => Object.assign({}, x));
-          this._itemPos = Object.assign({}, this.GLOBALS!.WORKSPACE.DEFAULT_ITEM_POS_LAYOUTS.layoutLeftGlobe);
+          this._dashboard = Workspace.DEFAULT_LAYOUTS.layoutLeftGlobe.map(x => Object.assign({}, x));
+          this._itemPos = Object.assign({}, Workspace.DEFAULT_ITEM_POS_LAYOUTS.layoutLeftGlobe);
           this._changedLayout = 'left';
           break;
         }
         case "center": {
-          this._dashboard = this.GLOBALS!.WORKSPACE.DEFAULT_LAYOUTS.layoutCenterGlobe.map(x => Object.assign({}, x));
-          this._itemPos = Object.assign({}, this.GLOBALS!.WORKSPACE.DEFAULT_ITEM_POS_LAYOUTS.layoutCenterGlobe);
+          this._dashboard = Workspace.DEFAULT_LAYOUTS.layoutCenterGlobe.map(x => Object.assign({}, x));
+          this._itemPos = Object.assign({}, Workspace.DEFAULT_ITEM_POS_LAYOUTS.layoutCenterGlobe);
           this._changedLayout = 'center';
           break;
         }
         case "right": {
-          this._dashboard = this.GLOBALS!.WORKSPACE.DEFAULT_LAYOUTS.layoutRightGlobe.map(x => Object.assign({}, x));
-          this._itemPos = Object.assign({}, this.GLOBALS!.WORKSPACE.DEFAULT_ITEM_POS_LAYOUTS.layoutRightGlobe);
+          this._dashboard = Workspace.DEFAULT_LAYOUTS.layoutRightGlobe.map(x => Object.assign({}, x));
+          this._itemPos = Object.assign({}, Workspace.DEFAULT_ITEM_POS_LAYOUTS.layoutRightGlobe);
           this._changedLayout = 'right';
           break;
         }
@@ -130,11 +130,11 @@ export class AppComponent implements OnInit {
 
   layoutChanged() {
     // Check if the current grid layout is one of the default values
-    if (_.isEqual(this.GLOBALS!.WORKSPACE.DEFAULT_LAYOUTS.layoutLeftGlobe, this._dashboard)) {
+    if (_.isEqual(Workspace.DEFAULT_LAYOUTS.layoutLeftGlobe, this._dashboard)) {
       this._changedLayout = 'left';
-    } else if (_.isEqual(this.GLOBALS!.WORKSPACE.DEFAULT_LAYOUTS.layoutCenterGlobe, this._dashboard)) {
+    } else if (_.isEqual(Workspace.DEFAULT_LAYOUTS.layoutCenterGlobe, this._dashboard)) {
       this._changedLayout = 'center';
-    } else if (_.isEqual(this.GLOBALS!.WORKSPACE.DEFAULT_LAYOUTS.layoutRightGlobe, this._dashboard)) {
+    } else if (_.isEqual(Workspace.DEFAULT_LAYOUTS.layoutRightGlobe, this._dashboard)) {
       this._changedLayout = 'right';
     } else {
       this._changedLayout = undefined;

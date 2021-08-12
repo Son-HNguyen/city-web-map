@@ -1,6 +1,7 @@
 import {Component, EventEmitter, Input, OnInit, Output, SimpleChanges} from '@angular/core';
 import {GlobalService} from "../../global.service";
 import _ = require("lodash");
+import {Workspace} from "../../core/Workspace";
 
 @Component({
   selector: 'app-button-toggle-layout',
@@ -19,11 +20,11 @@ export class ButtonToggleLayoutComponent implements OnInit {
 
   ngOnInit(): void {
     // Check if the saved grid layout is one of the default values
-    if (_.isEqual(this.GLOBALS!.WORKSPACE.DEFAULT_LAYOUTS.layoutLeftGlobe, this.GLOBALS!.WORKSPACE.gridLayout)) {
+    if (_.isEqual(Workspace.DEFAULT_LAYOUTS.layoutLeftGlobe, this.GLOBALS!.WORKSPACE.gridLayout)) {
       this.selectedValue = 'left';
-    } else if (_.isEqual(this.GLOBALS!.WORKSPACE.DEFAULT_LAYOUTS.layoutCenterGlobe, this.GLOBALS!.WORKSPACE.gridLayout)) {
+    } else if (_.isEqual(Workspace.DEFAULT_LAYOUTS.layoutCenterGlobe, this.GLOBALS!.WORKSPACE.gridLayout)) {
       this.selectedValue = 'center';
-    } else if (_.isEqual(this.GLOBALS!.WORKSPACE.DEFAULT_LAYOUTS.layoutRightGlobe, this.GLOBALS!.WORKSPACE.gridLayout)) {
+    } else if (_.isEqual(Workspace.DEFAULT_LAYOUTS.layoutRightGlobe, this.GLOBALS!.WORKSPACE.gridLayout)) {
       this.selectedValue = 'right';
     } else {
       this.selectedValue = undefined;

@@ -29,6 +29,7 @@ import {UtilityService} from "../utils.service";
 import {AppModule} from "../app/app.module";
 import {Injectable} from "@angular/core";
 import {GlobalService} from "../global.service";
+import {Workspace} from "../core/Workspace";
 
 @Injectable()
 export class MobileExtension {
@@ -192,7 +193,7 @@ export class MobileExtension {
         const splashWindowIframeContent: any = document.getElementById('splashwindow_iframe_content');
         if (splashWindowIframeContent != null) {
           splashWindowIframeContent.src = mobileContentUrl;
-          this.GLOBALS.WORKSPACE.ADD_SPLASH_WINDOW_MODEL.url = mobileContentUrl;
+          Workspace.ADD_SPLASH_WINDOW_MODEL.url = mobileContentUrl;
         }
       });
     }

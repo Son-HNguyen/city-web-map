@@ -52,7 +52,7 @@ export class Workspace {
   // LAYOUT
   // ==============================
   private _gridLayout: Array<GridsterItem>;
-  private readonly _DEFAULT_LAYOUTS: GridLayouts = {
+  public static readonly DEFAULT_LAYOUTS: GridLayouts = {
     layoutLeftGlobe: [
       {cols: 20, rows: 1, y: 0, x: 0}, // Menu bar
       {cols: 12, rows: 2, y: 1, x: 0}, // Nav
@@ -88,7 +88,7 @@ export class Workspace {
     ]
   };
   private _itemPos: GridItemPos; // Index position of gridster items within a dashboard array
-  private readonly _DEFAULT_ITEM_POS_LAYOUTS: GridItemPositions = {
+  public static readonly DEFAULT_ITEM_POS_LAYOUTS: GridItemPositions = {
     layoutLeftGlobe: {
       menuBar: 0,
       nav: 1,
@@ -127,17 +127,17 @@ export class Workspace {
   // ==============================
   // COOKIES
   // ==============================
-  private readonly _COOKIE_EXPIRE = 7;
-  private readonly _COOKIE_NAMES: CookieNamesConfig = {
+  public static readonly COOKIE_EXPIRE: number = 7;
+  public static readonly COOKIE_NAMES: CookieNamesConfig = {
     workspace: 'workspace'
   };
-  private readonly _STRING_ENCODING = 'utf16';
+  public static readonly STRING_ENCODING: string = 'utf16';
 
   // ==============================
   // CESIUM
   // ==============================
   private _cameraLocation: CesiumCameraLocation;
-  private readonly _DEFAULT_CAMERA_LOCATION: CesiumCameraLocation = {
+  public static readonly DEFAULT_CAMERA_LOCATION: CesiumCameraLocation = {
     "latitude": 35.1518351540856,
     "longitude": -82.50000000000001,
     "height": 12673564.865952782,
@@ -149,7 +149,7 @@ export class Workspace {
   // ==============================
   // OTHERS
   // ==============================
-  private _ADD_SPLASH_WINDOW_MODEL: SplashWindowModel = {
+  public static ADD_SPLASH_WINDOW_MODEL: SplashWindowModel = {
     url: "",
     showOnStart: true
   };
@@ -173,9 +173,9 @@ export class Workspace {
     this._baseLayers = (baseLayers == null) ? [] : baseLayers;
     this._terrainLayers = (terrainLayers == null) ? [] : terrainLayers;
     this._viewpoints = (viewpoints == null) ? [] : viewpoints;
-    this._gridLayout = (gridLayout == null) ? this._DEFAULT_LAYOUTS.layoutCenterGlobe : gridLayout;
-    this._itemPos = (itemPos == null) ? this._DEFAULT_ITEM_POS_LAYOUTS.layoutCenterGlobe : itemPos;
-    this._cameraLocation = (cameraLocation == null) ? this._DEFAULT_CAMERA_LOCATION : cameraLocation;
+    this._gridLayout = (gridLayout == null) ? Workspace.DEFAULT_LAYOUTS.layoutCenterGlobe : gridLayout;
+    this._itemPos = (itemPos == null) ? Workspace.DEFAULT_ITEM_POS_LAYOUTS.layoutCenterGlobe : itemPos;
+    this._cameraLocation = (cameraLocation == null) ? Workspace.DEFAULT_CAMERA_LOCATION : cameraLocation;
   }
 
   static initFrom(workspace: Workspace) {
@@ -183,22 +183,8 @@ export class Workspace {
     return result;
   }
 
-  // Convert only the variables (without constants) into string
-  // The constants can be added later using constructor and Object.assign
   public toString(): string {
-    const compact = {
-      title: this._title,
-      description: this._description,
-      maintainer: this._maintainer,
-      modelLayers: this._modelLayers,
-      baseLayers: this._baseLayers,
-      terrainLayers: this._terrainLayers,
-      viewpoints: this._viewpoints,
-      gridLayout: this._gridLayout,
-      itemPos: this._itemPos,
-      cameraLocation: this._cameraLocation
-    };
-    return JSON.stringify(compact);;
+    return JSON.stringify(this);;
   }
 
   // ==============================
@@ -237,40 +223,12 @@ export class Workspace {
     return this._gridLayout;
   }
 
-  get DEFAULT_LAYOUTS(): GridLayouts {
-    return this._DEFAULT_LAYOUTS;
-  }
-
   get itemPos(): GridItemPos {
     return this._itemPos;
   }
 
-  get DEFAULT_ITEM_POS_LAYOUTS(): GridItemPositions {
-    return this._DEFAULT_ITEM_POS_LAYOUTS;
-  }
-
-  get COOKIE_EXPIRE(): number {
-    return this._COOKIE_EXPIRE;
-  }
-
-  get COOKIE_NAMES(): CookieNamesConfig {
-    return this._COOKIE_NAMES;
-  }
-
-  get STRING_ENCODING(): string {
-    return this._STRING_ENCODING;
-  }
-
   get cameraLocation(): CesiumCameraLocation {
     return this._cameraLocation;
-  }
-
-  get DEFAULT_CAMERA_LOCATION(): CesiumCameraLocation {
-    return this._DEFAULT_CAMERA_LOCATION;
-  }
-
-  get ADD_SPLASH_WINDOW_MODEL(): SplashWindowModel {
-    return this._ADD_SPLASH_WINDOW_MODEL;
   }
 
   // ==============================
@@ -315,10 +273,6 @@ export class Workspace {
 
   set cameraLocation(value: CesiumCameraLocation) {
     this._cameraLocation = value;
-  }
-
-  set ADD_SPLASH_WINDOW_MODEL(value: SplashWindowModel) {
-    this._ADD_SPLASH_WINDOW_MODEL = value;
   }
 }
 

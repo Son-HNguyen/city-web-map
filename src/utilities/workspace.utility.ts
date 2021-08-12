@@ -49,13 +49,12 @@ export class WorkspaceUtility {
   public readFromCookies(): Promise<boolean> {
     const scope = this;
     return new Promise<boolean>((resolve, reject) => {
-      const workspaceString = scope.cookieService.get(this.GLOBALS.WORKSPACE.COOKIE_NAMES.workspace);
+      const workspaceString = scope.cookieService.get(Workspace.COOKIE_NAMES.workspace);
       if (workspaceString == null || workspaceString === '') {
         resolve(false);
         return;
       }
       try {
-        // TODO Load saved grid layout
         this.GLOBALS!.WORKSPACE = Workspace.initFrom(JSON.parse(workspaceString));
         resolve(true);
       } catch (e) {
@@ -80,14 +79,14 @@ export class WorkspaceUtility {
 
       // Then set cookies
       scope.cookieService!.set(
-        this.GLOBALS.WORKSPACE.COOKIE_NAMES.workspace,
+        Workspace.COOKIE_NAMES.workspace,
         this.GLOBALS.WORKSPACE.toString(),
-        this.GLOBALS.WORKSPACE.COOKIE_EXPIRE);
+        Workspace.COOKIE_EXPIRE);
 
       // Check cookie size
-      const cookieWorkspace = scope.cookieService.get(this.GLOBALS.WORKSPACE.COOKIE_NAMES.workspace);
+      const cookieWorkspace = scope.cookieService.get(Workspace.COOKIE_NAMES.workspace);
       const Buffer = require('buffer/').Buffer;
-      const bytes = Buffer.byteLength(encodeURI(cookieWorkspace), this.GLOBALS.WORKSPACE.STRING_ENCODING);
+      const bytes = Buffer.byteLength(encodeURI(cookieWorkspace), Workspace.STRING_ENCODING);
       scope.logService!.info('Save current workspace in cookies, size = ' + bytes + " Bytes");
 
       resolve(bytes);
