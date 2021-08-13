@@ -27,6 +27,7 @@ import {TerrainLayer} from "./TerrainLayer";
 import {Viewpoint} from "./Viewpoint";
 import {CesiumCameraLocation} from "../utilities/camera.utility";
 import {GridsterItem} from "angular-gridster2";
+import _ = require("lodash");
 
 export class Workspace {
   // ==============================
@@ -178,13 +179,31 @@ export class Workspace {
     this._cameraLocation = (cameraLocation == null) ? Workspace.DEFAULT_CAMERA_LOCATION : cameraLocation;
   }
 
-  static initFrom(workspace: Workspace) {
+  public static initFrom(workspace: Workspace) {
     let result = Object.assign(new Workspace(), workspace);
     return result;
   }
 
+  /**
+   * Compare a given layout with the defaults and return `left`, `center`, `right` or `undefined`.
+   *
+   * @param GridsterItem
+   */
+  public static getLayout(layout: GridsterItem[]): string | undefined {
+    if (_.isEqual(Workspace.DEFAULT_LAYOUTS.layoutLeftGlobe, layout)) {
+      return 'left';
+    }
+    if (_.isEqual(Workspace.DEFAULT_LAYOUTS.layoutCenterGlobe, layout)) {
+      return 'center';
+    }
+    if (_.isEqual(Workspace.DEFAULT_LAYOUTS.layoutRightGlobe, layout)) {
+      return 'right';
+    }
+    return undefined;
+  }
+
   public toString(): string {
-    return JSON.stringify(this);;
+    return JSON.stringify(this);
   }
 
   // ==============================

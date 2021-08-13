@@ -20,15 +20,7 @@ export class ButtonToggleLayoutComponent implements OnInit {
 
   ngOnInit(): void {
     // Check if the saved grid layout is one of the default values
-    if (_.isEqual(Workspace.DEFAULT_LAYOUTS.layoutLeftGlobe, this.GLOBALS!.WORKSPACE.gridLayout)) {
-      this.selectedValue = 'left';
-    } else if (_.isEqual(Workspace.DEFAULT_LAYOUTS.layoutCenterGlobe, this.GLOBALS!.WORKSPACE.gridLayout)) {
-      this.selectedValue = 'center';
-    } else if (_.isEqual(Workspace.DEFAULT_LAYOUTS.layoutRightGlobe, this.GLOBALS!.WORKSPACE.gridLayout)) {
-      this.selectedValue = 'right';
-    } else {
-      this.selectedValue = undefined;
-    }
+    this.selectedValue = Workspace.getLayout(this.GLOBALS!.WORKSPACE.gridLayout);
   }
 
   changeGridLayout(value: string) {
