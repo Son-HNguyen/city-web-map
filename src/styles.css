@@ -40,6 +40,7 @@ html, body, div[appCesium] {
 {
   display: none;
 }
+
 .cesium-viewer-fullscreenContainer /* fullscreen button */
 {
   position: absolute;

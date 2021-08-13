@@ -44,6 +44,7 @@ import {SnackBarComponent, SnackBarContentComponent} from './snack-bar/snack-bar
 import {MatSnackBarModule} from "@angular/material/snack-bar";
 import {GlobalService} from "../global.service";
 import { ButtonToggleLayoutComponent } from './button-toggle-layout/button-toggle-layout.component';
+import { FullscreenComponent } from './fullscreen/fullscreen.component';
 
 @NgModule({
   declarations: [
@@ -68,7 +69,8 @@ import { ButtonToggleLayoutComponent } from './button-toggle-layout/button-toggl
     CheatSheetContentComponent,
     SnackBarComponent,
     SnackBarContentComponent,
-    ButtonToggleLayoutComponent
+    ButtonToggleLayoutComponent,
+    FullscreenComponent
   ],
   entryComponents: [
     DialogInfoComponent,

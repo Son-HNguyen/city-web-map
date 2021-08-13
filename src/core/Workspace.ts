@@ -86,6 +86,17 @@ export class Workspace {
       {cols: 12, rows: 2, y: 1, x: 8}, // Nav
       {cols: 12, rows: 2, y: 19, x: 8}, // Status
       {cols: 12, rows: 16, y: 3, x: 8} // Cesium app
+    ],
+    layoutFullscreen: [
+      {cols: 0, rows: 0, y: 0, x: 0}, // Menu bar
+      {cols: 0, rows: 0, y: 0, x: 0}, // Layer list
+      {cols: 0, rows: 0, y: 0, x: 0}, // Context menu
+      {cols: 0, rows: 0, y: 0, x: 0}, // Menu
+      {cols: 0, rows: 0, y: 0, x: 0}, // Nav
+      {cols: 0, rows: 0, y: 0, x: 0}, // Info
+      {cols: 0, rows: 0, y: 0, x: 0}, // View list
+      {cols: 0, rows: 0, y: 0, x: 0}, // Status
+      {cols: 20, rows: 21, y: 0, x: 0} // Cesium app
     ]
   };
   private _itemPos: GridItemPos; // Index position of gridster items within a dashboard array
@@ -298,7 +309,8 @@ export class Workspace {
 export interface GridLayouts {
   layoutLeftGlobe: Array<GridsterItem>,
   layoutCenterGlobe: Array<GridsterItem>,
-  layoutRightGlobe: Array<GridsterItem>
+  layoutRightGlobe: Array<GridsterItem>,
+  layoutFullscreen: Array<GridsterItem>
 }
 
 export interface GridItemPositions {

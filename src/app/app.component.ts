@@ -4,7 +4,6 @@ import {CompactType, DisplayGrid, GridsterConfig, GridsterItem, GridType} from "
 import {UtilityService} from "../utils.service";
 import {GlobalService} from "../global.service";
 import {GridItemPos, Workspace} from "../core/Workspace";
-import _ = require('lodash');
 
 @Component({
   selector: 'app-root',
@@ -19,6 +18,8 @@ export class AppComponent implements OnInit {
   dashboard!: Array<GridsterItem>;
   itemPos!: GridItemPos;
   changedLayout: string | undefined;
+  savedDashboard!: Array<GridsterItem>;
+  savedItemPos!: GridItemPos;
 
   constructor(
     private cookieService?: CookieService,
@@ -27,6 +28,7 @@ export class AppComponent implements OnInit {
     this.changedLayout = undefined;
   }
 
+  // TODO Pressing the hotkeys again automatically closes the dialog
   @HostListener('document:keydown', ['$event'])
   async onKeyDown(e: KeyboardEvent) {
     if (e.altKey && e.key === 'g') {
@@ -57,9 +59,14 @@ export class AppComponent implements OnInit {
       this.UTILS!.dialog.info('New workspace');
     }
     // Cheat sheet
-    else if (e.ctrlKey && e.key === 'F1') {
+    else if (e.key === 'F1') {
       e.preventDefault();
       document.getElementById("buttonOpenCheatSheet")!.click();
+    }
+    // Fullscreen
+    else if (e.key === 'F11') {
+      e.preventDefault();
+      document.getElementById("buttonFullscreen")!.click();
     }
   }
 
@@ -131,5 +138,20 @@ export class AppComponent implements OnInit {
   layoutChanged() {
     // Check if the current grid layout is one of the default values
     this.changedLayout = Workspace.getLayout(this.dashboard);
+  }
+
+  handleFullscreen(fullscreenActive: boolean) {
+    if (this.options && this.options.api && this.options.api.optionsChanged) {
+      if (fullscreenActive) {
+        // Save current layout
+        this.savedDashboard = this.dashboard.map(x => Object.assign({}, x));
+        // Activate fullscreen
+        this.dashboard = Workspace.DEFAULT_LAYOUTS.layoutFullscreen.map(x => Object.assign({}, x));
+      } else {
+        // Restore saved layout
+        this.dashboard = this.savedDashboard.map(x => Object.assign({}, x));
+      }
+      this.options.api.optionsChanged();
+    }
   }
 }
