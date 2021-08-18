@@ -18,14 +18,30 @@ export class AppComponent implements OnInit {
   dashboard!: Array<GridsterItem>;
   itemPos!: GridItemPos;
   changedLayout: string | undefined;
-  savedDashboard!: Array<GridsterItem>;
-  savedItemPos!: GridItemPos;
+  savedDashboard: Array<GridsterItem> | undefined;
+  savedItemPos: GridItemPos | undefined;
+  fullscreenActive: boolean;
+
+  // TODO Add option to enter, use, save and import Cesium ion access tokens
 
   constructor(
     private cookieService?: CookieService,
     private GLOBALS?: GlobalService,
     private UTILS?: UtilityService) {
     this.changedLayout = undefined;
+    this.savedDashboard = undefined;
+    this.savedItemPos = undefined;
+    this.fullscreenActive = false;
+  }
+
+  async initLayout(): Promise<void> {
+    const scope = this;
+    return new Promise<void>((resolve, reject) => {
+      scope.dashboard = Workspace.DEFAULT_LAYOUTS.layoutCenterGlobe.map(x => Object.assign({}, x)); // Deep copy of an array!
+      scope.itemPos = Object.assign({}, Workspace.DEFAULT_ITEM_POS_LAYOUTS.layoutCenterGlobe); // Deep copy of an object!
+      this.fullscreenActive = false;
+      resolve();
+    });
   }
 
   // TODO Pressing the hotkeys again automatically closes the dialog
@@ -39,13 +55,9 @@ export class AppComponent implements OnInit {
     else if (e.ctrlKey && e.key === 's') {
       e.preventDefault();
       if (e.altKey) {
-        // Display options to save
-        // TODO Add option to save in cookie, JSON file, URL, pastebin, etc.
-        this.UTILS!.dialog.info('Options to save');
+        document.getElementById('buttonSaveWorkspaceAs')!.click();
       } else {
-        // Quick save
-        const cookieSize: number = await this.UTILS!.workspace.saveToCookies(this.dashboard);
-        this.UTILS!.snackBar.show('Workspace saved (space allocated ' + Math.round(cookieSize / 4096 * 100) + '%)');
+        document.getElementById('buttonSaveWorkspace')!.click();
       }
     }
     // Open workspace
@@ -56,7 +68,7 @@ export class AppComponent implements OnInit {
     // New workspace
     else if (e.ctrlKey && e.altKey && e.key === 'n') {
       e.preventDefault();
-      this.UTILS!.dialog.info('New workspace');
+      document.getElementById('buttonNewWorkspace')!.click();
     }
     // Cheat sheet
     else if (e.key === 'F1') {
@@ -68,11 +80,15 @@ export class AppComponent implements OnInit {
       e.preventDefault();
       document.getElementById("buttonFullscreen")!.click();
     }
+    // TODO F3 for searching geocoder (Cesium ion by default, Nominatim without autocomplete as alternative)
+    // TODO Support for addresses, location names, postal codes, etc.
+    // TODO Save input texts as suggestions while typing?
+    // TODO Use a bib to look up location names and postal codes instead of Cesium ion?
   }
 
   @HostListener('window:beforeunload', ['$event'])
   async beforeUnloadHandler(event: any) {
-    await this.UTILS!.workspace.saveToCookies(this.dashboard);
+    document.getElementById('buttonSaveWorkspace')!.click();
   }
 
   async ngOnInit() {
@@ -93,23 +109,78 @@ export class AppComponent implements OnInit {
 
     // TODO Add/remove apps depending on the OS
 
-    this.dashboard = Workspace.DEFAULT_LAYOUTS.layoutCenterGlobe.map(x => Object.assign({}, x)); // Deep copy of an array!
-    this.itemPos = Object.assign({}, Workspace.DEFAULT_ITEM_POS_LAYOUTS.layoutCenterGlobe); // Deep copy of an object!
+    await this.initLayout();
 
     // Load previous workspace
     await this.UTILS!.workspace.readFromCookies();
-    if (this.GLOBALS!.WORKSPACE.gridLayout != null && this.GLOBALS!.WORKSPACE.gridLayout.length !== 0) {
-      // If a grid layout already exists in the last/current workspace -> use it
-      this.dashboard = this.GLOBALS!.WORKSPACE.gridLayout.map(x => Object.assign({}, x)); // Deep copy of an array!
+
+    const scope = this;
+
+    async function loadSavedWorkspace(): Promise<void> {
+      const nestedScope = scope;
+      return new Promise<void>((resolve, reject) => {
+        if (nestedScope.GLOBALS!.WORKSPACE.gridLayout != null && nestedScope.GLOBALS!.WORKSPACE.gridLayout.length !== 0) {
+          // If a grid layout already exists in the last/current workspace -> use it
+          nestedScope.dashboard = nestedScope.GLOBALS!.WORKSPACE.gridLayout.map(x => Object.assign({}, x)); // Deep copy of an array!
+        }
+        if (nestedScope.GLOBALS!.WORKSPACE.itemPos != null) {
+          // If a grid layout already exists in the last/current workspace -> use it
+          nestedScope.itemPos = Object.assign({}, nestedScope.GLOBALS!.WORKSPACE.itemPos); // Deep copy of an object!
+        }
+        nestedScope.fullscreenActive = nestedScope.GLOBALS!.WORKSPACE.fullscreenActive;
+        resolve();
+      });
     }
-    if (this.GLOBALS!.WORKSPACE.itemPos != null) {
-      // If a grid layout already exists in the last/current workspace -> use it
-      this.itemPos = Object.assign({}, this.GLOBALS!.WORKSPACE.itemPos); // Deep copy of an object!
-    }
+
+    await loadSavedWorkspace();
+
+    // Check if fullscreen is activated
+    await this.handleButtonFullscreen(true);
   }
 
-  handleButtonToggleValue(value: any) {
-    // TODO Reset a layout when a new layout is selected (to get rid of unwanted changes in the layout)?
+  async handleButtonSave() {
+    // Quick save
+    let cookieSize: number;
+    // Check if fullscreen is activated
+    if (this.fullscreenActive && this.savedDashboard != null) {
+      cookieSize = await this.UTILS!.workspace.saveToCookies(this.savedDashboard, this.fullscreenActive);
+    } else {
+      cookieSize = await this.UTILS!.workspace.saveToCookies(this.dashboard, this.fullscreenActive);
+    }
+    this.UTILS!.snackBar.show('Workspace saved (space allocated ' + Math.round(cookieSize / 4096 * 100) + '%)');
+  }
+
+  handleButtonSaveAs() {
+    // Display options to save
+    // TODO Add option to save in cookie, JSON file, URL, pastebin, etc.
+    // TODO Here show in a modal window what is going to be saved and the user can choose/change
+    this.UTILS!.dialog.info('Options to save');
+  }
+
+  async handleButtonNew() {
+    // TODO Ask if the current workspace needs to be saved first before a new one is created
+    const scope = this;
+
+    async function createNewWorkspace(): Promise<void> {
+      const nestedScope = scope;
+      return new Promise<void>(async (resolve, reject) => {
+        if (nestedScope.options && nestedScope.options.api && nestedScope.options.api.optionsChanged) {
+          nestedScope.GLOBALS!.WORKSPACE = new Workspace();
+          await nestedScope.initLayout();
+          await nestedScope.options.api.optionsChanged();
+          resolve();
+        }
+      });
+    }
+
+    await createNewWorkspace();
+
+    await this.UTILS!.camera.flyToPosition(this.GLOBALS!.WORKSPACE.cameraLocation);
+
+    this.UTILS!.snackBar.show('A new workspace has been created.');
+  }
+
+  async handleButtonToggleValue(value: any) {
     if (this.options.api && this.options.api.optionsChanged) {
       switch (value) {
         case "left": {
@@ -131,7 +202,7 @@ export class AppComponent implements OnInit {
           break;
         }
       }
-      this.options.api.optionsChanged();
+      await this.options.api.optionsChanged();
     }
   }
 
@@ -140,18 +211,37 @@ export class AppComponent implements OnInit {
     this.changedLayout = Workspace.getLayout(this.dashboard);
   }
 
-  handleFullscreen(fullscreenActive: boolean) {
-    if (this.options && this.options.api && this.options.api.optionsChanged) {
-      if (fullscreenActive) {
-        // Save current layout
-        this.savedDashboard = this.dashboard.map(x => Object.assign({}, x));
-        // Activate fullscreen
-        this.dashboard = Workspace.DEFAULT_LAYOUTS.layoutFullscreen.map(x => Object.assign({}, x));
-      } else {
-        // Restore saved layout
-        this.dashboard = this.savedDashboard.map(x => Object.assign({}, x));
-      }
-      this.options.api.optionsChanged();
+  async handleButtonFullscreen(checkOnly?: boolean) {
+    if (checkOnly == null || !checkOnly) {
+      this.fullscreenActive = !this.fullscreenActive;
+    }
+
+    const scope = this;
+
+    async function activateFullscreen(): Promise<void> {
+      const nestedScope = scope;
+      return new Promise<void>(async (resolve, reject) => {
+        if (nestedScope.options && nestedScope.options.api && nestedScope.options.api.optionsChanged) {
+          if (nestedScope.fullscreenActive) {
+            // Save current layout
+            nestedScope.savedDashboard = nestedScope.dashboard.map(x => Object.assign({}, x));
+            // Activate fullscreen
+            nestedScope.dashboard = Workspace.DEFAULT_LAYOUTS.layoutFullscreen.map(x => Object.assign({}, x));
+          } else if (nestedScope.savedDashboard != null) {
+            // Restore saved layout
+            nestedScope.dashboard = nestedScope.savedDashboard.map(x => Object.assign({}, x));
+          }
+          await nestedScope.options.api.optionsChanged();
+          resolve();
+        }
+      });
+    }
+
+    await activateFullscreen();
+
+    if (this.fullscreenActive) {
+      // TODO Add enums / static const for changeable hotkeys?
+      this.UTILS!.snackBar.show('Press F11 again to exit fullscreen.');
     }
   }
 }

@@ -1,6 +1,4 @@
 import {Component, EventEmitter, Output} from '@angular/core';
-import {GlobalService} from "../../global.service";
-import * as Cesium from "cesium";
 
 @Component({
   selector: 'app-fullscreen',
@@ -18,14 +16,6 @@ export class FullscreenComponent {
   }
 
   async fullscreen(): Promise<void> {
-    /*
-    if (!this.fullscreenActive) {
-      await Cesium.Fullscreen.requestFullscreen(document.body);
-    } else {
-      await Cesium.Fullscreen.exitFullscreen();
-    }
-     */
-
     this.fullscreenActive = !this.fullscreenActive;
     this.fullscreenActiveChange.emit(this.fullscreenActive);
   }

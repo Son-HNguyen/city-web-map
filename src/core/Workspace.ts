@@ -135,6 +135,7 @@ export class Workspace {
       globe: 8
     }
   };
+  private _fullscreenActive: boolean;
 
   // ==============================
   // COOKIES
@@ -176,6 +177,7 @@ export class Workspace {
     viewpoints?: Array<Viewpoint>,
     gridLayout?: Array<GridsterItem>,
     itemPos?: GridItemPos,
+    fullscreenActive?: boolean,
     cameraLocation?: CesiumCameraLocation,
   ) {
     this._title = (title == null) ? "Workspace title" : title;
@@ -187,6 +189,7 @@ export class Workspace {
     this._viewpoints = (viewpoints == null) ? [] : viewpoints;
     this._gridLayout = (gridLayout == null) ? Workspace.DEFAULT_LAYOUTS.layoutCenterGlobe : gridLayout;
     this._itemPos = (itemPos == null) ? Workspace.DEFAULT_ITEM_POS_LAYOUTS.layoutCenterGlobe : itemPos;
+    this._fullscreenActive = (fullscreenActive == null) ? false : fullscreenActive;
     this._cameraLocation = (cameraLocation == null) ? Workspace.DEFAULT_CAMERA_LOCATION : cameraLocation;
   }
 
@@ -257,6 +260,10 @@ export class Workspace {
     return this._itemPos;
   }
 
+  get fullscreenActive(): boolean {
+    return this._fullscreenActive;
+  }
+
   get cameraLocation(): CesiumCameraLocation {
     return this._cameraLocation;
   }
@@ -299,6 +306,10 @@ export class Workspace {
 
   set itemPos(value: GridItemPos) {
     this._itemPos = value;
+  }
+
+  set fullscreenActive(value: boolean) {
+    this._fullscreenActive = value;
   }
 
   set cameraLocation(value: CesiumCameraLocation) {

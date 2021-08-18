@@ -29,9 +29,9 @@ export class CesiumDirective implements OnInit {
     await this.resumeCamera();
   }
 
-  private initBasicCesiumComponents(): Promise<boolean> {
+  private initBasicCesiumComponents(): Promise<void> {
     const scope = this;
-    return new Promise<boolean>((resolve, reject) => {
+    return new Promise<void>((resolve, reject) => {
       if (scope.el == null) {
         return;
       }
@@ -59,32 +59,31 @@ export class CesiumDirective implements OnInit {
       // TODO Get token from URL parameter OR session/cookie?
       //cesium.Ion.defaultAccessToken = '';
 
-      resolve(true);
+      resolve();
     });
   }
 
-  private initGUISpecific(): Promise<boolean> {
+  private initGUISpecific(): Promise<void> {
     const scope = this;
-    return new Promise<boolean>((resolve, reject) => {
+    return new Promise<void>((resolve, reject) => {
       // Adjust GUI and program behaviours towards current operating systems
       if (scope.UTILS!.os.isMobile()) {
         new MobileExtension();
       } else {
         new DesktopExtension();
       }
-      resolve(true);
+      resolve();
     });
   }
 
-  private resumeCamera(): Promise<boolean> {
+  private resumeCamera(): Promise<void> {
     const scope = this;
-    return new Promise<boolean>((resolve, reject) => {
+    return new Promise<void>((resolve, reject) => {
       if (this.GLOBALS!.WORKSPACE.cameraLocation != null) {
         if (scope.logService != null) {
           scope.logService!.info('Resume camera location from the last session');
         }
-        scope.UTILS!.camera.flyToPosition(this.GLOBALS!.WORKSPACE.cameraLocation);
-        resolve(true);
+        scope.UTILS!.camera.flyToPosition(this.GLOBALS!.WORKSPACE.cameraLocation).then(() => resolve());
       }
     });
   }

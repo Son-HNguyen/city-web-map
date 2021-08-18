@@ -46,29 +46,30 @@ export class WorkspaceUtility {
     this.UTILS = UTILS;
   }
 
-  public readFromCookies(): Promise<boolean> {
+  public readFromCookies(): Promise<void> {
     const scope = this;
-    return new Promise<boolean>((resolve, reject) => {
+    return new Promise<void>((resolve, reject) => {
       const workspaceString = scope.cookieService.get(Workspace.COOKIE_NAMES.workspace);
       if (workspaceString == null || workspaceString === '') {
-        resolve(false);
+        reject();
         return;
       }
       try {
         this.GLOBALS!.WORKSPACE = Workspace.initFrom(JSON.parse(workspaceString));
-        resolve(true);
+        resolve();
       } catch (e) {
         scope.logService.info('No previous workspace found');
-        resolve(false);
+        reject();
       }
     });
   }
 
-  public saveToCookies(currentLayout: Array<GridsterItem>): Promise<number> {
+  public saveToCookies(currentLayout: Array<GridsterItem>, fullscreenActive: boolean): Promise<number> {
     const scope = this;
     return new Promise<number>((resolve, reject) => {
       // Save current layout
       this.GLOBALS.WORKSPACE.gridLayout = currentLayout.map(x => Object.assign({}, x)); // Deep copy of an array!
+      this.GLOBALS.WORKSPACE.fullscreenActive = fullscreenActive;
 
       // Save last location
       this.GLOBALS.WORKSPACE.cameraLocation = scope.UTILS.camera.getCurrentPosition();

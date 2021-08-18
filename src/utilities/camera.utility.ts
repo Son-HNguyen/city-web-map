@@ -61,15 +61,19 @@ export class CameraUtility {
   /**
    * Change the current Cesium camera position.
    */
-  public flyToPosition(cesiumCameraPosition: CesiumCameraLocation): void {
-    this.GLOBALS.CESIUM_CAMERA.flyTo({
-      destination: cesium.Cartesian3.fromDegrees(
-        cesiumCameraPosition.longitude, cesiumCameraPosition.latitude, cesiumCameraPosition.height),
-      orientation: {
-        heading: cesium.Math.toRadians(cesiumCameraPosition.heading),
-        pitch: cesium.Math.toRadians(cesiumCameraPosition.pitch),
-        roll: cesium.Math.toRadians(cesiumCameraPosition.roll)
-      }
+  public flyToPosition(cesiumCameraPosition: CesiumCameraLocation): Promise<void> {
+    const scope = this;
+    return new Promise<void>((resolve, reject) => {
+      scope.GLOBALS.CESIUM_CAMERA.flyTo({
+        destination: cesium.Cartesian3.fromDegrees(
+          cesiumCameraPosition.longitude, cesiumCameraPosition.latitude, cesiumCameraPosition.height),
+        orientation: {
+          heading: cesium.Math.toRadians(cesiumCameraPosition.heading),
+          pitch: cesium.Math.toRadians(cesiumCameraPosition.pitch),
+          roll: cesium.Math.toRadians(cesiumCameraPosition.roll)
+        }
+      });
+      resolve();
     });
   }
 }

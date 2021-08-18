@@ -4,11 +4,14 @@
     <button mat-stroked-button matTooltip="Open existing workspace">
       <span class="material-icons">drive_file_move_rtl</span>&nbsp;Open
     </button>
-    <button mat-stroked-button matTooltip="Save current workspace">
-      <span class="material-icons">drive_folder_upload</span>&nbsp;Save
+    <button id="buttonSaveWorkspace" mat-stroked-button matTooltip="Save current workspace" (click)="handleButtonSave()">
+      <span class="material-icons">save</span>&nbsp;Save
     </button>
-    <button mat-stroked-button matTooltip="Create new workspace">
-      <span class="material-icons">create_new_folder</span>&nbsp;New
+    <button id="buttonSaveWorkspaceAs" mat-stroked-button matTooltip="Save as ..." (click)="handleButtonSaveAs()">
+      <span class="material-icons">archive</span>&nbsp;Save as ...
+    </button>
+    <button id="buttonNewWorkspace" mat-stroked-button matTooltip="Create new workspace" (click)="handleButtonNew()">
+      <span class="material-icons">add_box</span>&nbsp;New
     </button>
     <app-button-toggle-layout (buttonToggleValue)="handleButtonToggleValue($event)" [changedLayout]="changedLayout">
     </app-button-toggle-layout>
@@ -46,6 +49,6 @@
   </gridster-item>
   <gridster-item *ngIf="itemPos.globe >= 0" [item]="dashboard[itemPos.globe]" (itemChange)="layoutChanged()">
     <div appCesium></div>
-    <app-fullscreen (fullscreenActiveChange)="handleFullscreen($event)"></app-fullscreen>
+    <app-fullscreen (fullscreenActiveChange)="handleButtonFullscreen()"></app-fullscreen>
   </gridster-item>
 </gridster>
