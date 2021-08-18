@@ -139,6 +139,7 @@ export class AppComponent implements OnInit {
   }
 
   async handleButtonSave() {
+    // TODO Save in local storage for bigger workspace?
     // Quick save
     let cookieSize: number;
     // Check if fullscreen is activated
@@ -176,6 +177,8 @@ export class AppComponent implements OnInit {
     await createNewWorkspace();
 
     await this.UTILS!.camera.flyToPosition(this.GLOBALS!.WORKSPACE.cameraLocation);
+
+    this.layoutChanged();
 
     this.UTILS!.snackBar.show('A new workspace has been created.');
   }
@@ -241,7 +244,7 @@ export class AppComponent implements OnInit {
 
     if (this.fullscreenActive) {
       // TODO Add enums / static const for changeable hotkeys?
-      this.UTILS!.snackBar.show('Press F11 again to exit fullscreen.');
+      this.UTILS!.snackBar.show('Press F11 to exit fullscreen.');
     }
   }
 }
