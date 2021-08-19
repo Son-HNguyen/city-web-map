@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output, SimpleChanges} from '@angular/core';
 
 @Component({
   selector: 'app-fullscreen',
@@ -7,16 +7,39 @@ import {Component, EventEmitter, Output} from '@angular/core';
 })
 export class FullscreenComponent {
 
+  @Input() fullscreenActive: boolean;
   @Output() fullscreenActiveChange: EventEmitter<boolean> = new EventEmitter<boolean>();
-
-  private fullscreenActive: boolean;
+  buttonIcon: ButtonFullscreenIcons;
+  buttonTooltip: ButtonFullscreenTooltips;
 
   constructor() {
     this.fullscreenActive = false;
+    this.buttonIcon = ButtonFullscreenIcons.ON;
+    this.buttonTooltip = ButtonFullscreenTooltips.ON;
   }
 
   async fullscreen(): Promise<void> {
     this.fullscreenActive = !this.fullscreenActive;
     this.fullscreenActiveChange.emit(this.fullscreenActive);
   }
+
+  ngOnChanges(val: SimpleChanges): void {
+    if (this.fullscreenActive) {
+      this.buttonIcon = ButtonFullscreenIcons.OFF;
+      this.buttonTooltip = ButtonFullscreenTooltips.OFF;
+    } else {
+      this.buttonIcon = ButtonFullscreenIcons.ON;
+      this.buttonTooltip = ButtonFullscreenTooltips.ON;
+    }
+  }
+}
+
+enum ButtonFullscreenIcons {
+  ON = 'fullscreen',
+  OFF = 'fullscreen_exit'
+}
+
+enum ButtonFullscreenTooltips {
+  ON = 'Fullscreen',
+  OFF = 'Exit fullscreen'
 }

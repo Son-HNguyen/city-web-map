@@ -1,10 +1,13 @@
 <gridster [options]="options">
-  <gridster-item *ngIf="itemPos.menuBar >= 0" [item]="dashboard[itemPos.menuBar]" (itemChange)="layoutChanged()">
+  <gridster-item *ngIf="itemPos.menuBar >= 0"
+                 [item]="dashboard[itemPos.menuBar]"
+                 (itemChange)="layoutChanged()">
     <span color="primary"><b>&nbsp;city-web-map&nbsp;</b></span>
     <button mat-stroked-button matTooltip="Open existing workspace">
       <span class="material-icons">drive_file_move_rtl</span>&nbsp;Open
     </button>
-    <button id="buttonSaveWorkspace" mat-stroked-button matTooltip="Save current workspace" (click)="handleButtonSave()">
+    <button id="buttonSaveWorkspace" mat-stroked-button matTooltip="Save current workspace"
+            (click)="handleButtonSave()">
       <span class="material-icons">save</span>&nbsp;Save
     </button>
     <button id="buttonSaveWorkspaceAs" mat-stroked-button matTooltip="Save as ..." (click)="handleButtonSaveAs()">
@@ -13,7 +16,8 @@
     <button id="buttonNewWorkspace" mat-stroked-button matTooltip="Create new workspace" (click)="handleButtonNew()">
       <span class="material-icons">add_box</span>&nbsp;New
     </button>
-    <app-button-toggle-layout (buttonToggleValue)="handleButtonToggleValue($event)" [changedLayout]="changedLayout">
+    <app-button-toggle-layout (buttonToggleValue)="handleButtonToggleValue($event)"
+                              [changedLayout]="changedLayout">
     </app-button-toggle-layout>
     <button mat-stroked-button matTooltip="Configure application">
       <span class="material-icons">settings_applications</span>&nbsp;Settings
@@ -26,29 +30,47 @@
       <img src="/assets/images/thirdParty/GitHub-Mark-32px.png" width="30%"/>&nbsp;GitHub
     </button>
   </gridster-item>
-  <gridster-item *ngIf="itemPos.layerList >= 0" [item]="dashboard[itemPos.layerList]" (itemChange)="layoutChanged()">
+  <gridster-item *ngIf="itemPos.layerList >= 0"
+                 [item]="dashboard[itemPos.layerList]"
+                 (itemChange)="layoutChanged()">
     <app-layer-list></app-layer-list>
   </gridster-item>
-  <gridster-item *ngIf="itemPos.menuContext >= 0" [item]="dashboard[itemPos.menuContext]" (itemChange)="layoutChanged()">
+  <gridster-item *ngIf="itemPos.menuContext >= 0"
+                 [item]="dashboard[itemPos.menuContext]"
+                 (itemChange)="layoutChanged()">
     <app-menu-context></app-menu-context>
   </gridster-item>
-  <gridster-item *ngIf="itemPos.menu >= 0" [item]="dashboard[itemPos.menu]" (itemChange)="layoutChanged()">
+  <gridster-item *ngIf="itemPos.menu >= 0"
+                 [item]="dashboard[itemPos.menu]"
+                 (itemChange)="layoutChanged()">
     <app-menu></app-menu>
   </gridster-item>
-  <gridster-item *ngIf="itemPos.nav >= 0" [item]="dashboard[itemPos.nav]" (itemChange)="layoutChanged()">
+  <gridster-item *ngIf="itemPos.nav >= 0"
+                 [item]="dashboard[itemPos.nav]"
+                 (itemChange)="layoutChanged()">
     <app-nav></app-nav>
   </gridster-item>
-  <gridster-item *ngIf="itemPos.info >= 0" [item]="dashboard[itemPos.info]" (itemChange)="layoutChanged()">
+  <gridster-item *ngIf="itemPos.info >= 0"
+                 [item]="dashboard[itemPos.info]"
+                 (itemChange)="layoutChanged()">
     <app-info></app-info>
   </gridster-item>
-  <gridster-item *ngIf="itemPos.viewList >= 0" [item]="dashboard[itemPos.viewList]" (itemChange)="layoutChanged()">
+  <gridster-item *ngIf="itemPos.viewList >= 0"
+                 [item]="dashboard[itemPos.viewList]"
+                 (itemChange)="layoutChanged()">
     <app-view-list></app-view-list>
   </gridster-item>
-  <gridster-item *ngIf="itemPos.status >= 0" [item]="dashboard[itemPos.status]" (itemChange)="layoutChanged()">
+  <gridster-item *ngIf="itemPos.status >= 0"
+                 [item]="dashboard[itemPos.status]"
+                 (itemChange)="layoutChanged()">
     <app-status></app-status>
   </gridster-item>
-  <gridster-item *ngIf="itemPos.globe >= 0" [item]="dashboard[itemPos.globe]" (itemChange)="layoutChanged()">
+  <gridster-item *ngIf="itemPos.globe >= 0"
+                 [item]="dashboard[itemPos.globe]"
+                 (itemChange)="layoutChanged()">
     <div appCesium></div>
-    <app-fullscreen (fullscreenActiveChange)="handleButtonFullscreen()"></app-fullscreen>
+    <app-fullscreen [fullscreenActive]="fullscreenActive"
+                    (fullscreenActiveChange)="handleButtonFullscreen($event)">
+    </app-fullscreen>
   </gridster-item>
 </gridster>

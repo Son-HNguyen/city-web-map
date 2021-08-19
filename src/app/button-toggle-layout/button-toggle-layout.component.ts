@@ -1,6 +1,5 @@
 import {Component, EventEmitter, Input, OnInit, Output, SimpleChanges} from '@angular/core';
 import {GlobalService} from "../../global.service";
-import _ = require("lodash");
 import {Workspace} from "../../core/Workspace";
 
 @Component({

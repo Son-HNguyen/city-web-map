@@ -135,11 +135,14 @@ export class AppComponent implements OnInit {
     await loadSavedWorkspace();
 
     // Check if fullscreen is activated
-    await this.handleButtonFullscreen(true);
+    await this.handleButtonFullscreen(this.fullscreenActive);
   }
 
   async handleButtonSave() {
     // TODO Save in local storage for bigger workspace?
+    // TODO Compress bigger JSON objects? -> jspack
+    // TODO QR code for sharing (small) workspaces?
+    // TODO Add option to login to save settings and set custom share URLs? -> passportjs
     // Quick save
     let cookieSize: number;
     // Check if fullscreen is activated
@@ -148,7 +151,7 @@ export class AppComponent implements OnInit {
     } else {
       cookieSize = await this.UTILS!.workspace.saveToCookies(this.dashboard, this.fullscreenActive);
     }
-    this.UTILS!.snackBar.show('Workspace saved (space allocated ' + Math.round(cookieSize / 4096 * 100) + '%)');
+    this.UTILS!.snackBar.show('Workspace saved (space allocated ' + Math.round(cookieSize / 4096 * 100) + '%).');
   }
 
   handleButtonSaveAs() {
@@ -214,10 +217,8 @@ export class AppComponent implements OnInit {
     this.changedLayout = Workspace.getLayout(this.dashboard);
   }
 
-  async handleButtonFullscreen(checkOnly?: boolean) {
-    if (checkOnly == null || !checkOnly) {
-      this.fullscreenActive = !this.fullscreenActive;
-    }
+  async handleButtonFullscreen(fullscreenActive: boolean) {
+    this.fullscreenActive = fullscreenActive;
 
     const scope = this;
 

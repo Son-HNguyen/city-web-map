@@ -1,3 +1,8 @@
-<button id="buttonFullscreen" mat-icon-button matTooltip="Fullscreen" class="drag-handler" color="accent" (click)="fullscreen()">
-  <span class="material-icons">fullscreen</span>
+<button id="buttonFullscreen"
+        mat-icon-button
+        matTooltip="{{ buttonTooltip }}"
+        class="drag-handler"
+        color="accent"
+        (click)="fullscreen()">
+  <span class="material-icons">{{ buttonIcon }}</span>
 </button>
