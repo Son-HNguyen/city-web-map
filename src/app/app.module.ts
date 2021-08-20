@@ -45,6 +45,14 @@ import {MatSnackBarModule} from "@angular/material/snack-bar";
 import {GlobalService} from "../global.service";
 import { ButtonToggleLayoutComponent } from './button-toggle-layout/button-toggle-layout.component';
 import { FullscreenComponent } from './fullscreen/fullscreen.component';
+import { MoveCesiumComponent } from './move-cesium/move-cesium.component';
+import { FlyHomeComponent } from './fly-home/fly-home.component';
+import { SearchLocationComponent } from './search-location/search-location.component';
+import { TimelineComponent } from './timeline/timeline.component';
+import {MatCardModule} from "@angular/material/card";
+import {MatSliderModule} from "@angular/material/slider";
+import {MatBadgeModule} from "@angular/material/badge";
+import {MatDatepickerModule} from "@angular/material/datepicker";
 
 @NgModule({
   declarations: [
@@ -70,7 +78,11 @@ import { FullscreenComponent } from './fullscreen/fullscreen.component';
     SnackBarComponent,
     SnackBarContentComponent,
     ButtonToggleLayoutComponent,
-    FullscreenComponent
+    FullscreenComponent,
+    MoveCesiumComponent,
+    FlyHomeComponent,
+    SearchLocationComponent,
+    TimelineComponent
   ],
   entryComponents: [
     DialogInfoComponent,
@@ -106,7 +118,11 @@ import { FullscreenComponent } from './fullscreen/fullscreen.component';
     MatButtonToggleModule,
     MatDividerModule,
     MatTooltipModule,
-    MatSnackBarModule
+    MatSnackBarModule,
+    MatCardModule,
+    MatSliderModule,
+    MatBadgeModule,
+    MatDatepickerModule
   ],
   bootstrap: [
     AppComponent,

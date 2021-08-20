@@ -32,6 +32,28 @@ html, body, div[appCesium] {
   overflow: hidden;
 }
 
+/* Custom widgets at the corners of the Cesium app */
+.corner-left, .corner-right, .corner-top, corner-bottom {
+  position: absolute;
+  display: inline-block;
+}
+
+.corner-left {
+  left: 10px;
+}
+
+.corner-right {
+  right: 10px;
+}
+
+.corner-top {
+  top: 10px;
+}
+
+.corner-bottom {
+  bottom: 10px;
+}
+
 /* Hide default Cesium widgets */
 .cesium-viewer-toolbar, /* geocoder, home button, base layer picker, image provider */
 .cesium-viewer-animationContainer, /* the clock animation */

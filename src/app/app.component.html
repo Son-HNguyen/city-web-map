@@ -3,30 +3,40 @@
                  [item]="dashboard[itemPos.menuBar]"
                  (itemChange)="layoutChanged()">
     <span color="primary"><b>&nbsp;city-web-map&nbsp;</b></span>
-    <button mat-stroked-button matTooltip="Open existing workspace">
+    <button mat-stroked-button
+            matTooltip="Open existing workspace">
       <span class="material-icons">drive_file_move_rtl</span>&nbsp;Open
     </button>
-    <button id="buttonSaveWorkspace" mat-stroked-button matTooltip="Save current workspace"
+    <button id="buttonSaveWorkspace"
+            mat-stroked-button
+            matTooltip="Save current workspace"
             (click)="handleButtonSave()">
       <span class="material-icons">save</span>&nbsp;Save
     </button>
-    <button id="buttonSaveWorkspaceAs" mat-stroked-button matTooltip="Save as ..." (click)="handleButtonSaveAs()">
+    <button id="buttonSaveWorkspaceAs"
+            mat-stroked-button
+            matTooltip="Save as ..." (click)="handleButtonSaveAs()">
       <span class="material-icons">archive</span>&nbsp;Save as ...
     </button>
-    <button id="buttonNewWorkspace" mat-stroked-button matTooltip="Create new workspace" (click)="handleButtonNew()">
+    <button id="buttonNewWorkspace"
+            mat-stroked-button
+            matTooltip="Create new workspace" (click)="handleButtonNew()">
       <span class="material-icons">add_box</span>&nbsp;New
     </button>
     <app-button-toggle-layout (buttonToggleValue)="handleButtonToggleValue($event)"
                               [changedLayout]="changedLayout">
     </app-button-toggle-layout>
-    <button mat-stroked-button matTooltip="Configure application">
+    <button mat-stroked-button
+            matTooltip="Configure application">
       <span class="material-icons">settings_applications</span>&nbsp;Settings
     </button>
     <app-cheat-sheet></app-cheat-sheet>
-    <button mat-stroked-button matTooltip="Show help information">
+    <button mat-stroked-button
+            matTooltip="Show help information">
       <span class="material-icons">help_center</span>&nbsp;Help
     </button>
-    <button mat-stroked-button matTooltip="Join us on GitHub">
+    <button mat-stroked-button
+            matTooltip="Join us on GitHub">
       <img src="/assets/images/thirdParty/GitHub-Mark-32px.png" width="30%"/>&nbsp;GitHub
     </button>
   </gridster-item>
@@ -69,8 +79,23 @@
                  [item]="dashboard[itemPos.globe]"
                  (itemChange)="layoutChanged()">
     <div appCesium></div>
-    <app-fullscreen [fullscreenActive]="fullscreenActive"
-                    (fullscreenActiveChange)="handleButtonFullscreen($event)">
-    </app-fullscreen>
+    <div class="corner-top corner-left">
+      <app-move-cesium></app-move-cesium>
+    </div>
+    <div class="corner-top corner-right">
+      <!-- TODO Implement -->
+      <app-search-location></app-search-location>
+      <!-- TODO Implement -->
+      <app-fly-home></app-fly-home>
+    </div>
+    <div class="corner-bottom corner-left">
+      <!-- TODO Implement -->
+      <app-timeline></app-timeline>
+    </div>
+    <div class="corner-bottom corner-right">
+      <app-fullscreen [fullscreenActive]="fullscreenActive"
+                      (fullscreenActiveChange)="handleButtonFullscreen($event)">
+      </app-fullscreen>
+    </div>
   </gridster-item>
 </gridster>

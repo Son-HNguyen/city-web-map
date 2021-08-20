@@ -1,0 +1,39 @@
+<!-- TODO Date AND Time Picker -->
+<mat-form-field style="width:1px;height:1px;visibility:hidden;">
+  <mat-date-range-input [formGroup]="timeRange" [rangePicker]="picker">
+    <input matStartDate formControlName="start" placeholder="Start date">
+    <input matEndDate formControlName="end" placeholder="End date">
+  </mat-date-range-input>
+</mat-form-field>
+<mat-datepicker-toggle matSuffix [for]="picker" matTooltip="Select a time range"></mat-datepicker-toggle>
+<mat-date-range-picker #picker></mat-date-range-picker>
+
+<button mat-icon-button
+        matTooltip="{{ buttonPlayTooltip }}"
+        class="drag-handler"
+        color="{{ buttonPlayColor }}"
+        (click)="handlePlay()">
+  <span class="material-icons">{{ buttonPlayIcon }}</span>
+</button>
+
+<button mat-icon-button
+        matTooltip="To present time"
+        class="drag-handler"
+        color="accent"
+        (click)="handleToPresent()">
+  <span class="material-icons">skip_previous</span>
+</button>
+
+<button mat-icon-button
+        matTooltip="{{ speedMultiplierTooltip }}"
+        class="drag-handler"
+        color="accent"
+        (click)="handleSpeed()">
+  <mat-icon matBadge="{{ speedMultiplier }}"
+            matBadgeColor="primary"
+            [matBadgeHidden]="speedMultiplierHidden">
+    fast_forward
+  </mat-icon>
+  <span class="cdk-visually-hidden">Speed multiplier</span>
+  <!--span class="material-icons">fast_forward</span>-->
+</button>

@@ -44,6 +44,7 @@ export class AppComponent implements OnInit {
     });
   }
 
+  // TODO Show hotkeys in all tooltips e.g. `Tooltip | Fn`
   // TODO Pressing the hotkeys again automatically closes the dialog
   @HostListener('document:keydown', ['$event'])
   async onKeyDown(e: KeyboardEvent) {

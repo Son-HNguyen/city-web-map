@@ -40,6 +40,6 @@ enum ButtonFullscreenIcons {
 }
 
 enum ButtonFullscreenTooltips {
-  ON = 'Fullscreen',
-  OFF = 'Exit fullscreen'
+  ON = 'Fullscreen | F11',
+  OFF = 'Exit fullscreen | F11'
 }
