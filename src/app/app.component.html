@@ -4,23 +4,23 @@
                  (itemChange)="layoutChanged()">
     <span color="primary"><b>&nbsp;city-web-map&nbsp;</b></span>
     <button mat-stroked-button
-            matTooltip="Open existing workspace">
+            matTooltip="Open existing workspace | Ctrl+O">
       <span class="material-icons">drive_file_move_rtl</span>&nbsp;Open
     </button>
     <button id="buttonSaveWorkspace"
             mat-stroked-button
-            matTooltip="Save current workspace"
+            matTooltip="Save current workspace | Ctrl+S"
             (click)="handleButtonSave()">
       <span class="material-icons">save</span>&nbsp;Save
     </button>
     <button id="buttonSaveWorkspaceAs"
             mat-stroked-button
-            matTooltip="Save as ..." (click)="handleButtonSaveAs()">
+            matTooltip="Save as ... | Ctrl+Alt+S" (click)="handleButtonSaveAs()">
       <span class="material-icons">archive</span>&nbsp;Save as ...
     </button>
     <button id="buttonNewWorkspace"
             mat-stroked-button
-            matTooltip="Create new workspace" (click)="handleButtonNew()">
+            matTooltip="Create new workspace | Ctrl+Alt+N" (click)="handleButtonNew()">
       <span class="material-icons">add_box</span>&nbsp;New
     </button>
     <app-button-toggle-layout (buttonToggleValue)="handleButtonToggleValue($event)"

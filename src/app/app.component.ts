@@ -71,6 +71,11 @@ export class AppComponent implements OnInit {
       e.preventDefault();
       document.getElementById('buttonNewWorkspace')!.click();
     }
+    // Fly to default location
+    else if (e.ctrlKey && e.altKey && e.key === 'h') {
+      e.preventDefault();
+      document.getElementById('buttonFlyHome')!.click();
+    }
     // Cheat sheet
     else if (e.key === 'F1') {
       e.preventDefault();

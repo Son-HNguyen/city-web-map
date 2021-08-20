@@ -1,6 +1,8 @@
-<button mat-icon-button
-        matTooltip="Fly to default location"
+<button id="buttonFlyHome"
+        mat-icon-button
+        matTooltip="Fly to default location | Ctrl+Alt+H"
         class="drag-handler"
-        color="accent">
+        color="accent"
+        (click)="handleButtonFlyHome()">
   <span class="material-icons">home</span>
 </button>
