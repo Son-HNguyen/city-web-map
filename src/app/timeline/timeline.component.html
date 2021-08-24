@@ -9,11 +9,11 @@
 <mat-date-range-picker #picker></mat-date-range-picker>
 
 <button mat-icon-button
-        matTooltip="{{ buttonPlayTooltip }}"
+        matTooltip="{{ buttonPlay.tooltip }}"
         class="drag-handler"
-        color="{{ buttonPlayColor }}"
+        color="{{ buttonPlay.color }}"
         (click)="handlePlay()">
-  <span class="material-icons">{{ buttonPlayIcon }}</span>
+  <span class="material-icons">{{ buttonPlay.icon }}</span>
 </button>
 
 <button mat-icon-button
@@ -25,13 +25,13 @@
 </button>
 
 <button mat-icon-button
-        matTooltip="{{ speedMultiplierTooltip }}"
+        matTooltip="{{ speedMultiplier.tooltip }}"
         class="drag-handler"
         color="accent"
         (click)="handleSpeed()">
-  <mat-icon matBadge="{{ speedMultiplierDisplay }}"
+  <mat-icon matBadge="{{ speedMultiplier.display }}"
             matBadgeColor="primary"
-            [matBadgeHidden]="speedMultiplierHidden">
+            [matBadgeHidden]="speedMultiplier.hidden">
     fast_forward
   </mat-icon>
   <span class="cdk-visually-hidden">Speed multiplier</span>
