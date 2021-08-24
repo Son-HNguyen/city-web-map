@@ -34,11 +34,10 @@ export class WorkspaceUtility {
   private UTILS: UtilityService;
   private GLOBALS: GlobalService;
 
-  constructor(
-    cookieService: CookieService,
-    logService: LogService,
-    GLOBALS: GlobalService,
-    UTILS: UtilityService
+  constructor(cookieService: CookieService,
+              logService: LogService,
+              GLOBALS: GlobalService,
+              UTILS: UtilityService
   ) {
     this.cookieService = cookieService;
     this.logService = logService;

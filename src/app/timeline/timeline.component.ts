@@ -15,8 +15,8 @@ export class TimelineComponent implements OnInit, OnDestroy {
   buttonPlayIcon: ButtonPlayIcons;
   buttonPlayTooltip: ButtonPlayTooltips;
   buttonPlayColor: ButtonPlayColors;
-  speedMultiplierDisplay: SpeedMultiplierDisplays;
   speedMultiplierValue: SpeedMultiplierValues;
+  speedMultiplierDisplay: SpeedMultiplierDisplays;
   speedMultiplierTooltip: SpeedMultiplierTooltips;
   speedMultiplierIndex: number;
   speedMultiplierHidden: boolean;
@@ -50,8 +50,8 @@ export class TimelineComponent implements OnInit, OnDestroy {
     this.buttonPlayIcon = ButtonPlayIcons.PLAY;
     this.buttonPlayTooltip = ButtonPlayTooltips.PLAY;
     this.buttonPlayColor = ButtonPlayColors.PLAY;
-    this.speedMultiplierDisplay = SpeedMultiplierDisplays.NORMAL;
     this.speedMultiplierValue = SpeedMultiplierValues.NORMAL;
+    this.speedMultiplierDisplay = SpeedMultiplierDisplays.NORMAL;
     this.speedMultiplierTooltip = SpeedMultiplierTooltips.NORMAL;
     this.speedMultiplierHidden = true;
     this.speedMultiplierIndex = 0;
@@ -64,6 +64,19 @@ export class TimelineComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    // Load from previous workspace
+    const savedTimeline = this.GLOBALS!.WORKSPACE.timeline;
+
+    if (savedTimeline != null && savedTimeline.multiplier != null) {
+      this.handleSpeed(savedTimeline.multiplier);
+    }
+
+    if (savedTimeline != null && savedTimeline.autoplay != null && savedTimeline.autoplay) {
+      this.handlePlay();
+    }
+
+    // TODO Also load time range from previous workspace
+
     // Use RxJS timer
     this.timeSubscription = timer(0, 1000)
       .pipe(
@@ -95,7 +108,9 @@ export class TimelineComponent implements OnInit, OnDestroy {
   }
 
   handlePlay() {
+    // Get clock in Cesium
     let clock = this.GLOBALS!.CESIUM_VIEWER.clock;
+
     this.timeActivated = !this.timeActivated;
     if (this.timeActivated) {
       clock.shouldAnimate = true;
@@ -109,6 +124,11 @@ export class TimelineComponent implements OnInit, OnDestroy {
       this.buttonPlayColor = ButtonPlayColors.PLAY;
     }
 
+    // Save to workspace
+    this.GLOBALS!.WORKSPACE.timeline.autoplay = this.timeActivated;
+
+    // TODO Also save time range (when set) to workspace
+
     // TODO Make use of timeRange.start and timeRange.end
   }
 
@@ -118,12 +138,42 @@ export class TimelineComponent implements OnInit, OnDestroy {
     // TODO If timeRange exists, then jump to the start of this range instead
   }
 
-  handleSpeed() {
-    const currentIndex = (++this.speedMultiplierIndex) % this.speedMultiplierDisplays.length;
+  handleSpeed(target?: SpeedMultiplierValues) {
+    let currentIndex = 0;
+    if (target != null) {
+      this.speedMultiplierValue = target;
+      switch (this.speedMultiplierValue) {
+        case SpeedMultiplierValues.NORMAL:
+          currentIndex = 0;
+          break;
+        case SpeedMultiplierValues.FAST:
+          currentIndex = 1;
+          break;
+        case SpeedMultiplierValues.FASTER:
+          currentIndex = 2;
+          break;
+        case SpeedMultiplierValues.FASTERER:
+          currentIndex = 3;
+          break;
+        case SpeedMultiplierValues.FASTEST:
+          currentIndex = 4;
+          break;
+      }
+      this.speedMultiplierIndex = currentIndex;
+    } else {
+      currentIndex = (++this.speedMultiplierIndex) % this.speedMultiplierValues.length;
+      this.speedMultiplierValue = this.speedMultiplierValues[currentIndex];
+    }
+
     this.speedMultiplierDisplay = this.speedMultiplierDisplays[currentIndex];
     this.speedMultiplierTooltip = this.speedMultiplierTooltips[currentIndex];
-    this.GLOBALS!.CESIUM_VIEWER.clock.multiplier = this.speedMultiplierValues[currentIndex];
     this.speedMultiplierHidden = this.speedMultiplierDisplay === SpeedMultiplierDisplays.NORMAL;
+
+    // Set multiplier in Cesium
+    this.GLOBALS!.CESIUM_VIEWER.clock.multiplier = this.speedMultiplierValue;
+
+    // Save to workspace
+    this.GLOBALS!.WORKSPACE.timeline.multiplier = this.speedMultiplierValue;
 
     // TODO Make use of timeRange.start and timeRange.end
   }
@@ -144,21 +194,21 @@ enum ButtonPlayColors {
   PAUSE = 'primary'
 }
 
+// Speed multiplier in seconds
+export enum SpeedMultiplierValues {
+  NORMAL = 1,
+  FAST = 5,
+  FASTER = 60,
+  FASTERER = 3600,
+  FASTEST = 86400
+}
+
 enum SpeedMultiplierDisplays {
   NORMAL = '',
   FAST = 's',
   FASTER = 'm',
   FASTERER = 'h',
   FASTEST = 'd'
-}
-
-// Speed multiplier in seconds
-enum SpeedMultiplierValues {
-  NORMAL = 1,
-  FAST = 5,
-  FASTER = 60,
-  FASTERER = 3600,
-  FASTEST = 86400
 }
 
 enum SpeedMultiplierTooltips {

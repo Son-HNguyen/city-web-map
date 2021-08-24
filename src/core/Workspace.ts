@@ -27,6 +27,7 @@ import {TerrainLayer} from "./TerrainLayer";
 import {Viewpoint} from "./Viewpoint";
 import {CesiumCameraLocation} from "../utilities/camera.utility";
 import {GridsterItem} from "angular-gridster2";
+import {SpeedMultiplierValues} from "../app/timeline/timeline.component";
 import _ = require("lodash");
 
 export class Workspace {
@@ -47,6 +48,13 @@ export class Workspace {
   // ==============================
   // WIDGETS
   // ==============================
+  private _timeline: TimeLineConfig;
+  public static readonly DEFAULT_TIMELINE: TimeLineConfig = {
+    autoplay: false,
+    multiplier: SpeedMultiplierValues.NORMAL,
+    range: []
+  }
+
   private _viewpoints: Array<Viewpoint>;
 
   // ==============================
@@ -176,6 +184,7 @@ export class Workspace {
     modelLayers?: Array<ModelLayer>,
     baseLayers?: Array<BaseLayer>,
     terrainLayers?: Array<TerrainLayer>,
+    timeline?: TimeLineConfig,
     viewpoints?: Array<Viewpoint>,
     gridLayout?: Array<GridsterItem>,
     itemPos?: GridItemPos,
@@ -188,6 +197,7 @@ export class Workspace {
     this._modelLayers = (modelLayers == null) ? [] : modelLayers;
     this._baseLayers = (baseLayers == null) ? [] : baseLayers;
     this._terrainLayers = (terrainLayers == null) ? [] : terrainLayers;
+    this._timeline = (timeline == null) ? Workspace.DEFAULT_TIMELINE : timeline;
     this._viewpoints = (viewpoints == null) ? [] : viewpoints;
     this._gridLayout = (gridLayout == null) ? Workspace.DEFAULT_LAYOUTS.layoutCenterGlobe : gridLayout;
     this._itemPos = (itemPos == null) ? Workspace.DEFAULT_ITEM_POS_LAYOUTS.layoutCenterGlobe : itemPos;
@@ -250,6 +260,10 @@ export class Workspace {
     return this._terrainLayers;
   }
 
+  get timeline(): TimeLineConfig {
+    return this._timeline;
+  }
+
   get viewpoints(): Array<Viewpoint> {
     return this._viewpoints;
   }
@@ -298,6 +312,10 @@ export class Workspace {
     this._terrainLayers = value;
   }
 
+  set timeline(value: TimeLineConfig) {
+    this._timeline = value;
+  }
+
   set viewpoints(value: Array<Viewpoint>) {
     this._viewpoints = value;
   }
@@ -317,6 +335,12 @@ export class Workspace {
   set cameraLocation(value: CesiumCameraLocation) {
     this._cameraLocation = value;
   }
+}
+
+export interface TimeLineConfig {
+  autoplay: boolean,
+  multiplier: SpeedMultiplierValues,
+  range: Array<Date>
 }
 
 export interface GridLayouts {
