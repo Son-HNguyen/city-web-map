@@ -46,7 +46,7 @@ export class CesiumDirective implements OnInit {
       this.GLOBALS!.CESIUM_VIEWER = new cesium.Viewer('cesiumContainer', {
         // TODO Hardcoded imagery provider?
         //selectedImageryProviderViewModel: ENV.cesium.createDefaultImageryProviderViewModels()[1],
-        shadows: (shadows === 'true'),
+        shadows: (shadows === 'true'), // TODO Toggle shadow using an app
         terrainShadows: parseInt(terrainShadows, 10),
         timeline: false,
         animation: false,

@@ -167,6 +167,8 @@ export class Workspace {
     showOnStart: true
   };
 
+  // TODO Attributes and functions for clock/timeline?
+
   constructor(
     title?: string,
     description?: string,

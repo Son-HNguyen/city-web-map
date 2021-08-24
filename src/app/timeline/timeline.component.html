@@ -29,11 +29,12 @@
         class="drag-handler"
         color="accent"
         (click)="handleSpeed()">
-  <mat-icon matBadge="{{ speedMultiplier }}"
+  <mat-icon matBadge="{{ speedMultiplierDisplay }}"
             matBadgeColor="primary"
             [matBadgeHidden]="speedMultiplierHidden">
     fast_forward
   </mat-icon>
   <span class="cdk-visually-hidden">Speed multiplier</span>
-  <!--span class="material-icons">fast_forward</span>-->
 </button>
+
+<button id="buttonTimeDisplay" mat-stroked-button color="accent" disabled>{{ currentTime }}</button>

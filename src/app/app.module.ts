@@ -53,6 +53,7 @@ import {MatCardModule} from "@angular/material/card";
 import {MatSliderModule} from "@angular/material/slider";
 import {MatBadgeModule} from "@angular/material/badge";
 import {MatDatepickerModule} from "@angular/material/datepicker";
+import {MatInputModule} from "@angular/material/input";
 
 @NgModule({
   declarations: [
@@ -98,32 +99,33 @@ import {MatDatepickerModule} from "@angular/material/datepicker";
     SnackBarComponent,
     SnackBarContentComponent
   ],
-  imports: [
-    BrowserModule,
-    AppRoutingModule,
-    BrowserAnimationsModule,
-    MatDialogModule,
-    MatFormFieldModule,
-    FormsModule,
-    HttpClientModule,
-    MatNativeDateModule,
-    ReactiveFormsModule,
-    MatButtonModule,
-    _MatMenuDirectivesModule,
-    MatIconModule,
-    MatMenuModule,
-    GridsterModule,
-    MatSelectModule,
-    MatOptionModule,
-    MatButtonToggleModule,
-    MatDividerModule,
-    MatTooltipModule,
-    MatSnackBarModule,
-    MatCardModule,
-    MatSliderModule,
-    MatBadgeModule,
-    MatDatepickerModule
-  ],
+    imports: [
+        BrowserModule,
+        AppRoutingModule,
+        BrowserAnimationsModule,
+        MatDialogModule,
+        MatFormFieldModule,
+        FormsModule,
+        HttpClientModule,
+        MatNativeDateModule,
+        ReactiveFormsModule,
+        MatButtonModule,
+        _MatMenuDirectivesModule,
+        MatIconModule,
+        MatMenuModule,
+        GridsterModule,
+        MatSelectModule,
+        MatOptionModule,
+        MatButtonToggleModule,
+        MatDividerModule,
+        MatTooltipModule,
+        MatSnackBarModule,
+        MatCardModule,
+        MatSliderModule,
+        MatBadgeModule,
+        MatDatepickerModule,
+        MatInputModule
+    ],
   bootstrap: [
     AppComponent,
     DialogInfoComponent,
