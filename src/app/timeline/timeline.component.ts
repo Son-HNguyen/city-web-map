@@ -74,7 +74,7 @@ export class TimelineComponent implements OnInit, OnDestroy {
   ];
 
   timeRange: FormGroup;
-  currentTime: string;
+  currentTimeString: string;
   timeSubscription: Subscription;
 
   constructor(private GLOBALS?: GlobalService, private changeDetectorRef?: ChangeDetectorRef) {
@@ -85,7 +85,7 @@ export class TimelineComponent implements OnInit, OnDestroy {
       start: new FormControl(),
       end: new FormControl()
     });
-    this.currentTime = this.displayDate(new Date());
+    this.currentTimeString = this.displayDate(new Date());
     this.timeSubscription = new Subscription();
   }
 
@@ -97,7 +97,7 @@ export class TimelineComponent implements OnInit, OnDestroy {
       // Set current time from previous workspace
       if (savedTimeline.current != null) {
         const savedCurrentDate = new Date(savedTimeline.current);
-        this.currentTime = this.displayDate(savedCurrentDate);
+        this.currentTimeString = this.displayDate(savedCurrentDate);
         this.GLOBALS!.CESIUM_VIEWER.clock.currentTime = Cesium.JulianDate.fromDate(savedCurrentDate);
       }
       // Set speed multiplier from previous workspace
@@ -125,7 +125,7 @@ export class TimelineComponent implements OnInit, OnDestroy {
       )
       .subscribe(time => {
         if (time != null) {
-          this.currentTime = this.displayDate(time);
+          this.currentTimeString = this.displayDate(time);
           // Save current time to workspace
           this.GLOBALS!.WORKSPACE.timeline.current = new Date(time.valueOf());
           this.changeDetectorRef?.markForCheck(); // change detection for this component to update time every second
@@ -171,7 +171,10 @@ export class TimelineComponent implements OnInit, OnDestroy {
   }
 
   handleToPresent() {
-    this.GLOBALS!.CESIUM_VIEWER.clock.currentTime = Cesium.JulianDate.now();
+    const currentDate = new Date();
+    this.GLOBALS!.CESIUM_VIEWER.clock.currentTime = Cesium.JulianDate.fromDate(currentDate);
+    this.GLOBALS!.WORKSPACE.timeline.current = new Date(currentDate.valueOf());
+    this.currentTimeString = this.displayDate(currentDate);
 
     // TODO If timeRange exists, then jump to the start of this range instead
   }
