@@ -117,9 +117,6 @@ export class AppComponent implements OnInit {
 
     await this.initLayout();
 
-    // Load previous workspace
-    await this.UTILS!.workspace.readFromCookies();
-
     const scope = this;
 
     async function loadSavedWorkspace(): Promise<void> {
@@ -176,6 +173,7 @@ export class AppComponent implements OnInit {
       return new Promise<void>(async (resolve, reject) => {
         if (nestedScope.options && nestedScope.options.api && nestedScope.options.api.optionsChanged) {
           nestedScope.GLOBALS!.WORKSPACE = new Workspace();
+          // TODO Apply new workspace to widgets (timeline, etc.)
           await nestedScope.initLayout();
           await nestedScope.options.api.optionsChanged();
           resolve();

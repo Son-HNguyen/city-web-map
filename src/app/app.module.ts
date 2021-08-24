@@ -7,7 +7,7 @@ import {MAT_FORM_FIELD_DEFAULT_OPTIONS, MatFormFieldModule} from '@angular/mater
 import {MatIconModule} from '@angular/material/icon';
 import {_MatMenuDirectivesModule, MatMenuModule} from '@angular/material/menu';
 import {BrowserModule} from '@angular/platform-browser';
-import {Injector, NgModule} from '@angular/core';
+import {APP_INITIALIZER, Injector, NgModule} from '@angular/core';
 import {CookieService} from 'ngx-cookie-service';
 
 import {AppRoutingModule} from './app-routing.module';
@@ -43,12 +43,12 @@ import {MatTooltipModule} from "@angular/material/tooltip";
 import {SnackBarComponent, SnackBarContentComponent} from './snack-bar/snack-bar.component';
 import {MatSnackBarModule} from "@angular/material/snack-bar";
 import {GlobalService} from "../global.service";
-import { ButtonToggleLayoutComponent } from './button-toggle-layout/button-toggle-layout.component';
-import { FullscreenComponent } from './fullscreen/fullscreen.component';
-import { MoveCesiumComponent } from './move-cesium/move-cesium.component';
-import { FlyHomeComponent } from './fly-home/fly-home.component';
-import { SearchLocationComponent } from './search-location/search-location.component';
-import { TimelineComponent } from './timeline/timeline.component';
+import {ButtonToggleLayoutComponent} from './button-toggle-layout/button-toggle-layout.component';
+import {FullscreenComponent} from './fullscreen/fullscreen.component';
+import {MoveCesiumComponent} from './move-cesium/move-cesium.component';
+import {FlyHomeComponent} from './fly-home/fly-home.component';
+import {SearchLocationComponent} from './search-location/search-location.component';
+import {TimelineComponent} from './timeline/timeline.component';
 import {MatCardModule} from "@angular/material/card";
 import {MatSliderModule} from "@angular/material/slider";
 import {MatBadgeModule} from "@angular/material/badge";
@@ -99,33 +99,33 @@ import {MatInputModule} from "@angular/material/input";
     SnackBarComponent,
     SnackBarContentComponent
   ],
-    imports: [
-        BrowserModule,
-        AppRoutingModule,
-        BrowserAnimationsModule,
-        MatDialogModule,
-        MatFormFieldModule,
-        FormsModule,
-        HttpClientModule,
-        MatNativeDateModule,
-        ReactiveFormsModule,
-        MatButtonModule,
-        _MatMenuDirectivesModule,
-        MatIconModule,
-        MatMenuModule,
-        GridsterModule,
-        MatSelectModule,
-        MatOptionModule,
-        MatButtonToggleModule,
-        MatDividerModule,
-        MatTooltipModule,
-        MatSnackBarModule,
-        MatCardModule,
-        MatSliderModule,
-        MatBadgeModule,
-        MatDatepickerModule,
-        MatInputModule
-    ],
+  imports: [
+    BrowserModule,
+    AppRoutingModule,
+    BrowserAnimationsModule,
+    MatDialogModule,
+    MatFormFieldModule,
+    FormsModule,
+    HttpClientModule,
+    MatNativeDateModule,
+    ReactiveFormsModule,
+    MatButtonModule,
+    _MatMenuDirectivesModule,
+    MatIconModule,
+    MatMenuModule,
+    GridsterModule,
+    MatSelectModule,
+    MatOptionModule,
+    MatButtonToggleModule,
+    MatDividerModule,
+    MatTooltipModule,
+    MatSnackBarModule,
+    MatCardModule,
+    MatSliderModule,
+    MatBadgeModule,
+    MatDatepickerModule,
+    MatInputModule
+  ],
   bootstrap: [
     AppComponent,
     DialogInfoComponent,
@@ -141,7 +141,8 @@ import {MatInputModule} from "@angular/material/input";
     LogService,
     LogPublishersService,
     GlobalService,
-    UtilityService
+    UtilityService,
+    {provide: APP_INITIALIZER, useFactory: appInitCookie, deps: [UtilityService], multi: true}
   ]
 })
 export class AppModule {
@@ -155,4 +156,8 @@ export class AppModule {
   constructor(injector: Injector) {
     AppModule.injector = injector;
   }
+}
+
+export function appInitCookie(provider: UtilityService) {
+  return () => provider.appInitCookie();
 }

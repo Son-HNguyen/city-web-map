@@ -50,6 +50,10 @@ export class UtilityService {
     this._workspace = new WorkspaceUtility(this.cookieService!, this.logService!, this.GLOBALS!, this);
   }
 
+  public appInitCookie(): Promise<void> {
+    return this._workspace.readFromCookies();
+  }
+
   get camera(): CameraUtility {
     return this._camera;
   }
