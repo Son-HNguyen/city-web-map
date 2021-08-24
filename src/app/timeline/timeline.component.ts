@@ -93,12 +93,21 @@ export class TimelineComponent implements OnInit, OnDestroy {
     // Load from previous workspace
     const savedTimeline = this.GLOBALS!.WORKSPACE.timeline;
 
-    if (savedTimeline != null && savedTimeline.multiplier != null) {
-      this.handleSpeed(savedTimeline.multiplier);
-    }
-
-    if (savedTimeline != null && savedTimeline.autoplay != null && savedTimeline.autoplay) {
-      this.handlePlay();
+    if (savedTimeline != null) {
+      // Set current time from previous workspace
+      if (savedTimeline.current != null) {
+        const savedCurrentDate = new Date(savedTimeline.current);
+        this.currentTime = this.displayDate(savedCurrentDate);
+        this.GLOBALS!.CESIUM_VIEWER.clock.currentTime = Cesium.JulianDate.fromDate(savedCurrentDate);
+      }
+      // Set speed multiplier from previous workspace
+      if (savedTimeline.multiplier != null) {
+        this.handleSpeed(savedTimeline.multiplier);
+      }
+      // Set play behaviours from previous workspace
+      if (savedTimeline.autoplay != null && savedTimeline.autoplay) {
+        this.handlePlay();
+      }
     }
 
     // TODO Also load time range from previous workspace
@@ -117,6 +126,8 @@ export class TimelineComponent implements OnInit, OnDestroy {
       .subscribe(time => {
         if (time != null) {
           this.currentTime = this.displayDate(time);
+          // Save current time to workspace
+          this.GLOBALS!.WORKSPACE.timeline.current = new Date(time.valueOf());
           this.changeDetectorRef?.markForCheck(); // change detection for this component to update time every second
         }
       });
@@ -152,6 +163,7 @@ export class TimelineComponent implements OnInit, OnDestroy {
 
     // Save to workspace
     this.GLOBALS!.WORKSPACE.timeline.autoplay = this.timeActivated;
+    this.GLOBALS!.WORKSPACE.timeline.current = new Date(Cesium.JulianDate.toDate(clock.currentTime).valueOf());
 
     // TODO Also save time range (when set) to workspace
 

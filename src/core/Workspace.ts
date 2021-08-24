@@ -51,6 +51,7 @@ export class Workspace {
   private _timeline: TimeLineConfig;
   public static readonly DEFAULT_TIMELINE: TimeLineConfig = {
     autoplay: false,
+    current: new Date(),
     multiplier: SpeedMultipliers.NORMAL,
     range: []
   }
@@ -339,6 +340,7 @@ export class Workspace {
 
 export interface TimeLineConfig {
   autoplay: boolean,
+  current: Date,
   multiplier: SpeedMultipliers,
   range: Array<Date>
 }
