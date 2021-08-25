@@ -27,7 +27,7 @@ import {TerrainLayer} from "./TerrainLayer";
 import {Viewpoint} from "./Viewpoint";
 import {CesiumCameraLocation} from "../utilities/camera.utility";
 import {GridsterItem} from "angular-gridster2";
-import {SpeedMultipliers} from "../app/timeline/timeline.component";
+import {DatePickerTimeRange, SpeedMultipliers} from "../app/timeline/timeline.component";
 import _ = require("lodash");
 
 export class Workspace {
@@ -53,7 +53,7 @@ export class Workspace {
     autoplay: false,
     current: new Date(),
     multiplier: SpeedMultipliers.NORMAL,
-    range: []
+    range: undefined
   }
 
   private _viewpoints: Array<Viewpoint>;
@@ -342,7 +342,7 @@ export interface TimeLineConfig {
   autoplay: boolean,
   current: Date,
   multiplier: SpeedMultipliers,
-  range: Array<Date>
+  range: DatePickerTimeRange | undefined;
 }
 
 export interface GridLayouts {

@@ -4,6 +4,7 @@ import {GlobalService} from "../../global.service";
 import * as Cesium from "cesium";
 import {Subscription, timer} from "rxjs";
 import {map, share} from "rxjs/operators";
+import {ClockRange} from "cesium";
 
 export enum SpeedMultipliers {
   NORMAL,
@@ -73,7 +74,7 @@ export class TimelineComponent implements OnInit, OnDestroy {
     },
   ];
 
-  timeRange: FormGroup;
+  timeRangeControl: FormGroup;
   currentTimeString: string;
   timeSubscription: Subscription;
 
@@ -81,15 +82,19 @@ export class TimelineComponent implements OnInit, OnDestroy {
     this.timeActivated = false;
     this.buttonPlay = Object.assign({}, TimelineComponent.DEFAULT_BUTTON_PLAY_CONFIGS.PLAY);
     this.speedMultiplier = Object.assign({}, TimelineComponent.DEFAULT_SPEED_MULTIPLIERS[SpeedMultipliers.NORMAL]);
-    this.timeRange = new FormGroup({
-      start: new FormControl(),
-      end: new FormControl()
+    const {DateTime} = require('luxon');
+    this.timeRangeControl = new FormGroup({
+      start: new FormControl(DateTime.now().minus({days: -3})),
+      end: new FormControl(DateTime.now().plus({days: 3}))
     });
     this.currentTimeString = this.displayDate(new Date());
     this.timeSubscription = new Subscription();
   }
 
   ngOnInit() {
+    // Set loop between time range
+    this.GLOBALS!.CESIUM_VIEWER.clock.clockRange = ClockRange.LOOP_STOP;
+
     // Load from previous workspace
     const savedTimeline = this.GLOBALS!.WORKSPACE.timeline;
 
@@ -107,6 +112,16 @@ export class TimelineComponent implements OnInit, OnDestroy {
       // Set play behaviours from previous workspace
       if (savedTimeline.autoplay != null && savedTimeline.autoplay) {
         this.handlePlay();
+      }
+      // Set time range from previous workspace
+      if (savedTimeline.range != null
+        && savedTimeline.range.start != null
+        && savedTimeline.range.end != null) {
+        this.timeRangeControl.setValue({
+          start: new Date(savedTimeline.range.start),
+          end: new Date(savedTimeline.range.end)
+        });
+        this.handleTimeRange(true);
       }
     }
 
@@ -206,6 +221,27 @@ export class TimelineComponent implements OnInit, OnDestroy {
 
     // TODO Make use of timeRange.start and timeRange.end
   }
+
+  handleTimeRange(fromInit?: boolean) {
+    if (fromInit == null || !fromInit) {
+      this.GLOBALS!.WORKSPACE.timeline.range = {
+        start: new Date(this.timeRangeControl.value.start.valueOf()),
+        end: new Date(this.timeRangeControl.value.end.valueOf())
+      };
+    }
+
+    this.GLOBALS!.CESIUM_VIEWER.clock.startTime =
+      Cesium.JulianDate.fromDate(new Date(this.timeRangeControl.value.start.valueOf()));
+    this.GLOBALS!.CESIUM_VIEWER.clock.stopTime =
+      Cesium.JulianDate.fromDate(new Date(this.timeRangeControl.value.end.valueOf()));
+
+    // TODO Effects to other elements?
+  }
+}
+
+export interface DatePickerTimeRange {
+  start: Date,
+  end: Date
 }
 
 export interface ButtonPlay {

@@ -1,8 +1,8 @@
 <!-- TODO Date AND Time Picker -->
 <mat-form-field style="width:1px;height:1px;visibility:hidden;">
-  <mat-date-range-input [formGroup]="timeRange" [rangePicker]="picker">
+  <mat-date-range-input [formGroup]="timeRangeControl" [rangePicker]="picker">
     <input matStartDate formControlName="start" placeholder="Start date">
-    <input matEndDate formControlName="end" placeholder="End date">
+    <input matEndDate formControlName="end" placeholder="End date" (dateChange)="handleTimeRange()">
   </mat-date-range-input>
 </mat-form-field>
 <mat-datepicker-toggle matSuffix [for]="picker" matTooltip="Select a time range"></mat-datepicker-toggle>
