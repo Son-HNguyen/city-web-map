@@ -4,6 +4,8 @@ import {CompactType, DisplayGrid, GridsterConfig, GridsterItem, GridType} from "
 import {UtilityService} from "../utils.service";
 import {GlobalService} from "../global.service";
 import {GridItemPos, Workspace} from "../core/Workspace";
+import {ButtonPlay, SpeedMultiplier, TimelineComponent} from "./timeline/timeline.component";
+import {FormGroup} from "@angular/forms";
 
 @Component({
   selector: 'app-root',
@@ -173,7 +175,12 @@ export class AppComponent implements OnInit {
       return new Promise<void>(async (resolve, reject) => {
         if (nestedScope.options && nestedScope.options.api && nestedScope.options.api.optionsChanged) {
           nestedScope.GLOBALS!.WORKSPACE = new Workspace();
+
           // TODO Apply new workspace to widgets (timeline, etc.)
+
+          // Reset timeline
+          document.getElementById('buttonResetTimeline')!.click();
+
           await nestedScope.initLayout();
           await nestedScope.options.api.optionsChanged();
           resolve();
@@ -189,6 +196,8 @@ export class AppComponent implements OnInit {
 
     this.UTILS!.snackBar.show('A new workspace has been created.');
   }
+
+
 
   async handleButtonToggleValue(value: any) {
     if (this.options.api && this.options.api.optionsChanged) {

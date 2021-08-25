@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, Component, OnDestroy, OnInit} from '@angular/core';
+import {ChangeDetectorRef, Component, EventEmitter, OnDestroy, OnInit, Output} from '@angular/core';
 import {FormControl, FormGroup} from "@angular/forms";
 import {GlobalService} from "../../global.service";
 import * as Cesium from "cesium";
@@ -84,7 +84,7 @@ export class TimelineComponent implements OnInit, OnDestroy {
     this.speedMultiplier = Object.assign({}, TimelineComponent.DEFAULT_SPEED_MULTIPLIERS[SpeedMultipliers.NORMAL]);
     const {DateTime} = require('luxon');
     this.timeRangeControl = new FormGroup({
-      start: new FormControl(DateTime.now().minus({days: -3})),
+      start: new FormControl(DateTime.now().minus({days: 3})),
       end: new FormControl(DateTime.now().plus({days: 3}))
     });
     this.currentTimeString = this.displayDate(new Date());
@@ -159,11 +159,31 @@ export class TimelineComponent implements OnInit, OnDestroy {
     }
   }
 
-  handlePlay() {
+  handleReset() {
+    const timelineComponent = new TimelineComponent();
+    this.timeActivated = timelineComponent.timeActivated;
+    this.buttonPlay = Object.assign({}, timelineComponent.buttonPlay);
+    this.speedMultiplier = Object.assign({}, timelineComponent.speedMultiplier);
+    this.timeRangeControl.setValue({
+      start: new Date(timelineComponent.timeRangeControl.value.start),
+      end: new Date(timelineComponent.timeRangeControl.value.end)
+    });
+    this.currentTimeString = timelineComponent.currentTimeString;
+
+    this.handleToPresent();
+    this.handleSpeed(this.speedMultiplier.multiplier);
+    this.handlePlay(false);
+    this.handleTimeRange();
+  }
+
+  handlePlay(update?: boolean) {
     // Get clock in Cesium
     let clock = this.GLOBALS!.CESIUM_VIEWER.clock;
 
-    this.timeActivated = !this.timeActivated;
+    if (update == null || update) {
+      this.timeActivated = !this.timeActivated;
+    }
+
     if (this.timeActivated) {
       clock.shouldAnimate = true;
       this.buttonPlay.icon = TimelineComponent.DEFAULT_BUTTON_PLAY_CONFIGS.PAUSE.icon;
@@ -188,7 +208,7 @@ export class TimelineComponent implements OnInit, OnDestroy {
   handleToPresent() {
     const currentDate = new Date();
     this.GLOBALS!.CESIUM_VIEWER.clock.currentTime = Cesium.JulianDate.fromDate(currentDate);
-    this.GLOBALS!.WORKSPACE.timeline.current = new Date(currentDate.valueOf());
+    this.GLOBALS!.WORKSPACE.timeline.current = new Date(currentDate.valueOf()); // Save to workspace
     this.currentTimeString = this.displayDate(currentDate);
 
     // TODO If timeRange exists, then jump to the start of this range instead
@@ -223,6 +243,12 @@ export class TimelineComponent implements OnInit, OnDestroy {
   }
 
   handleTimeRange(fromInit?: boolean) {
+    if (this.timeRangeControl.value == null
+      || this.timeRangeControl.value.start == null
+      || this.timeRangeControl.value.end == null) {
+      return;
+    }
+
     if (fromInit == null || !fromInit) {
       this.GLOBALS!.WORKSPACE.timeline.range = {
         start: new Date(this.timeRangeControl.value.start.valueOf()),
@@ -234,6 +260,14 @@ export class TimelineComponent implements OnInit, OnDestroy {
       Cesium.JulianDate.fromDate(new Date(this.timeRangeControl.value.start.valueOf()));
     this.GLOBALS!.CESIUM_VIEWER.clock.stopTime =
       Cesium.JulianDate.fromDate(new Date(this.timeRangeControl.value.end.valueOf()));
+
+    // Save to workspace
+    if (fromInit != null && fromInit) {
+      this.GLOBALS!.WORKSPACE.timeline.range = {
+        start: new Date(this.timeRangeControl.value.start.valueOf()),
+        end: new Date(this.timeRangeControl.value.end.valueOf())
+      };
+    }
 
     // TODO Effects to other elements?
   }

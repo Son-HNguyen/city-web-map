@@ -49,16 +49,13 @@ export class WorkspaceUtility {
     const scope = this;
     return new Promise<void>((resolve, reject) => {
       const workspaceString = scope.cookieService.get(Workspace.COOKIE_NAMES.workspace);
-      if (workspaceString == null || workspaceString === '') {
-        reject();
-        return;
-      }
       try {
         this.GLOBALS!.WORKSPACE = Workspace.initFrom(JSON.parse(workspaceString));
         resolve();
       } catch (e) {
-        scope.logService.info('No previous workspace found');
-        reject();
+        scope.logService.warn('No compatible workspace found. A default workspace shall be created.');
+        this.GLOBALS!.WORKSPACE = new Workspace();
+        resolve();
       }
     });
   }
