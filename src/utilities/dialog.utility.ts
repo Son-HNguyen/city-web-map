@@ -24,67 +24,113 @@
  */
 
 import {
-  DialogConfirmContentComponent,
   DialogConfirmComponent,
+  DialogConfirmContentComponent,
   DialogErrorContentComponent,
-  DialogInfoContentComponent,
   DialogInfoComponent,
-  DialogWarningContentComponent,
-  DialogWarningComponent
+  DialogInfoContentComponent,
+  DialogSearchComponent,
+  DialogSearchContentComponent,
+  DialogWarningComponent,
+  DialogWarningContentComponent
 } from '../app/dialog/dialog.component';
+import {MatDialogRef, MatDialogState} from "@angular/material/dialog";
 
 export class DialogUtility {
+  infoDialogRef: MatDialogRef<DialogInfoContentComponent> | undefined;
+  errorDialogRef: MatDialogRef<DialogErrorContentComponent> | undefined;
+  warnDialogRef: MatDialogRef<DialogWarningContentComponent> | undefined;
+  confirmDialogRef: MatDialogRef<DialogConfirmContentComponent> | undefined;
+  searchDialogRef: MatDialogRef<DialogSearchContentComponent> | undefined;
+
   constructor() {
   }
 
   /**
-   * Open an info pop-up with given content.
+   * Open/Close an info pop-up with given content.
    */
   public info(content: string): void {
-    DialogInfoComponent.dialog.open(DialogInfoContentComponent, {
-      data: {
-        message: content
-      }
-    });
+    if (this.infoDialogRef == null || this.infoDialogRef.getState() === MatDialogState.CLOSED) {
+      this.infoDialogRef = DialogInfoComponent.dialog.open(DialogInfoContentComponent, {
+        data: {
+          message: content
+        }
+      });
+    } else {
+      this.infoDialogRef.close();
+    }
   }
 
   /**
-   * Open an error pop-up with given content.
+   * Open/Close an error pop-up with given content.
    */
   public error(content: string): void {
-    DialogWarningComponent.dialog.open(DialogErrorContentComponent, {
-      data: {
-        message: content
-      }
-    });
+    if (this.errorDialogRef == null || this.errorDialogRef.getState() === MatDialogState.CLOSED) {
+      this.errorDialogRef = DialogWarningComponent.dialog.open(DialogErrorContentComponent, {
+        data: {
+          message: content
+        }
+      });
+    } else {
+      this.errorDialogRef.close();
+    }
   }
 
   /**
-   * Open an warning pop-up with given content.
+   * Open a warning pop-up with given content.
    */
   public warn(content: string): void {
-    DialogWarningComponent.dialog.open(DialogWarningContentComponent, {
-      data: {
-        message: content
-      }
-    });
+    if (this.warnDialogRef == null || this.warnDialogRef.getState() === MatDialogState.CLOSED) {
+      this.warnDialogRef = DialogWarningComponent.dialog.open(DialogWarningContentComponent, {
+        data: {
+          message: content
+        }
+      });
+    } else {
+      this.warnDialogRef.close();
+    }
   }
 
   /**
-   * Open an dialog pop-up and ask for confirmation.
+   * Open a dialog pop-up and ask for confirmation.
    */
   public confirm(content: string): boolean {
-    const dialogRef = DialogConfirmComponent.dialog.open(DialogConfirmContentComponent, {
-      data: {
-        message: content
-      }
-    });
+    if (this.confirmDialogRef == null || this.confirmDialogRef.getState() === MatDialogState.CLOSED) {
+      this.confirmDialogRef = DialogConfirmComponent.dialog.open(DialogConfirmContentComponent, {
+        data: {
+          message: content
+        }
+      });
 
-    let confirmed = false;
-    dialogRef.afterClosed().subscribe(result => {
-      confirmed = dialogRef.componentInstance.data.confirmed;
-    });
+      let confirmed = false;
+      this.confirmDialogRef.afterClosed().subscribe(result => {
+        confirmed = this.confirmDialogRef!.componentInstance.data.confirmed;
+      });
 
-    return confirmed;
+      return confirmed;
+    }
+
+    this.confirmDialogRef.close();
+    return false;
+  }
+
+  /**
+   * Open/Close a dialog for searching locations.
+   */
+  public search() {
+    if (this.searchDialogRef == null || this.searchDialogRef.getState() === MatDialogState.CLOSED) {
+      this.searchDialogRef = DialogSearchComponent.dialog.open(DialogSearchContentComponent, {
+        data: {}
+      });
+      return;
+    }
+
+    this.searchDialogRef.close();
+    let search: string = '';
+    let confirmed: boolean = false;
+    this.searchDialogRef.afterClosed().subscribe(result => {
+      confirmed = this.searchDialogRef!.componentInstance.data.confirmed;
+      search = this.searchDialogRef!.componentInstance.data.search;
+    });
   }
 }

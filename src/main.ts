@@ -37,6 +37,7 @@ if (env.production) {
 platformBrowserDynamic().bootstrapModule(AppModule)
   .catch(err => console.error(err));
 
+// TODO Is this variable window needed in NodeJS?
 (window as any).CESIUM_BASE_URL = 'src/assets/cesium/';
 
 const initSettings = (): void => {

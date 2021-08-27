@@ -6,6 +6,7 @@ import {LogService} from './log/log.service';
 import * as cesium from "cesium";
 import {UtilityService} from "../utils.service";
 import {GlobalService} from "../global.service";
+import {NominatimExtension} from "../extensions/nominatim.extension";
 
 @Directive({
   selector: '[appCesium]'
@@ -50,7 +51,9 @@ export class CesiumDirective implements OnInit {
         terrainShadows: parseInt(terrainShadows, 10),
         timeline: false,
         animation: false,
-        fullscreenButton: false
+        fullscreenButton: false,
+        // TODO Check whether a non-default ion access token is available, if not then use Nominatim
+        geocoder: [new NominatimExtension()], // Geocoder
       });
 
       this.GLOBALS!.CESIUM_CAMERA = this.GLOBALS!.CESIUM_VIEWER.scene.camera;
@@ -58,6 +61,9 @@ export class CesiumDirective implements OnInit {
       // Init ion access token
       // TODO Get token from URL parameter OR session/cookie?
       //cesium.Ion.defaultAccessToken = '';
+
+      let geocoderViewModel = this.GLOBALS!.CESIUM_VIEWER.geocoder.viewModel;
+      geocoderViewModel.autoComplete = true; // TODO On/Off for ion/Nominatim?
 
       resolve();
     });

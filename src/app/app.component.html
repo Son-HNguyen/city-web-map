@@ -10,20 +10,20 @@
     <button id="buttonSaveWorkspace"
             mat-stroked-button
             matTooltip="Save current workspace | Ctrl+S"
-            (click)="handleButtonSave()">
+            (click)="handleSave()">
       <span class="material-icons">save</span>&nbsp;Save
     </button>
     <button id="buttonSaveWorkspaceAs"
             mat-stroked-button
-            matTooltip="Save as ... | Ctrl+Alt+S" (click)="handleButtonSaveAs()">
+            matTooltip="Save as ... | Ctrl+Alt+S" (click)="handleSaveAs()">
       <span class="material-icons">archive</span>&nbsp;Save as ...
     </button>
     <button id="buttonNewWorkspace"
             mat-stroked-button
-            matTooltip="Create new workspace | Ctrl+Alt+N" (click)="handleButtonNew()">
+            matTooltip="Create new workspace | Ctrl+Alt+N" (click)="handleNew()">
       <span class="material-icons">add_box</span>&nbsp;New
     </button>
-    <app-button-toggle-layout (buttonToggleValue)="handleButtonToggleValue($event)"
+    <app-button-toggle-layout (buttonToggleValue)="handleToggleValue($event)"
                               [changedLayout]="changedLayout">
     </app-button-toggle-layout>
     <button mat-stroked-button
@@ -97,7 +97,7 @@
     </div>
     <div class="corner-bottom corner-right">
       <app-fullscreen [fullscreenActive]="fullscreenActive"
-                      (fullscreenActiveChange)="handleButtonFullscreen($event)">
+                      (fullscreenActiveChange)="handleFullscreen($event)">
       </app-fullscreen>
     </div>
   </gridster-item>

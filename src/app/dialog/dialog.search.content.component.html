@@ -1,0 +1,36 @@
+<!-- TODO Add option to use ion/Nominatim -->
+<!-- TODO Add option to use/disable autocomplete for ion/Nominatim -->
+<!-- TODO Add option to use a third-party library for autocomplete list -->
+
+<mat-form-field>
+  <mat-label>Search location</mat-label>
+  <input type="text"
+         placeholder="Addresses, location names, etc."
+         aria-label="Search location"
+         matTooltip="Search location"
+         matInput
+         cdkFocusInitial
+         [formControl]="inputControl"
+         [matAutocomplete]="auto"
+         (keyup.enter)="onYesClick()"
+         (keyup.escape)="onNoClick()">
+  <mat-icon color="primary" matSuffix (click)="onYesClick()">search</mat-icon>
+  <mat-autocomplete
+    autoActiveFirstOption
+    #auto="matAutocomplete"
+    (optionSelected)="onYesClick()"> <!-- (optionSelected)="flyToSelected($event.option.id)"-->
+    <mat-option
+      *ngFor="let option of filteredSuggestionNames | async"
+      [value]="option.displayName"
+      [id]="option.destination">
+      {{option.displayName}}
+    </mat-option>
+  </mat-autocomplete>
+</mat-form-field>
+
+<!--
+<div mat-dialog-actions>
+  <button mat-button (click)="onNoClick()">Cancel</button>
+  <button mat-button (click)="onYesClick()">Search</button>
+</div>
+-->

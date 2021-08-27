@@ -22,7 +22,7 @@ import {
   DialogInfoContentComponent,
   DialogInfoComponent,
   DialogWarningContentComponent,
-  DialogWarningComponent
+  DialogWarningComponent, DialogSearchContentComponent, DialogSearchComponent
 } from './dialog/dialog.component';
 import {LogPublishersService} from './log/log-publishers.service';
 import {LogService} from './log/log.service';
@@ -54,6 +54,7 @@ import {MatSliderModule} from "@angular/material/slider";
 import {MatBadgeModule} from "@angular/material/badge";
 import {MatDatepickerModule} from "@angular/material/datepicker";
 import {MatInputModule} from "@angular/material/input";
+import {MatAutocompleteModule} from "@angular/material/autocomplete";
 
 @NgModule({
   declarations: [
@@ -67,6 +68,8 @@ import {MatInputModule} from "@angular/material/input";
     DialogWarningComponent,
     DialogErrorContentComponent,
     DialogErrorComponent,
+    DialogSearchComponent,
+    DialogSearchContentComponent,
     MenuComponent,
     NavComponent,
     InfoComponent,
@@ -94,6 +97,8 @@ import {MatInputModule} from "@angular/material/input";
     DialogWarningContentComponent,
     DialogErrorComponent,
     DialogErrorContentComponent,
+    DialogSearchComponent,
+    DialogSearchContentComponent,
     CheatSheetComponent,
     CheatSheetContentComponent,
     SnackBarComponent,
@@ -124,7 +129,8 @@ import {MatInputModule} from "@angular/material/input";
     MatSliderModule,
     MatBadgeModule,
     MatDatepickerModule,
-    MatInputModule
+    MatInputModule,
+    MatAutocompleteModule
   ],
   bootstrap: [
     AppComponent,
@@ -132,6 +138,7 @@ import {MatInputModule} from "@angular/material/input";
     DialogConfirmComponent,
     DialogWarningComponent,
     DialogErrorComponent,
+    DialogSearchComponent,
     CheatSheetComponent,
     SnackBarComponent
   ],

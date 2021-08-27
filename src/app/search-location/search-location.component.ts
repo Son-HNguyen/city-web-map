@@ -1,4 +1,7 @@
 import {Component} from '@angular/core';
+import {UtilityService} from "../../utils.service";
+import {GlobalService} from "../../global.service";
+import * as Cesium from "cesium";
 
 @Component({
   selector: 'app-search-location',
@@ -7,7 +10,13 @@ import {Component} from '@angular/core';
 })
 export class SearchLocationComponent {
 
-  constructor() {
+  constructor(private GLOBALS?: GlobalService,
+              private UTILS?: UtilityService) {
   }
 
+  handleSearch() {
+    // TODO Use auto-complete?
+    // TODO When F3 is pressed multiple times?
+    this.UTILS!.dialog.search();
+  }
 }

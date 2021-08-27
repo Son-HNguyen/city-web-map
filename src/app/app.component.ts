@@ -4,8 +4,9 @@ import {CompactType, DisplayGrid, GridsterConfig, GridsterItem, GridType} from "
 import {UtilityService} from "../utils.service";
 import {GlobalService} from "../global.service";
 import {GridItemPos, Workspace} from "../core/Workspace";
-import {ButtonPlay, SpeedMultiplier, TimelineComponent} from "./timeline/timeline.component";
-import {FormGroup} from "@angular/forms";
+import {MatDialog, MatDialogRef, MatDialogState} from "@angular/material/dialog";
+import {CheatSheetContentComponent} from "./cheat-sheet/cheat-sheet.component";
+import {DialogSearchContentComponent} from "./dialog/dialog.component";
 
 @Component({
   selector: 'app-root',
@@ -24,12 +25,16 @@ export class AppComponent implements OnInit {
   savedItemPos: GridItemPos | undefined;
   fullscreenActive: boolean;
 
+  cheatSheetDialog!: MatDialogRef<CheatSheetContentComponent>;
+  searchDialog!: MatDialogRef<DialogSearchContentComponent>;
+
   // TODO Add option to enter, use, save and import Cesium ion access tokens
 
   constructor(
     private cookieService?: CookieService,
     private GLOBALS?: GlobalService,
-    private UTILS?: UtilityService) {
+    private UTILS?: UtilityService,
+    private matDialog?: MatDialog) {
     this.changedLayout = undefined;
     this.savedDashboard = undefined;
     this.savedItemPos = undefined;
@@ -50,44 +55,60 @@ export class AppComponent implements OnInit {
   // TODO Pressing the hotkeys again automatically closes the dialog
   @HostListener('document:keydown', ['$event'])
   async onKeyDown(e: KeyboardEvent) {
-    if (e.altKey && e.key === 'g') {
+    // Cheat sheet
+    if (e.key === 'F1') {
       e.preventDefault();
-      this.UTILS!.dialog.info('ctrl alt g');
-    }
-    // Save workspace
-    else if (e.ctrlKey && e.key === 's') {
-      e.preventDefault();
-      if (e.altKey) {
-        document.getElementById('buttonSaveWorkspaceAs')!.click();
+      if (this.cheatSheetDialog != null && this.cheatSheetDialog.getState() === MatDialogState.OPEN) {
+        this.cheatSheetDialog.close();
       } else {
-        document.getElementById('buttonSaveWorkspace')!.click();
+        this.cheatSheetDialog = this.matDialog!.open(CheatSheetContentComponent);
+        // document.getElementById("buttonOpenCheatSheet")!.click();
       }
     }
-    // Open workspace
-    else if (e.ctrlKey && e.key === 'o') {
+
+    // Search location
+    else if (e.key === 'F3') {
       e.preventDefault();
-      this.UTILS!.dialog.info('Open workspace');
+      document.getElementById("buttonSearch")!.click();
     }
-    // New workspace
-    else if (e.ctrlKey && e.altKey && e.key === 'n') {
-      e.preventDefault();
-      document.getElementById('buttonNewWorkspace')!.click();
-    }
-    // Fly to default location
-    else if (e.ctrlKey && e.altKey && e.key === 'h') {
-      e.preventDefault();
-      document.getElementById('buttonFlyHome')!.click();
-    }
-    // Cheat sheet
-    else if (e.key === 'F1') {
-      e.preventDefault();
-      document.getElementById("buttonOpenCheatSheet")!.click();
-    }
+
     // Fullscreen
     else if (e.key === 'F11') {
       e.preventDefault();
       document.getElementById("buttonFullscreen")!.click();
     }
+
+    // Save workspace
+    else if (e.ctrlKey && e.key === 's') {
+      e.preventDefault();
+      if (e.altKey) {
+        this.handleSaveAs();
+        // document.getElementById('buttonSaveWorkspaceAs')!.click();
+      } else {
+        await this.handleSave();
+        // document.getElementById('buttonSaveWorkspace')!.click();
+      }
+    }
+
+    // Open workspace
+    else if (e.ctrlKey && e.key === 'o') {
+      e.preventDefault();
+      this.UTILS!.dialog.info('Open workspace');
+    }
+
+    // New workspace
+    else if (e.ctrlKey && e.altKey && e.key === 'n') {
+      e.preventDefault();
+      await this.handleNew();
+      // document.getElementById('buttonNewWorkspace')!.click();
+    }
+
+    // Fly to default location
+    else if (e.ctrlKey && e.altKey && e.key === 'h') {
+      e.preventDefault();
+      document.getElementById('buttonFlyHome')!.click();
+    }
+
     // TODO F3 for searching geocoder (Cesium ion by default, Nominatim without autocomplete as alternative)
     // TODO Support for addresses, location names, postal codes, etc.
     // TODO Save input texts as suggestions while typing?
@@ -140,10 +161,10 @@ export class AppComponent implements OnInit {
     await loadSavedWorkspace();
 
     // Check if fullscreen is activated
-    await this.handleButtonFullscreen(this.fullscreenActive);
+    await this.handleFullscreen(this.fullscreenActive);
   }
 
-  async handleButtonSave() {
+  async handleSave() {
     // TODO Save in local storage for bigger workspace?
     // TODO Compress bigger JSON objects? -> jspack
     // TODO QR code for sharing (small) workspaces?
@@ -159,14 +180,14 @@ export class AppComponent implements OnInit {
     this.UTILS!.snackBar.show('Workspace saved (space allocated ' + Math.round(cookieSize / 4096 * 100) + '%).');
   }
 
-  handleButtonSaveAs() {
+  handleSaveAs() {
     // Display options to save
     // TODO Add option to save in cookie, JSON file, URL, pastebin, etc.
     // TODO Here show in a modal window what is going to be saved and the user can choose/change
     this.UTILS!.dialog.info('Options to save');
   }
 
-  async handleButtonNew() {
+  async handleNew() {
     // TODO Ask if the current workspace needs to be saved first before a new one is created
     const scope = this;
 
@@ -197,9 +218,7 @@ export class AppComponent implements OnInit {
     this.UTILS!.snackBar.show('A new workspace has been created.');
   }
 
-
-
-  async handleButtonToggleValue(value: any) {
+  async handleToggleValue(value: any) {
     if (this.options.api && this.options.api.optionsChanged) {
       switch (value) {
         case "left": {
@@ -230,7 +249,7 @@ export class AppComponent implements OnInit {
     this.changedLayout = Workspace.getLayout(this.dashboard);
   }
 
-  async handleButtonFullscreen(fullscreenActive: boolean) {
+  async handleFullscreen(fullscreenActive: boolean) {
     this.fullscreenActive = fullscreenActive;
 
     const scope = this;

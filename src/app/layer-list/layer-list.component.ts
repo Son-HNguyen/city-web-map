@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import {Component} from '@angular/core';
 
 @Component({
   selector: 'app-layer-list',
@@ -7,6 +7,7 @@ import { Component } from '@angular/core';
 })
 export class LayerListComponent {
 
-  constructor() { }
+  constructor() {
+  }
 
 }

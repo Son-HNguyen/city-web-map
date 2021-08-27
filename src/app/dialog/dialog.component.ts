@@ -21,9 +21,13 @@
  * limitations under the License.
  */
 
-import {Component, Inject} from '@angular/core';
+import {Component, Inject, OnDestroy, OnInit} from '@angular/core';
 import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
 import {LogService} from '../log/log.service';
+import {FormControl} from "@angular/forms";
+import {BehaviorSubject, Observable, of, Subscription} from "rxjs";
+import {debounceTime, map, startWith} from "rxjs/operators";
+import {GlobalService} from "../../global.service";
 
 /**
  * Information dialog
@@ -174,4 +178,132 @@ export class DialogErrorContentComponent {
   onClick(): void {
     this.dialogRef.close();
   }
+}
+
+/**
+ * Search dialog
+ */
+export interface DialogSearchData {
+  search: string;
+  confirmed: boolean;
+}
+
+@Component({
+  selector: 'app-dialog',
+  templateUrl: 'dialog.component.html'
+})
+export class DialogSearchComponent {
+  static dialog: MatDialog;
+
+  constructor(dialog: MatDialog) {
+    DialogSearchComponent.dialog = dialog;
+  }
+}
+
+@Component({
+  templateUrl: 'dialog.search.content.component.html',
+  styleUrls: ['dialog.search.content.component.css']
+})
+export class DialogSearchContentComponent implements OnInit, OnDestroy {
+  inputControl = new FormControl();
+  suggestionNames: Array<GeocoderSuggestion>;
+  filteredSuggestionNames!: Observable<Array<GeocoderSuggestion>>;
+
+  isSearchingSubject!: BehaviorSubject<boolean>;
+  private isSearchingSubscription!: Subscription;
+
+  // TODO Save looked up geocodes in a list in the GUI
+
+  constructor(
+    public dialogRef: MatDialogRef<DialogSearchContentComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: DialogSearchData,
+    public logger: LogService,
+    private GLOBALS?: GlobalService) {
+    this.data.search = '';
+    this.data.confirmed = false;
+    this.suggestionNames = [];
+  }
+
+  ngOnInit() {
+    let geocoderViewModel = this.GLOBALS!.CESIUM_VIEWER.geocoder.viewModel;
+
+    this.isSearchingSubject = new BehaviorSubject<boolean>(false);
+    this.isSearchingSubscription = this.isSearchingSubject.subscribe((isSearching) => {
+      if (!isSearching) {
+        let geocoderViewModel = this.GLOBALS!.CESIUM_VIEWER.geocoder.viewModel;
+        let suggestions = geocoderViewModel.suggestions;
+        while (this.suggestionNames.length > 0) {
+          this.suggestionNames.pop();
+        }
+        for (const suggestion of suggestions) {
+          this.suggestionNames.push(suggestion);
+        }
+
+        let stringSimilarity = require("string-similarity");
+        this.suggestionNames.sort((a: GeocoderSuggestion, b: GeocoderSuggestion): number => {
+          return stringSimilarity.compareTwoStrings(a.displayName, b.displayName);
+        })
+
+        this.filteredSuggestionNames = of(this.suggestionNames);
+      }
+    });
+
+    this.inputControl.valueChanges.pipe(
+      startWith(''),
+      // debounceTime(100),
+      map(value => {
+        geocoderViewModel._searchText = value;
+        this.isSearchingSubject.next(geocoderViewModel.isSearchInProgress);
+        return;
+      })
+    ).subscribe();
+
+  }
+
+  ngOnDestroy() {
+    this.isSearchingSubscription.unsubscribe();
+  }
+
+  onNoClick() {
+    this.data.confirmed = false;
+    this.onClick();
+  }
+
+  onYesClick() {
+    this.data.confirmed = true;
+    this.onClick();
+  }
+
+  private onClick() {
+    if (this.suggestionNames.length === 0) {
+      return;
+    }
+
+    // this.data.search = this.inputControl.value;
+    // Always get the first option in the autocomplete list by default
+    this.data.search = this.suggestionNames[0].destination;
+    this.logger.debug('User\'s search input: ' + this.data.search);
+    this.dialogRef.close();
+
+    // Send search request
+    //if (this.data.search == null) {
+    //  return;
+    //}
+
+    //let geocoderViewModel = this.GLOBALS!.CESIUM_VIEWER.geocoder.viewModel;
+    //geocoderViewModel._searchText = this.data.search;
+    //geocoderViewModel.search().afterExecute.addEventListener(() => {
+    //  this.logger.debug(this.data.search + ' found');
+    //});
+
+    // TODO Check camera in browser after flyTo is complete
+    this.GLOBALS!.CESIUM_CAMERA.flyTo({
+      destination: this.data.search
+    });
+  }
+}
+
+interface GeocoderSuggestion {
+  displayName: string,
+  destination: any
 }
