@@ -21,13 +21,16 @@
  * limitations under the License.
  */
 
-import {Component, Inject, OnDestroy, OnInit} from '@angular/core';
-import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
+import {Component, Inject, OnInit} from '@angular/core';
+import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from '@angular/material/dialog';
 import {LogService} from '../log/log.service';
 import {FormControl} from "@angular/forms";
-import {BehaviorSubject, Observable, of, Subscription} from "rxjs";
-import {debounceTime, map, startWith} from "rxjs/operators";
+import {Observable, of} from "rxjs";
+import {map, startWith} from "rxjs/operators";
 import {GlobalService} from "../../global.service";
+import {NominatimExtension} from "../../extensions/nominatim.extension";
+import * as Cesium from "cesium";
+import {GeocoderService} from "../../core/Workspace";
 
 /**
  * Information dialog
@@ -204,15 +207,17 @@ export class DialogSearchComponent {
   templateUrl: 'dialog.search.content.component.html',
   styleUrls: ['dialog.search.content.component.css']
 })
-export class DialogSearchContentComponent implements OnInit, OnDestroy {
+export class DialogSearchContentComponent implements OnInit {
   inputControl = new FormControl();
   suggestionNames: Array<GeocoderSuggestion>;
   filteredSuggestionNames!: Observable<Array<GeocoderSuggestion>>;
 
-  isSearchingSubject!: BehaviorSubject<boolean>;
-  private isSearchingSubscription!: Subscription;
+  checkedColor = 'primary';
+  checkedAutocomplete: boolean;
+  selectedGeocoderService: GeocoderService;
+  geocoderServices: Array<GeocoderService> = [GeocoderService.NOMINATIM, GeocoderService.CESIUM_ION];
 
-  // TODO Save looked up geocodes in a list in the GUI
+  // TODO Save looked up geocodes in a list in the GUI -> Viewpoints?
 
   constructor(
     public dialogRef: MatDialogRef<DialogSearchContentComponent>,
@@ -221,47 +226,26 @@ export class DialogSearchContentComponent implements OnInit, OnDestroy {
     private GLOBALS?: GlobalService) {
     this.data.search = '';
     this.data.confirmed = false;
-    this.suggestionNames = [];
+
+    let geocoderViewModel = this.GLOBALS!.CESIUM_VIEWER.geocoder.viewModel;
+    this.suggestionNames = geocoderViewModel.suggestions;
+    this.filteredSuggestionNames = of(this.suggestionNames);
+
+    this.checkedAutocomplete = this.GLOBALS!.WORKSPACE.geocoder.autocomplete;
+    // Index 0 is CartographicGeocoderService, which is always enabled
+    this.selectedGeocoderService = this.GLOBALS!.WORKSPACE.geocoder.geocoderServices[1];
   }
 
   ngOnInit() {
-    let geocoderViewModel = this.GLOBALS!.CESIUM_VIEWER.geocoder.viewModel;
-
-    this.isSearchingSubject = new BehaviorSubject<boolean>(false);
-    this.isSearchingSubscription = this.isSearchingSubject.subscribe((isSearching) => {
-      if (!isSearching) {
-        let geocoderViewModel = this.GLOBALS!.CESIUM_VIEWER.geocoder.viewModel;
-        let suggestions = geocoderViewModel.suggestions;
-        while (this.suggestionNames.length > 0) {
-          this.suggestionNames.pop();
-        }
-        for (const suggestion of suggestions) {
-          this.suggestionNames.push(suggestion);
-        }
-
-        let stringSimilarity = require("string-similarity");
-        this.suggestionNames.sort((a: GeocoderSuggestion, b: GeocoderSuggestion): number => {
-          return stringSimilarity.compareTwoStrings(a.displayName, b.displayName);
-        })
-
-        this.filteredSuggestionNames = of(this.suggestionNames);
-      }
-    });
-
     this.inputControl.valueChanges.pipe(
       startWith(''),
       // debounceTime(100),
       map(value => {
+        let geocoderViewModel = this.GLOBALS!.CESIUM_VIEWER.geocoder.viewModel;
         geocoderViewModel._searchText = value;
-        this.isSearchingSubject.next(geocoderViewModel.isSearchInProgress);
         return;
       })
     ).subscribe();
-
-  }
-
-  ngOnDestroy() {
-    this.isSearchingSubscription.unsubscribe();
   }
 
   onNoClick() {
@@ -269,37 +253,73 @@ export class DialogSearchContentComponent implements OnInit, OnDestroy {
     this.onClick();
   }
 
-  onYesClick() {
+  onYesClick(destination?: any) {
     this.data.confirmed = true;
-    this.onClick();
+    this.onClick(destination);
   }
 
-  private onClick() {
-    if (this.suggestionNames.length === 0) {
-      return;
-    }
-
-    // this.data.search = this.inputControl.value;
-    // Always get the first option in the autocomplete list by default
-    this.data.search = this.suggestionNames[0].destination;
-    this.logger.debug('User\'s search input: ' + this.data.search);
-    this.dialogRef.close();
-
-    // Send search request
-    //if (this.data.search == null) {
-    //  return;
-    //}
-
-    //let geocoderViewModel = this.GLOBALS!.CESIUM_VIEWER.geocoder.viewModel;
-    //geocoderViewModel._searchText = this.data.search;
-    //geocoderViewModel.search().afterExecute.addEventListener(() => {
-    //  this.logger.debug(this.data.search + ' found');
-    //});
-
-    // TODO Check camera in browser after flyTo is complete
+  onSelectedSuggestion(destination: any) {
+    this.data.confirmed = true;
     this.GLOBALS!.CESIUM_CAMERA.flyTo({
-      destination: this.data.search
+      destination: destination
     });
+  }
+
+  private onClick(destination?: any) {
+    let geocoderViewModel = this.GLOBALS!.CESIUM_VIEWER.geocoder.viewModel;
+    if (this.checkedAutocomplete) {
+      if (this.suggestionNames.length === 0) {
+        return;
+      }
+
+      let destinationToFly;
+      if (destination != null) {
+        destinationToFly = destination;
+      } else {
+        // Get the first option in the autocomplete list by default
+        destinationToFly = this.suggestionNames[0].destination;
+      }
+
+      geocoderViewModel.destinationFound(geocoderViewModel, destinationToFly);
+      this.onDoneSearching();
+    } else {
+      this.data.search = this.inputControl.value;
+      geocoderViewModel._searchText = this.inputControl.value;
+      geocoderViewModel.search.afterExecute.addEventListener(() => {
+        this.onDoneSearching();
+      });
+      geocoderViewModel.search();
+    }
+  }
+
+  private onDoneSearching() {
+    this.dialogRef.close();
+  }
+
+  switchGeocoder(selectedValue: GeocoderService) {
+    // The geocoderServices array has two objects:
+    // CartographicGeocoderService (should be always enabled) and a selectable
+    let geocoderServices = this.GLOBALS!.CESIUM_VIEWER.geocoder.viewModel._geocoderServices;
+    geocoderServices.pop(); // remove the last object in the array
+    this.GLOBALS!.WORKSPACE.geocoder.geocoderServices.pop();
+    this.GLOBALS!.WORKSPACE.geocoder.geocoderServices.push(selectedValue);
+    switch (selectedValue) {
+      case GeocoderService.NOMINATIM:
+        geocoderServices.push(new NominatimExtension());
+        return;
+      case GeocoderService.CESIUM_ION:
+        geocoderServices.push(new Cesium.IonGeocoderService({
+          scene: this.GLOBALS!.CESIUM_VIEWER.scene
+        }));
+        return;
+    }
+  }
+
+  handleCheckboxAutocomplete(checked: boolean) {
+    console.log(this.checkedAutocomplete);
+    this.GLOBALS!.CESIUM_VIEWER.geocoder.viewModel.autoComplete = checked;
+    this.GLOBALS!.WORKSPACE.geocoder.autocomplete = checked;
+    this.checkedAutocomplete = checked;
   }
 }
 

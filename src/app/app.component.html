@@ -26,10 +26,7 @@
     <app-button-toggle-layout (buttonToggleValue)="handleToggleValue($event)"
                               [changedLayout]="changedLayout">
     </app-button-toggle-layout>
-    <button mat-stroked-button
-            matTooltip="Configure application">
-      <span class="material-icons">settings_applications</span>&nbsp;Settings
-    </button>
+    <app-settings></app-settings>
     <app-cheat-sheet></app-cheat-sheet>
     <button mat-stroked-button
             matTooltip="Show help information">

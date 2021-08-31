@@ -55,6 +55,10 @@ import {MatBadgeModule} from "@angular/material/badge";
 import {MatDatepickerModule} from "@angular/material/datepicker";
 import {MatInputModule} from "@angular/material/input";
 import {MatAutocompleteModule} from "@angular/material/autocomplete";
+import { SettingsComponent } from './settings/settings.component';
+import {MatRadioModule} from "@angular/material/radio";
+import {MatCheckboxModule} from "@angular/material/checkbox";
+import {MatSlideToggleModule} from "@angular/material/slide-toggle";
 
 @NgModule({
   declarations: [
@@ -86,7 +90,8 @@ import {MatAutocompleteModule} from "@angular/material/autocomplete";
     MoveCesiumComponent,
     FlyHomeComponent,
     SearchLocationComponent,
-    TimelineComponent
+    TimelineComponent,
+    SettingsComponent
   ],
   entryComponents: [
     DialogInfoComponent,
@@ -130,7 +135,10 @@ import {MatAutocompleteModule} from "@angular/material/autocomplete";
     MatBadgeModule,
     MatDatepickerModule,
     MatInputModule,
-    MatAutocompleteModule
+    MatAutocompleteModule,
+    MatRadioModule,
+    MatCheckboxModule,
+    MatSlideToggleModule
   ],
   bootstrap: [
     AppComponent,

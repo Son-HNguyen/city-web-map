@@ -21,10 +21,28 @@
  * limitations under the License.
  */
 
-mat-form-field {
-  width: 400px;
+.custom-form-geocoder {
+  width: 250px;
 }
 
-mat-icon {
-  cursor: pointer;
+.custom-form-search {
+  width: 500px
+}
+
+.custom-radio-group {
+  display: inline-flex;
+  flex-direction: row;
+  margin: 15px 0;
+}
+
+.custom-radio-button {
+  margin: 5px;
+}
+
+.custom-checkbox {
+  margin: 0 10px;
+}
+
+.custom-slide-toggle {
+  margin-left: 50px;
 }

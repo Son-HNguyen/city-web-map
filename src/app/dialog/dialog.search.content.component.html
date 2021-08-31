@@ -2,8 +2,31 @@
 <!-- TODO Add option to use/disable autocomplete for ion/Nominatim -->
 <!-- TODO Add option to use a third-party library for autocomplete list -->
 
-<mat-form-field>
-  <mat-label>Search location</mat-label>
+<h2>Search location</h2>
+
+<mat-form-field class="custom-form-geocoder"
+                matTooltip="Select a geocoder service, such as Nominatim (OpenStreetMap) and Cesium ion">
+  <mat-label>Geocoder</mat-label>
+  <mat-select [(value)]="selectedGeocoderService" (selectionChange)="switchGeocoder($event.value)">
+    <mat-option disabled>Cartographic</mat-option>
+    <mat-option [value]="option" *ngFor="let option of geocoderServices">
+      {{option}}
+    </mat-option>
+  </mat-select>
+</mat-form-field>
+
+<mat-slide-toggle class="custom-slide-toggle"
+                  [color]="checkedColor"
+                  [checked]="checkedAutocomplete"
+                  (change)="handleCheckboxAutocomplete($event.checked)"
+                  matTooltip="Automatically suggest locations while typing">
+  Autocomplete
+</mat-slide-toggle>
+
+<div></div>
+
+<mat-form-field class="custom-form-search">
+  <mat-label>Search input</mat-label>
   <input type="text"
          placeholder="Addresses, location names, etc."
          aria-label="Search location"
@@ -14,15 +37,14 @@
          [matAutocomplete]="auto"
          (keyup.enter)="onYesClick()"
          (keyup.escape)="onNoClick()">
-  <mat-icon color="primary" matSuffix (click)="onYesClick()">search</mat-icon>
-  <mat-autocomplete
-    autoActiveFirstOption
-    #auto="matAutocomplete"
-    (optionSelected)="onYesClick()"> <!-- (optionSelected)="flyToSelected($event.option.id)"-->
-    <mat-option
-      *ngFor="let option of filteredSuggestionNames | async"
-      [value]="option.displayName"
-      [id]="option.destination">
+  <mat-icon color="primary" matSuffix [style.cursor]="'pointer'" (click)="onYesClick()">search</mat-icon>
+  <mat-autocomplete autoActiveFirstOption
+                    #auto="matAutocomplete"
+                    (optionSelected)="onYesClick($event.option.id)">
+    <!-- (optionSelected)="flyToSelected($event.option.id)"-->
+    <mat-option *ngFor="let option of filteredSuggestionNames | async"
+                [value]="option.displayName"
+                [id]="option.destination">
       {{option.displayName}}
     </mat-option>
   </mat-autocomplete>

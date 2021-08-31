@@ -4,8 +4,10 @@ import {DesktopExtension} from '../extensions/desktop.extension';
 import {MobileExtension} from '../extensions/mobile.extension';
 import {LogService} from './log/log.service';
 import * as cesium from "cesium";
+import * as Cesium from "cesium";
 import {UtilityService} from "../utils.service";
 import {GlobalService} from "../global.service";
+import {GeocoderService} from "../core/Workspace";
 import {NominatimExtension} from "../extensions/nominatim.extension";
 
 @Directive({
@@ -42,8 +44,9 @@ export class CesiumDirective implements OnInit {
       // Init Cesium camera
       // TODO Central manager for URL parameters
       const URL = require('url-parse');
-      const shadows = (new URL(window.location.href, true)).query.shadows;
-      const terrainShadows = (new URL(window.location.href, true)).query.terrainShadows;
+      const shadows = (new URL(window.location.href, true)).query.shadows; // TODO Read from cookie/settings? Add toggle?
+      const terrainShadows = (new URL(window.location.href, true)).query.terrainShadows; // TODO Read from cookie/settings? Add toggle?
+
       this.GLOBALS!.CESIUM_VIEWER = new cesium.Viewer('cesiumContainer', {
         // TODO Hardcoded imagery provider?
         //selectedImageryProviderViewModel: ENV.cesium.createDefaultImageryProviderViewModels()[1],
@@ -52,8 +55,6 @@ export class CesiumDirective implements OnInit {
         timeline: false,
         animation: false,
         fullscreenButton: false,
-        // TODO Check whether a non-default ion access token is available, if not then use Nominatim
-        geocoder: [new NominatimExtension()], // Geocoder
       });
 
       this.GLOBALS!.CESIUM_CAMERA = this.GLOBALS!.CESIUM_VIEWER.scene.camera;
@@ -62,8 +63,30 @@ export class CesiumDirective implements OnInit {
       // TODO Get token from URL parameter OR session/cookie?
       //cesium.Ion.defaultAccessToken = '';
 
-      let geocoderViewModel = this.GLOBALS!.CESIUM_VIEWER.geocoder.viewModel;
-      geocoderViewModel.autoComplete = true; // TODO On/Off for ion/Nominatim?
+      // Geocoder
+      // TODO Check whether a non-default ion access token is available, if not then use Nominatim
+      let savedGeocoder = this.GLOBALS!.WORKSPACE.geocoder;
+      this.GLOBALS!.CESIUM_VIEWER.geocoder.viewModel.autoComplete = savedGeocoder.autocomplete; // TODO On/Off for ion/Nominatim?
+
+      console.log('Scene: ' + this.GLOBALS!.CESIUM_VIEWER.scene);
+
+      let geocoderServices = [];
+      for (let s of savedGeocoder.geocoderServices) {
+        switch (s) {
+          case GeocoderService.CARTOGRAPHIC:
+            geocoderServices.push(new Cesium.CartographicGeocoderService());
+            break;
+          case GeocoderService.CESIUM_ION:
+            geocoderServices.push(new Cesium.IonGeocoderService({
+              scene: this.GLOBALS!.CESIUM_VIEWER.scene
+            }));
+            break;
+          case GeocoderService.NOMINATIM:
+            geocoderServices.push(new NominatimExtension());
+            break;
+        }
+      }
+      this.GLOBALS!.CESIUM_VIEWER.geocoder.viewModel._geocoderServices = geocoderServices;
 
       resolve();
     });

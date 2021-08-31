@@ -30,6 +30,13 @@ import {GridsterItem} from "angular-gridster2";
 import {DatePickerTimeRange, SpeedMultipliers} from "../app/timeline/timeline.component";
 import _ = require("lodash");
 
+export enum GeocoderService {
+  CARTOGRAPHIC = 'Cartographic',
+  CESIUM_ION = 'Cesium ion',
+  NOMINATIM = 'Nominatim'
+  // TODO Support for other geocoder services, search in https://cesium.com/learn/cesiumjs/ref-doc
+}
+
 export class Workspace {
   // ==============================
   // METADATA
@@ -168,6 +175,18 @@ export class Workspace {
     "roll": 0
   };
 
+  private _geocoder: GeocoderConfig;
+  public static readonly DEFAULT_GEOCODER: GeocoderConfig = {
+    autocomplete: true,
+    geocoderServices: [
+      // Used to search `longitude latitude (height)`
+      // with longitude/latitude in degrees and height in meters, should always be enabled
+      GeocoderService.CARTOGRAPHIC,
+      // Nominatim OpenStreetMap by default
+      GeocoderService.NOMINATIM
+    ]
+  };
+
   // ==============================
   // OTHERS
   // ==============================
@@ -191,6 +210,7 @@ export class Workspace {
     itemPos?: GridItemPos,
     fullscreenActive?: boolean,
     cameraLocation?: CesiumCameraLocation,
+    geocoder?: GeocoderConfig
   ) {
     this._title = (title == null) ? "Workspace title" : title;
     this._description = (description == null) ? "Workspace description" : description;
@@ -204,6 +224,7 @@ export class Workspace {
     this._itemPos = (itemPos == null) ? Workspace.DEFAULT_ITEM_POS_LAYOUTS.layoutCenterGlobe : itemPos;
     this._fullscreenActive = (fullscreenActive == null) ? false : fullscreenActive;
     this._cameraLocation = (cameraLocation == null) ? Workspace.DEFAULT_CAMERA_LOCATION : cameraLocation;
+    this._geocoder = (geocoder == null) ? Workspace.DEFAULT_GEOCODER : geocoder;
   }
 
   public static initFrom(workspace: Workspace) {
@@ -285,6 +306,10 @@ export class Workspace {
     return this._cameraLocation;
   }
 
+  get geocoder(): GeocoderConfig {
+    return this._geocoder;
+  }
+
   // ==============================
   // SETTER
   // ==============================
@@ -336,6 +361,10 @@ export class Workspace {
   set cameraLocation(value: CesiumCameraLocation) {
     this._cameraLocation = value;
   }
+
+  set geocoder(value: GeocoderConfig) {
+    this._geocoder = value;
+  }
 }
 
 export interface TimeLineConfig {
@@ -372,6 +401,11 @@ export interface GridItemPos {
 
 export interface CookieNamesConfig {
   workspace: string
+}
+
+interface GeocoderConfig {
+  autocomplete: boolean,
+  geocoderServices: Array<GeocoderService>
 }
 
 export interface SplashWindowModel {
