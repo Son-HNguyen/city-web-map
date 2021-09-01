@@ -22,19 +22,29 @@
  */
 
 import {SnackBarComponent, SnackBarContentComponent} from "../app/snack-bar/snack-bar.component";
+import {MatSnackBarHorizontalPosition, MatSnackBarVerticalPosition} from "@angular/material/snack-bar";
 
 export class SnackBarUtility {
   constructor() {
   }
 
-  public show(message: string): void {
+  public show(message: string, options?: SnackBarOption): void {
     SnackBarComponent.snackBar.openFromComponent(SnackBarContentComponent, {
       data: {
         message: message
       },
-      duration: SnackBarComponent.duration,
-      horizontalPosition: SnackBarComponent.horizontalPosition,
-      verticalPosition: SnackBarComponent.verticalPosition
+      duration: (options != null && options.duration != null) ?
+        options.duration : SnackBarComponent.duration,
+      horizontalPosition: (options != null && options.horizontalPosition != null) ?
+        options.horizontalPosition : SnackBarComponent.horizontalPosition,
+      verticalPosition: (options != null && options.verticalPosition != null) ?
+        options.verticalPosition : SnackBarComponent.verticalPosition
     });
   }
+}
+
+export interface SnackBarOption {
+  duration?: number;
+  horizontalPosition?: MatSnackBarHorizontalPosition,
+  verticalPosition?: MatSnackBarVerticalPosition
 }

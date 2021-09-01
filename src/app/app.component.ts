@@ -82,12 +82,16 @@ export class AppComponent implements OnInit {
     else if (e.ctrlKey && e.key === 's') {
       e.preventDefault();
       if (e.altKey) {
-        this.handleSaveAs();
+        await this.handleSaveAs();
         // document.getElementById('buttonSaveWorkspaceAs')!.click();
       } else {
-        await this.handleSave();
-        // document.getElementById('buttonSaveWorkspace')!.click();
+        await this.handleQuickSave();
+        // document.getElementById('buttonQuickSaveWorkspace')!.click();
       }
+    } else if (e.ctrlKey && e.altKey && e.key === 'e') {
+      e.preventDefault();
+      await this.handleQuickExport();
+      // document.getElementById('buttonQuickExport')!.click();
     }
 
     // Open workspace
@@ -117,7 +121,7 @@ export class AppComponent implements OnInit {
 
   @HostListener('window:beforeunload', ['$event'])
   async beforeUnloadHandler(event: any) {
-    document.getElementById('buttonSaveWorkspace')!.click();
+    document.getElementById('buttonQuickSaveWorkspace')!.click();
   }
 
   async ngOnInit() {
@@ -164,7 +168,7 @@ export class AppComponent implements OnInit {
     await this.handleFullscreen(this.fullscreenActive);
   }
 
-  async handleSave() {
+  async handleQuickSave() {
     // TODO Save in local storage for bigger workspace?
     // TODO Compress bigger JSON objects? -> jspack
     // TODO QR code for sharing (small) workspaces?
@@ -180,7 +184,16 @@ export class AppComponent implements OnInit {
     this.UTILS!.snackBar.show('Workspace saved (space allocated ' + Math.round(cookieSize / 4096 * 100) + '%).');
   }
 
-  handleSaveAs() {
+  async handleQuickExport() {
+    await this.UTILS!.workspace.saveToFile(this.dashboard, this.fullscreenActive);
+    this.UTILS!.snackBar.show('Workspace exported. Drag and drop this file onto the web client to load.',
+      {
+        horizontalPosition: 'left',
+        verticalPosition: 'bottom'
+      });
+  }
+
+  async handleSaveAs() {
     // Display options to save
     // TODO Add option to save in cookie, JSON file, URL, pastebin, etc.
     // TODO Here show in a modal window what is going to be saved and the user can choose/change

@@ -5,13 +5,19 @@
     <span color="primary"><b>&nbsp;city-web-map&nbsp;</b></span>
     <button mat-stroked-button
             matTooltip="Open existing workspace | Ctrl+O">
-      <span class="material-icons">drive_file_move_rtl</span>&nbsp;Open
+      <span class="material-icons">unarchive</span>&nbsp;Open
     </button>
-    <button id="buttonSaveWorkspace"
+    <button id="buttonQuickSaveWorkspace"
             mat-stroked-button
-            matTooltip="Save current workspace | Ctrl+S"
-            (click)="handleSave()">
-      <span class="material-icons">save</span>&nbsp;Save
+            matTooltip="Quickly save current workspace to cookie | Ctrl+S"
+            (click)="handleQuickSave()">
+      <span class="material-icons">save</span>&nbsp;Quick save
+    </button>
+    <button id="buttonQuickExportWorkspace"
+            mat-stroked-button
+            matTooltip="Quickly export current workspace to a local file | Ctrl+Alt+E"
+            (click)="handleQuickExport()">
+      <span class="material-icons">archive</span>&nbsp;Quick export
     </button>
     <button id="buttonSaveWorkspaceAs"
             mat-stroked-button

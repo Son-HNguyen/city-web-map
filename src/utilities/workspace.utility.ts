@@ -61,32 +61,54 @@ export class WorkspaceUtility {
   }
 
   public saveToCookies(currentLayout: Array<GridsterItem>, fullscreenActive: boolean): Promise<number> {
-    const scope = this;
     return new Promise<number>((resolve, reject) => {
-      // Save current layout
-      this.GLOBALS.WORKSPACE.gridLayout = currentLayout.map(x => Object.assign({}, x)); // Deep copy of an array!
-      this.GLOBALS.WORKSPACE.fullscreenActive = fullscreenActive;
-
-      // Save last location
-      this.GLOBALS.WORKSPACE.cameraLocation = scope.UTILS.camera.getCurrentPosition();
-
-      // Save grid layout / dashboard
-      // Since the workspace has its grid layout point to dashboard object, they are always in sync -> done
-      // TODO Save space by comparing dashboard with presets and only save preset name
+      this.save(currentLayout, fullscreenActive);
 
       // Then set cookies
-      scope.cookieService!.set(
+      this.cookieService!.set(
         Workspace.COOKIE_NAMES.workspace,
         this.GLOBALS.WORKSPACE.toString(),
         Workspace.COOKIE_EXPIRE);
 
       // Check cookie size
-      const cookieWorkspace = scope.cookieService.get(Workspace.COOKIE_NAMES.workspace);
+      const cookieWorkspace = this.cookieService.get(Workspace.COOKIE_NAMES.workspace);
       const Buffer = require('buffer/').Buffer;
       const bytes = Buffer.byteLength(encodeURI(cookieWorkspace), Workspace.STRING_ENCODING);
-      scope.logService!.info('Save current workspace in cookies, size = ' + bytes + " Bytes");
+      this.logService!.info('Save current workspace in cookies, size = ' + bytes + " Bytes");
 
       resolve(bytes);
     });
+  }
+
+  public saveToFile(currentLayout: Array<GridsterItem>, fullscreenActive: boolean): Promise<void> {
+    return new Promise<void>(async (resolve, reject) => {
+      this.save(currentLayout, fullscreenActive);
+
+      let workspaceContent = this.GLOBALS.WORKSPACE.toString();
+
+      // Then export file
+      const filename = 'workspace.json'; // TODO Option for users to enter filename in `Save as...`?
+      const FileSaver = require('file-saver');
+      const blob = new Blob([workspaceContent], {type: 'application/json'});
+      try {
+        FileSaver.saveAs(blob, filename);
+        resolve();
+      } catch (e) {
+        reject(e);
+      }
+    });
+  }
+
+  private save(currentLayout: Array<GridsterItem>, fullscreenActive: boolean) {
+    // Save current layout
+    this.GLOBALS.WORKSPACE.gridLayout = currentLayout.map(x => Object.assign({}, x)); // Deep copy of an array!
+    this.GLOBALS.WORKSPACE.fullscreenActive = fullscreenActive;
+
+    // Save last location
+    this.GLOBALS.WORKSPACE.cameraLocation = this.UTILS.camera.getCurrentPosition();
+
+    // Save grid layout / dashboard
+    // Since the workspace has its grid layout point to dashboard object, they are always in sync -> done
+    // TODO Save space by comparing dashboard with presets and only save preset name
   }
 }
