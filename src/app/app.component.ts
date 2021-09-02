@@ -65,7 +65,6 @@ export class AppComponent implements OnInit {
         // document.getElementById("buttonOpenCheatSheet")!.click();
       }
     }
-
     // Search location
     else if (e.key === 'F3') {
       e.preventDefault();
@@ -76,47 +75,45 @@ export class AppComponent implements OnInit {
     else if (e.key === 'F11') {
       e.preventDefault();
       document.getElementById("buttonFullscreen")!.click();
-    }
-
-    // Save workspace
-    else if (e.ctrlKey && e.key === 's') {
-      e.preventDefault();
-      if (e.altKey) {
-        await this.handleSaveAs();
-        // document.getElementById('buttonSaveWorkspaceAs')!.click();
-      } else {
-        await this.handleQuickSave();
-        // document.getElementById('buttonQuickSaveWorkspace')!.click();
+    } else if (e.ctrlKey) {
+      // Save workspace
+      if (e.key === 's') {
+        e.preventDefault();
+        if (e.altKey) {
+          await this.handleSaveAs();
+          // document.getElementById('buttonSaveWorkspaceAs')!.click();
+        } else {
+          await this.handleQuickSave();
+          // document.getElementById('buttonQuickSaveWorkspace')!.click();
+        }
       }
-    } else if (e.ctrlKey && e.altKey && e.key === 'e') {
-      e.preventDefault();
-      await this.handleQuickExport();
-      // document.getElementById('buttonQuickExport')!.click();
+      // Open workspace
+      else if (e.key === 'o') {
+        e.preventDefault();
+        this.UTILS!.dialog.info('Open workspace');
+      }
+      // Export workspace to file
+      else if (e.altKey) {
+        if (e.key === 'x') { // TODO
+          e.preventDefault();
+          await this.handleQuickExport();
+          // document.getElementById('buttonQuickExport')!.click();
+        }
+        // New workspace
+        else if (e.key === 'n') {
+          e.preventDefault();
+          await this.handleNew();
+          // document.getElementById('buttonNewWorkspace')!.click();
+        }
+        // Fly to default location
+        else if (e.ctrlKey && e.altKey && e.key === 'h') {
+          e.preventDefault();
+          document.getElementById('buttonFlyHome')!.click();
+        }
+      }
     }
 
-    // Open workspace
-    else if (e.ctrlKey && e.key === 'o') {
-      e.preventDefault();
-      this.UTILS!.dialog.info('Open workspace');
-    }
-
-    // New workspace
-    else if (e.ctrlKey && e.altKey && e.key === 'n') {
-      e.preventDefault();
-      await this.handleNew();
-      // document.getElementById('buttonNewWorkspace')!.click();
-    }
-
-    // Fly to default location
-    else if (e.ctrlKey && e.altKey && e.key === 'h') {
-      e.preventDefault();
-      document.getElementById('buttonFlyHome')!.click();
-    }
-
-    // TODO F3 for searching geocoder (Cesium ion by default, Nominatim without autocomplete as alternative)
-    // TODO Support for addresses, location names, postal codes, etc.
     // TODO Save input texts as suggestions while typing?
-    // TODO Use a bib to look up location names and postal codes instead of Cesium ion?
   }
 
   @HostListener('window:beforeunload', ['$event'])
@@ -185,7 +182,8 @@ export class AppComponent implements OnInit {
   }
 
   async handleQuickExport() {
-    await this.UTILS!.workspace.saveToFile(this.dashboard, this.fullscreenActive);
+    // TODO Option for users to enter filename in `Save as...`?
+    await this.UTILS!.workspace.saveToFile(this.dashboard, this.fullscreenActive, Workspace.DEFAULT_WORKSPACE_FILENAME);
     this.UTILS!.snackBar.show('Workspace exported. Drag and drop this file onto the web client to load.',
       {
         horizontalPosition: 'left',

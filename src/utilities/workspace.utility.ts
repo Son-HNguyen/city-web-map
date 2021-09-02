@@ -80,14 +80,13 @@ export class WorkspaceUtility {
     });
   }
 
-  public saveToFile(currentLayout: Array<GridsterItem>, fullscreenActive: boolean): Promise<void> {
+  public saveToFile(currentLayout: Array<GridsterItem>, fullscreenActive: boolean, filename: string): Promise<void> {
     return new Promise<void>(async (resolve, reject) => {
       this.save(currentLayout, fullscreenActive);
 
       let workspaceContent = this.GLOBALS.WORKSPACE.toString();
 
       // Then export file
-      const filename = 'workspace.json'; // TODO Option for users to enter filename in `Save as...`?
       const FileSaver = require('file-saver');
       const blob = new Blob([workspaceContent], {type: 'application/json'});
       try {

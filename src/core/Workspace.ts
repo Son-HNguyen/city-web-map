@@ -44,6 +44,7 @@ export class Workspace {
   private _title: string;
   private _description: string;
   private _maintainer: string;
+  public static readonly DEFAULT_WORKSPACE_FILENAME = 'workspace.json';
 
   // ==============================
   // MODEL LAYERS
