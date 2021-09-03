@@ -1,10 +1,14 @@
-<gridster [options]="options">
+<gridster [options]="options"
+          (dragover)="handleDragOver($event)"
+          (drop)="handleDropSuccess($event)">
   <gridster-item *ngIf="itemPos.menuBar >= 0"
                  [item]="dashboard[itemPos.menuBar]"
                  (itemChange)="layoutChanged()">
     <span color="primary"><b>&nbsp;city-web-map&nbsp;</b></span>
-    <button mat-stroked-button
-            matTooltip="Open existing workspace | Ctrl+O">
+    <button id="buttonLoad"
+            mat-stroked-button
+            matTooltip="Open existing workspace | Ctrl+O"
+            (click)="handleLoad()">
       <span class="material-icons">unarchive</span>&nbsp;Open
     </button>
     <button id="buttonQuickSaveWorkspace"

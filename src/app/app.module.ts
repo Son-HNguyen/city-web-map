@@ -15,14 +15,18 @@ import {AppComponent} from './app.component';
 import {CesiumDirective} from './cesium.directive';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {
-  DialogConfirmContentComponent,
   DialogConfirmComponent,
-  DialogErrorContentComponent,
+  DialogConfirmContentComponent,
   DialogErrorComponent,
-  DialogInfoContentComponent,
+  DialogErrorContentComponent,
   DialogInfoComponent,
-  DialogWarningContentComponent,
-  DialogWarningComponent, DialogSearchContentComponent, DialogSearchComponent
+  DialogInfoContentComponent, DialogLoadComponent, DialogLoadContentComponent,
+  DialogReloadComponent,
+  DialogReloadContentComponent,
+  DialogSearchComponent,
+  DialogSearchContentComponent,
+  DialogWarningComponent,
+  DialogWarningContentComponent
 } from './dialog/dialog.component';
 import {LogPublishersService} from './log/log-publishers.service';
 import {LogService} from './log/log.service';
@@ -55,10 +59,11 @@ import {MatBadgeModule} from "@angular/material/badge";
 import {MatDatepickerModule} from "@angular/material/datepicker";
 import {MatInputModule} from "@angular/material/input";
 import {MatAutocompleteModule} from "@angular/material/autocomplete";
-import { SettingsComponent } from './settings/settings.component';
+import {SettingsComponent} from './settings/settings.component';
 import {MatRadioModule} from "@angular/material/radio";
 import {MatCheckboxModule} from "@angular/material/checkbox";
 import {MatSlideToggleModule} from "@angular/material/slide-toggle";
+import {NgxDropzoneModule} from "ngx-dropzone";
 
 @NgModule({
   declarations: [
@@ -74,6 +79,10 @@ import {MatSlideToggleModule} from "@angular/material/slide-toggle";
     DialogErrorComponent,
     DialogSearchComponent,
     DialogSearchContentComponent,
+    DialogReloadComponent,
+    DialogReloadContentComponent,
+    DialogLoadComponent,
+    DialogLoadContentComponent,
     MenuComponent,
     NavComponent,
     InfoComponent,
@@ -104,6 +113,10 @@ import {MatSlideToggleModule} from "@angular/material/slide-toggle";
     DialogErrorContentComponent,
     DialogSearchComponent,
     DialogSearchContentComponent,
+    DialogReloadComponent,
+    DialogReloadContentComponent,
+    DialogLoadComponent,
+    DialogLoadContentComponent,
     CheatSheetComponent,
     CheatSheetContentComponent,
     SnackBarComponent,
@@ -138,7 +151,8 @@ import {MatSlideToggleModule} from "@angular/material/slide-toggle";
     MatAutocompleteModule,
     MatRadioModule,
     MatCheckboxModule,
-    MatSlideToggleModule
+    MatSlideToggleModule,
+    NgxDropzoneModule
   ],
   bootstrap: [
     AppComponent,
@@ -147,6 +161,8 @@ import {MatSlideToggleModule} from "@angular/material/slide-toggle";
     DialogWarningComponent,
     DialogErrorComponent,
     DialogSearchComponent,
+    DialogReloadComponent,
+    DialogLoadComponent,
     CheatSheetComponent,
     SnackBarComponent
   ],

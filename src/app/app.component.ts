@@ -6,7 +6,8 @@ import {GlobalService} from "../global.service";
 import {GridItemPos, Workspace} from "../core/Workspace";
 import {MatDialog, MatDialogRef, MatDialogState} from "@angular/material/dialog";
 import {CheatSheetContentComponent} from "./cheat-sheet/cheat-sheet.component";
-import {DialogSearchContentComponent} from "./dialog/dialog.component";
+import {LogService} from "./log/log.service";
+import {DialogReloadPrompt} from "./dialog/dialog.component";
 
 @Component({
   selector: 'app-root',
@@ -26,7 +27,8 @@ export class AppComponent implements OnInit {
   fullscreenActive: boolean;
 
   cheatSheetDialog!: MatDialogRef<CheatSheetContentComponent>;
-  searchDialog!: MatDialogRef<DialogSearchContentComponent>;
+
+  workspaceLoadedFromFile: boolean;
 
   // TODO Add option to enter, use, save and import Cesium ion access tokens
 
@@ -34,11 +36,13 @@ export class AppComponent implements OnInit {
     private cookieService?: CookieService,
     private GLOBALS?: GlobalService,
     private UTILS?: UtilityService,
+    private LOGGER?: LogService,
     private matDialog?: MatDialog) {
     this.changedLayout = undefined;
     this.savedDashboard = undefined;
     this.savedItemPos = undefined;
     this.fullscreenActive = false;
+    this.workspaceLoadedFromFile = false;
   }
 
   async initLayout(): Promise<void> {
@@ -90,7 +94,8 @@ export class AppComponent implements OnInit {
       // Open workspace
       else if (e.key === 'o') {
         e.preventDefault();
-        this.UTILS!.dialog.info('Open workspace');
+        this.handleLoad();
+        // document.getElementById('buttonLoad')!.click();
       }
       // Export workspace to file
       else if (e.altKey) {
@@ -165,6 +170,65 @@ export class AppComponent implements OnInit {
     await this.handleFullscreen(this.fullscreenActive);
   }
 
+  handleDragOver(event: DragEvent) {
+    event.preventDefault();
+  }
+
+  handleDropSuccess(event: DragEvent) {
+    event.preventDefault();
+    if (event.dataTransfer != null && event.dataTransfer.files != null && event.dataTransfer.files.length > 0) {
+      this.loadExternalFile(event.dataTransfer.files[0]);
+    }
+  }
+
+  private loadExternalFile(file: File, fromLoad?: boolean) {
+    let fileReader = new FileReader();
+    fileReader.onload = async (e) => {
+      const parsedWorkspace = fileReader.result;
+      if (parsedWorkspace == null) {
+        return;
+      }
+      try {
+        const parsedWorkspaceObj = <Workspace><unknown>parsedWorkspace;
+        if (fromLoad != null && fromLoad) {
+          // Called by load function, no need to ask user for reloading
+          this.reloadWorkspace(parsedWorkspaceObj);
+        } else {
+          const confirmReload = await this.UTILS!.dialog.reload();
+          switch (confirmReload) {
+            case DialogReloadPrompt.SAVE_THEN_RELOAD:
+              // Save current workspace
+              // await this.handleQuickExport();
+              // TODO Display save dialog
+              // Then reload
+              this.reloadWorkspace(parsedWorkspaceObj);
+              break;
+            case DialogReloadPrompt.IGNORE_AND_RELOAD:
+              this.reloadWorkspace(parsedWorkspaceObj);
+              break;
+          }
+        }
+      } catch (e) {
+        this.LOGGER!.warn('No valid workspace found from input file');
+      }
+    }
+    fileReader.readAsText(file);
+  }
+
+  private reloadWorkspace(parsedWorkspaceObj: Workspace) {
+    this.UTILS!.snackBar.show('Valid workspace found, reloading...');
+    this.workspaceLoadedFromFile = true;
+    this.GLOBALS!.WORKSPACE = parsedWorkspaceObj;
+    location.reload();
+  }
+
+  async handleLoad() {
+    const file = await this.UTILS!.dialog.load();
+    if (file != null) {
+      this.loadExternalFile(file, true);
+    }
+  }
+
   async handleQuickSave() {
     // TODO Save in local storage for bigger workspace?
     // TODO Compress bigger JSON objects? -> jspack
@@ -172,11 +236,16 @@ export class AppComponent implements OnInit {
     // TODO Add option to login to save settings and set custom share URLs? -> passportjs
     // Quick save
     let cookieSize: number;
-    // Check if fullscreen is activated
-    if (this.fullscreenActive && this.savedDashboard != null) {
-      cookieSize = await this.UTILS!.workspace.saveToCookies(this.savedDashboard, this.fullscreenActive);
+    if (this.workspaceLoadedFromFile) {
+      // Valid workspace from external file found
+      cookieSize = await this.UTILS!.workspace.saveToCookies();
     } else {
-      cookieSize = await this.UTILS!.workspace.saveToCookies(this.dashboard, this.fullscreenActive);
+      // Check if fullscreen is activated
+      if (this.fullscreenActive && this.savedDashboard != null) {
+        cookieSize = await this.UTILS!.workspace.saveToCookies(this.savedDashboard, this.fullscreenActive);
+      } else {
+        cookieSize = await this.UTILS!.workspace.saveToCookies(this.dashboard, this.fullscreenActive);
+      }
     }
     this.UTILS!.snackBar.show('Workspace saved (space allocated ' + Math.round(cookieSize / 4096 * 100) + '%).');
   }

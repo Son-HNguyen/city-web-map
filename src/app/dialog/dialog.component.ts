@@ -31,6 +31,7 @@ import {GlobalService} from "../../global.service";
 import {NominatimExtension} from "../../extensions/nominatim.extension";
 import * as Cesium from "cesium";
 import {GeocoderService} from "../../core/Workspace";
+import {NgxDropzoneChangeEvent} from "ngx-dropzone";
 
 /**
  * Information dialog
@@ -59,8 +60,8 @@ export class DialogInfoContentComponent {
   constructor(
     public dialogRef: MatDialogRef<DialogInfoContentComponent>,
     @Inject(MAT_DIALOG_DATA) public data: DialogInfoData,
-    public logger: LogService) {
-    this.logger.info(this.data.message);
+    public LOGGER: LogService) {
+    this.LOGGER.info(this.data.message);
   }
 
   onClick(): void {
@@ -95,8 +96,8 @@ export class DialogConfirmContentComponent {
   constructor(
     public dialogRef: MatDialogRef<DialogConfirmContentComponent>,
     @Inject(MAT_DIALOG_DATA) public data: DialogConfirmData,
-    public logger: LogService) {
-    this.logger.info(this.data.message);
+    public LOGGER: LogService) {
+    this.LOGGER.info(this.data.message);
   }
 
   onNoClick(): void {
@@ -110,7 +111,7 @@ export class DialogConfirmContentComponent {
   }
 
   private onClick(): void {
-    this.logger.debug('User\'s confirmation: ' + this.data.confirmed);
+    this.LOGGER.debug('User\'s confirmation: ' + this.data.confirmed);
     this.dialogRef.close();
   }
 }
@@ -140,8 +141,8 @@ export class DialogWarningContentComponent {
   constructor(
     public dialogRef: MatDialogRef<DialogWarningContentComponent>,
     @Inject(MAT_DIALOG_DATA) public data: DialogWarningData,
-    public logger: LogService) {
-    this.logger.warn(this.data.message);
+    public LOGGER: LogService) {
+    this.LOGGER.warn(this.data.message);
   }
 
   onClick(): void {
@@ -174,8 +175,8 @@ export class DialogErrorContentComponent {
   constructor(
     public dialogRef: MatDialogRef<DialogErrorContentComponent>,
     @Inject(MAT_DIALOG_DATA) public data: DialogErrorData,
-    public logger: LogService) {
-    this.logger.error(this.data.message);
+    public LOGGER: LogService) {
+    this.LOGGER.error(this.data.message);
   }
 
   onClick(): void {
@@ -189,6 +190,11 @@ export class DialogErrorContentComponent {
 export interface DialogSearchData {
   search: string;
   confirmed: boolean;
+}
+
+interface GeocoderSuggestion {
+  displayName: string,
+  destination: any
 }
 
 @Component({
@@ -222,7 +228,7 @@ export class DialogSearchContentComponent implements OnInit {
   constructor(
     public dialogRef: MatDialogRef<DialogSearchContentComponent>,
     @Inject(MAT_DIALOG_DATA) public data: DialogSearchData,
-    public logger: LogService,
+    public LOGGER: LogService,
     private GLOBALS?: GlobalService) {
     this.data.search = '';
     this.data.confirmed = false;
@@ -323,7 +329,111 @@ export class DialogSearchContentComponent implements OnInit {
   }
 }
 
-interface GeocoderSuggestion {
-  displayName: string,
-  destination: any
+/**
+ * Reload dialog when importing workspace from external file
+ */
+export interface DialogReloadData {
+  userPrompt: DialogReloadPrompt
+}
+
+export enum DialogReloadPrompt {
+  SAVE_THEN_RELOAD, // Save the current workspace, then reload the imported workspace
+  IGNORE_AND_RELOAD, // Ignore the current workspace and reload the imported workspace
+  CANCEL // Do not load the imported workspace
+}
+
+@Component({
+  selector: 'app-dialog',
+  templateUrl: 'dialog.component.html'
+})
+export class DialogReloadComponent {
+  static dialog: MatDialog;
+
+  constructor(dialog: MatDialog) {
+    DialogReloadComponent.dialog = dialog;
+  }
+}
+
+@Component({
+  templateUrl: 'dialog.reload.content.component.html',
+  styleUrls: ['dialog.reload.content.component.css']
+})
+export class DialogReloadContentComponent {
+  constructor(
+    public dialogRef: MatDialogRef<DialogReloadContentComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: DialogReloadData,
+    public LOGGER: LogService,
+    private GLOBALS?: GlobalService) {
+  }
+
+  onSaveThenReload() {
+    this.data.userPrompt = DialogReloadPrompt.SAVE_THEN_RELOAD;
+    this.dialogRef.close();
+  }
+
+  onIgnoreAndReload() {
+    this.data.userPrompt = DialogReloadPrompt.IGNORE_AND_RELOAD;
+    this.dialogRef.close();
+  }
+
+  onCancel() {
+    this.data.userPrompt = DialogReloadPrompt.CANCEL;
+    this.dialogRef.close();
+  }
+}
+
+/**
+ * Reload dialog when importing workspace from external file
+ */
+interface DialogLoadData {
+  file: File | undefined
+}
+
+@Component({
+  selector: 'app-dialog',
+  templateUrl: 'dialog.component.html'
+})
+export class DialogLoadComponent {
+  static dialog: MatDialog;
+
+  constructor(dialog: MatDialog) {
+    DialogLoadComponent.dialog = dialog;
+  }
+}
+
+@Component({
+  templateUrl: 'dialog.load.content.component.html',
+  styleUrls: ['dialog.load.content.component.css']
+})
+export class DialogLoadContentComponent {
+  files: File[] = [];
+
+  constructor(
+    public dialogRef: MatDialogRef<DialogLoadContentComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: DialogLoadData,
+    public LOGGER: LogService,
+    private GLOBALS?: GlobalService) {
+  }
+
+  onSelect(event: NgxDropzoneChangeEvent) {
+    //this.files.push(...event.addedFiles);
+    if (event.addedFiles != null && event.addedFiles.length > 0) {
+      this.files = [];
+      this.files.push(event.addedFiles[0]);
+    }
+  }
+
+  onRemove(event: File) {
+    this.files.splice(this.files.indexOf(event), 1);
+  }
+
+  onCancel() {
+    this.data.file = undefined;
+    this.dialogRef.close();
+  }
+
+  onLoad() {
+    this.data.file = this.files.length === 0 ? undefined : this.files[0];
+    this.dialogRef.close();
+  }
 }

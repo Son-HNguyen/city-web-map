@@ -1,0 +1,14 @@
+<h2 mat-dialog-title>Load workspace</h2>
+<div mat-dialog-content class="mat-typography">
+  <p>Drag and drop a file or click to browse to open a workspace.</p>
+  <ngx-dropzone (change)="onSelect($event)">
+    <ngx-dropzone-label>Drag and drop | Click to browse</ngx-dropzone-label>
+    <ngx-dropzone-preview *ngFor="let f of files" [removable]="true" (removed)="onRemove(f)">
+      <ngx-dropzone-label>{{ f.name }} ({{ f.type }})</ngx-dropzone-label>
+    </ngx-dropzone-preview>
+  </ngx-dropzone>
+</div>
+<div mat-dialog-actions style="justify-content: flex-end;">
+  <button mat-button (click)="onCancel()">Cancel</button>
+  <button mat-button (click)="onLoad()" cdkFocusInitial> Load</button>
+</div>

@@ -60,9 +60,11 @@ export class WorkspaceUtility {
     });
   }
 
-  public saveToCookies(currentLayout: Array<GridsterItem>, fullscreenActive: boolean): Promise<number> {
+  public saveToCookies(currentLayout?: Array<GridsterItem>, fullscreenActive?: boolean): Promise<number> {
     return new Promise<number>((resolve, reject) => {
-      this.save(currentLayout, fullscreenActive);
+      if (currentLayout != null && fullscreenActive != null) {
+        this.save(currentLayout, fullscreenActive);
+      }
 
       // Then set cookies
       this.cookieService!.set(
