@@ -26,7 +26,7 @@
 import {
   DialogConfirmComponent,
   DialogConfirmContentComponent,
-  DialogErrorContentComponent,
+  DialogErrorContentComponent, DialogImageryLayerPickerComponent, DialogImageryLayerPickerContentComponent,
   DialogInfoComponent,
   DialogInfoContentComponent,
   DialogLoadComponent,
@@ -49,6 +49,7 @@ export class DialogUtility {
   searchDialogRef: MatDialogRef<DialogSearchContentComponent> | undefined;
   reloadDialogRef: MatDialogRef<DialogReloadContentComponent> | undefined;
   loadDialogRef: MatDialogRef<DialogLoadContentComponent> | undefined;
+  pickImageryRef: MatDialogRef<DialogImageryLayerPickerContentComponent> | undefined;
 
   constructor() {
   }
@@ -195,6 +196,28 @@ export class DialogUtility {
         file = this.loadDialogRef!.componentInstance.data.file;
         resolve(file);
       });
+    });
+  }
+
+  /**
+   * Open/Close a dialog for the imagery (base) layer picker.
+   */
+  public pickImagery(): Promise<void> {
+    return new Promise<void>((resolve, reject) => {
+      if (this.pickImageryRef == null || this.pickImageryRef.getState() === MatDialogState.CLOSED) {
+        this.pickImageryRef = DialogImageryLayerPickerComponent.dialog.open(DialogImageryLayerPickerContentComponent, {
+          data: {
+            // TODO Fill data?
+          }
+        });
+      } else {
+        this.pickImageryRef.close();
+      }
+      this.pickImageryRef.afterClosed().subscribe(result => {
+        // const = this.pickImageryRef!.componentInstance.data.;
+        // resolve();
+      });
+      resolve();
     });
   }
 }

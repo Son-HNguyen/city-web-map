@@ -18,7 +18,7 @@ import {
   DialogConfirmComponent,
   DialogConfirmContentComponent,
   DialogErrorComponent,
-  DialogErrorContentComponent,
+  DialogErrorContentComponent, DialogImageryLayerPickerComponent, DialogImageryLayerPickerContentComponent,
   DialogInfoComponent,
   DialogInfoContentComponent, DialogLoadComponent, DialogLoadContentComponent,
   DialogReloadComponent,
@@ -64,6 +64,7 @@ import {MatRadioModule} from "@angular/material/radio";
 import {MatCheckboxModule} from "@angular/material/checkbox";
 import {MatSlideToggleModule} from "@angular/material/slide-toggle";
 import {NgxDropzoneModule} from "ngx-dropzone";
+import { ImageryLayerPickerComponent } from './imagery-layer-picker/imagery-layer-picker.component';
 
 @NgModule({
   declarations: [
@@ -83,6 +84,8 @@ import {NgxDropzoneModule} from "ngx-dropzone";
     DialogReloadContentComponent,
     DialogLoadComponent,
     DialogLoadContentComponent,
+    DialogImageryLayerPickerComponent,
+    DialogImageryLayerPickerContentComponent,
     MenuComponent,
     NavComponent,
     InfoComponent,
@@ -100,7 +103,8 @@ import {NgxDropzoneModule} from "ngx-dropzone";
     FlyHomeComponent,
     SearchLocationComponent,
     TimelineComponent,
-    SettingsComponent
+    SettingsComponent,
+    ImageryLayerPickerComponent
   ],
   entryComponents: [
     DialogInfoComponent,
@@ -117,6 +121,8 @@ import {NgxDropzoneModule} from "ngx-dropzone";
     DialogReloadContentComponent,
     DialogLoadComponent,
     DialogLoadContentComponent,
+    DialogImageryLayerPickerComponent,
+    DialogImageryLayerPickerContentComponent,
     CheatSheetComponent,
     CheatSheetContentComponent,
     SnackBarComponent,
@@ -163,6 +169,7 @@ import {NgxDropzoneModule} from "ngx-dropzone";
     DialogSearchComponent,
     DialogReloadComponent,
     DialogLoadComponent,
+    DialogImageryLayerPickerComponent,
     CheatSheetComponent,
     SnackBarComponent
   ],

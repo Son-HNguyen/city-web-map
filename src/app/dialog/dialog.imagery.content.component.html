@@ -1,0 +1,29 @@
+<h2 mat-dialog-title>Imagery providers</h2>
+<div mat-dialog-content class="mat-typography custom-container">
+  <mat-card *ngFor="let imageryLayer of imageryLayers | keyvalue: noSort; index as i"
+            [style.cursor]="'pointer'"
+            (click)="onSelect(i)"
+            [ngClass]="isSelected(i) ? 'custom-card-selected mat-elevation-z15' : ''">
+    <mat-card-header>
+      <div mat-card-avatar
+           class="custom-card-avatar"
+           [ngStyle]="{'background': 'url(' + imageryLayer.value.iconUrl + ')'}">
+      </div>
+      <mat-card-title>{{imageryLayer.value.name}}</mat-card-title>
+      <mat-card-subtitle>{{imageryLayer.value.category}}</mat-card-subtitle>
+    </mat-card-header>
+    <!--<img mat-card-image src="{{imageryLayer.value.iconUrl}}" alt="Description">-->
+    <mat-card-content>
+      <p>
+        {{imageryLayer.value.tooltip}}
+      </p>
+    </mat-card-content>
+  </mat-card>
+</div>
+<div mat-dialog-actions style="justify-content: flex-end;">
+  <button mat-button (click)="onAdd()" cdkFocusInitial>Add new layer</button>
+</div>
+
+<!-- TODO Option to add new custom imagery layers (WMS, etc.) -->
+
+

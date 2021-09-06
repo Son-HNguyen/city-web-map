@@ -67,9 +67,6 @@ export class CesiumDirective implements OnInit {
       // TODO Check whether a non-default ion access token is available, if not then use Nominatim
       let savedGeocoder = this.GLOBALS!.WORKSPACE.geocoder;
       this.GLOBALS!.CESIUM_VIEWER.geocoder.viewModel.autoComplete = savedGeocoder.autocomplete; // TODO On/Off for ion/Nominatim?
-
-      console.log('Scene: ' + this.GLOBALS!.CESIUM_VIEWER.scene);
-
       let geocoderServices = [];
       for (let s of savedGeocoder.geocoderServices) {
         switch (s) {
@@ -87,6 +84,12 @@ export class CesiumDirective implements OnInit {
         }
       }
       this.GLOBALS!.CESIUM_VIEWER.geocoder.viewModel._geocoderServices = geocoderServices;
+
+      // TODO Set default imagery (base) layer
+      // Imagery layer
+      const imageryProviders = this.GLOBALS!.CESIUM_VIEWER.baseLayerPicker.viewModel.imageryProviderViewModels;
+      this.GLOBALS!.CESIUM_VIEWER.baseLayerPicker.viewModel.selectedImagery =
+        imageryProviders[this.GLOBALS!.WORKSPACE.imageryLayerIndex];
 
       resolve();
     });

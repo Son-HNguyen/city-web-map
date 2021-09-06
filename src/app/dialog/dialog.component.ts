@@ -30,7 +30,7 @@ import {map, startWith} from "rxjs/operators";
 import {GlobalService} from "../../global.service";
 import {NominatimExtension} from "../../extensions/nominatim.extension";
 import * as Cesium from "cesium";
-import {GeocoderService} from "../../core/Workspace";
+import {GeocoderService, Workspace} from "../../core/Workspace";
 import {NgxDropzoneChangeEvent} from "ngx-dropzone";
 
 /**
@@ -434,6 +434,62 @@ export class DialogLoadContentComponent {
 
   onLoad() {
     this.data.file = this.files.length === 0 ? undefined : this.files[0];
+    this.dialogRef.close();
+  }
+}
+
+/**
+ * Dialog for the imagery (base) layer picker
+ */
+interface DialogImageryLayerPickerData {
+  // TODO Needed? Which attributes?
+}
+
+@Component({
+  selector: 'app-dialog',
+  templateUrl: 'dialog.component.html'
+})
+export class DialogImageryLayerPickerComponent {
+  static dialog: MatDialog;
+
+  constructor(dialog: MatDialog) {
+    DialogImageryLayerPickerComponent.dialog = dialog;
+  }
+}
+
+@Component({
+  templateUrl: 'dialog.imagery.content.component.html',
+  styleUrls: ['dialog.imagery.content.component.css']
+})
+export class DialogImageryLayerPickerContentComponent {
+  imageryLayers = Workspace.DEFAULT_CESIUM_IMAGERY_LAYER_COLLECTION_INFO;
+
+  constructor(
+    public dialogRef: MatDialogRef<DialogImageryLayerPickerContentComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: DialogImageryLayerPickerData,
+    public LOGGER: LogService,
+    private GLOBALS?: GlobalService) {
+  }
+
+  noSort(): number {
+    return 0;
+  }
+
+  isSelected(index: number) {
+    return this.GLOBALS!.WORKSPACE.imageryLayerIndex === index;
+  }
+
+  onSelect(index: number) {
+    const imageryProviders = this.GLOBALS!.CESIUM_VIEWER.baseLayerPicker.viewModel.imageryProviderViewModels;
+    this.GLOBALS!.CESIUM_VIEWER.baseLayerPicker.viewModel.selectedImagery =
+      imageryProviders[index];
+    this.GLOBALS!.WORKSPACE.imageryLayerIndex = index;
+    this.dialogRef.close();
+  }
+
+  onAdd(): void {
+    // TODO Set data?
+    // TODO Implement
     this.dialogRef.close();
   }
 }

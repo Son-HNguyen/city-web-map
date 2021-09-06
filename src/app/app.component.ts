@@ -55,6 +55,8 @@ export class AppComponent implements OnInit {
     });
   }
 
+  // TODO Replace right-click?
+
   // TODO Show hotkeys in all tooltips e.g. `Tooltip | Fn`
   // TODO Pressing the hotkeys again automatically closes the dialog
   @HostListener('document:keydown', ['$event'])
@@ -99,7 +101,7 @@ export class AppComponent implements OnInit {
       }
       // Export workspace to file
       else if (e.altKey) {
-        if (e.key === 'x') { // TODO
+        if (e.key === 'x') {
           e.preventDefault();
           await this.handleQuickExport();
           // document.getElementById('buttonQuickExport')!.click();
@@ -111,9 +113,14 @@ export class AppComponent implements OnInit {
           // document.getElementById('buttonNewWorkspace')!.click();
         }
         // Fly to default location
-        else if (e.ctrlKey && e.altKey && e.key === 'h') {
+        else if (e.key === 'h') {
           e.preventDefault();
           document.getElementById('buttonFlyHome')!.click();
+        }
+        // Select imagery (base) layer
+        else if (e.key === 'i') {
+          e.preventDefault();
+          document.getElementById('buttonImageryLayerPicker')!.click();
         }
       }
     }
