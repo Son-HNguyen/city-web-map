@@ -28,7 +28,7 @@ export class AppComponent implements OnInit {
 
   cheatSheetDialog!: MatDialogRef<CheatSheetContentComponent>;
 
-  workspaceLoadedFromFile: boolean;
+  workspaceLoaded: boolean;
 
   // TODO Add option to enter, use, save and import Cesium ion access tokens
 
@@ -42,7 +42,7 @@ export class AppComponent implements OnInit {
     this.savedDashboard = undefined;
     this.savedItemPos = undefined;
     this.fullscreenActive = false;
-    this.workspaceLoadedFromFile = false;
+    this.workspaceLoaded = false;
   }
 
   async initLayout(): Promise<void> {
@@ -130,7 +130,8 @@ export class AppComponent implements OnInit {
 
   @HostListener('window:beforeunload', ['$event'])
   async beforeUnloadHandler(event: any) {
-    document.getElementById('buttonQuickSaveWorkspace')!.click();
+    await this.handleQuickSave();
+    // document.getElementById('buttonQuickSaveWorkspace')!.click();
   }
 
   async ngOnInit() {
@@ -188,7 +189,7 @@ export class AppComponent implements OnInit {
     }
   }
 
-  private loadExternalFile(file: File, fromLoad?: boolean) {
+  private loadExternalFile(file: File, noDialog?: boolean) {
     let fileReader = new FileReader();
     fileReader.onload = async (e) => {
       const parsedWorkspace = fileReader.result;
@@ -197,24 +198,7 @@ export class AppComponent implements OnInit {
       }
       try {
         const parsedWorkspaceObj = <Workspace><unknown>parsedWorkspace;
-        if (fromLoad != null && fromLoad) {
-          // Called by load function, no need to ask user for reloading
-          this.reloadWorkspace(parsedWorkspaceObj);
-        } else {
-          const confirmReload = await this.UTILS!.dialog.reload();
-          switch (confirmReload) {
-            case DialogReloadPrompt.SAVE_THEN_RELOAD:
-              // Save current workspace
-              // await this.handleQuickExport();
-              // TODO Display save dialog
-              // Then reload
-              this.reloadWorkspace(parsedWorkspaceObj);
-              break;
-            case DialogReloadPrompt.IGNORE_AND_RELOAD:
-              this.reloadWorkspace(parsedWorkspaceObj);
-              break;
-          }
-        }
+        await (this.loadWorkspace(parsedWorkspaceObj, noDialog));
       } catch (e) {
         this.LOGGER!.warn('No valid workspace found from input file');
       }
@@ -222,9 +206,34 @@ export class AppComponent implements OnInit {
     fileReader.readAsText(file);
   }
 
+  private async loadWorkspace(workspace: Workspace, noDialog?: boolean) {
+    if (noDialog != null && noDialog) {
+      // Called by load function, no need to ask user for reloading
+      this.reloadWorkspace(workspace);
+    } else {
+      const confirmReload = await this.UTILS!.dialog.reload();
+      switch (confirmReload) {
+        case DialogReloadPrompt.SAVE_THEN_RELOAD:
+          // Save current workspace
+          await this.handleQuickExport();
+          // document.getElementById('buttonQuickExportWorkspace')!.click();
+          await new Promise(f => {
+            setTimeout(f, 1000);
+          });
+          // TODO Display save dialog
+          // Then reload
+          this.reloadWorkspace(workspace);
+          break;
+        case DialogReloadPrompt.IGNORE_AND_RELOAD:
+          this.reloadWorkspace(workspace);
+          break;
+      }
+    }
+  }
+
   private reloadWorkspace(parsedWorkspaceObj: Workspace) {
-    this.UTILS!.snackBar.show('Valid workspace found, reloading...');
-    this.workspaceLoadedFromFile = true;
+    //this.UTILS!.snackBar.show('Valid workspace found, reloading...');
+    this.workspaceLoaded = true;
     this.GLOBALS!.WORKSPACE = parsedWorkspaceObj;
     location.reload();
   }
@@ -243,8 +252,8 @@ export class AppComponent implements OnInit {
     // TODO Add option to login to save settings and set custom share URLs? -> passportjs
     // Quick save
     let cookieSize: number;
-    if (this.workspaceLoadedFromFile) {
-      // Valid workspace from external file found
+    if (this.workspaceLoaded) {
+      // A new valid workspace (such as from external file, or triggered by reset) found
       cookieSize = await this.UTILS!.workspace.saveToCookies();
     } else {
       // Check if fullscreen is activated
@@ -257,14 +266,17 @@ export class AppComponent implements OnInit {
     this.UTILS!.snackBar.show('Workspace saved (space allocated ' + Math.round(cookieSize / 4096 * 100) + '%).');
   }
 
-  async handleQuickExport() {
-    // TODO Option for users to enter filename in `Save as...`?
-    await this.UTILS!.workspace.saveToFile(this.dashboard, this.fullscreenActive, Workspace.DEFAULT_WORKSPACE_FILENAME);
-    this.UTILS!.snackBar.show('Workspace exported. Drag and drop this file onto the web client to load.',
-      {
-        horizontalPosition: 'left',
-        verticalPosition: 'bottom'
-      });
+  async handleQuickExport(): Promise<void> {
+    return new Promise<void>(async (resolve, reject) => {
+      // TODO Option for users to enter filename in `Save as...`?
+      await this.UTILS!.workspace.saveToFile(this.dashboard, this.fullscreenActive, Workspace.DEFAULT_WORKSPACE_FILENAME);
+      this.UTILS!.snackBar.show('Workspace exported. Drag and drop this file onto the web client to load.',
+        {
+          horizontalPosition: 'left',
+          verticalPosition: 'bottom'
+        });
+      resolve();
+    });
   }
 
   async handleSaveAs() {
@@ -274,8 +286,12 @@ export class AppComponent implements OnInit {
     this.UTILS!.dialog.info('Options to save');
   }
 
-  async handleNew() {
+  // TODO Refactor/Remove?
+  //  (reason: when a new workspace is created, all widgets and components need to be reloaded as well
+  //  -> use the function reload similarly to eternal files as well for consistent behaviours and less maintenance)
+  async handleNew_Backup() {
     // TODO Ask if the current workspace needs to be saved first before a new one is created
+
     const scope = this;
 
     async function createNewWorkspace(): Promise<void> {
@@ -303,6 +319,11 @@ export class AppComponent implements OnInit {
     this.layoutChanged();
 
     this.UTILS!.snackBar.show('A new workspace has been created.');
+  }
+
+  async handleNew() {
+    this.GLOBALS!.WORKSPACE = new Workspace();
+    await this.loadWorkspace(this.GLOBALS!.WORKSPACE);
   }
 
   async handleToggleValue(value: any) {
