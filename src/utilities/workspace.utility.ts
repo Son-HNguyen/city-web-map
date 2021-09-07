@@ -82,10 +82,21 @@ export class WorkspaceUtility {
     });
   }
 
-  public saveToFile(currentLayout: Array<GridsterItem>, fullscreenActive: boolean, filename: string): Promise<void> {
-    return new Promise<void>(async (resolve, reject) => {
-      this.save(currentLayout, fullscreenActive);
+  private save(currentLayout: Array<GridsterItem>, fullscreenActive: boolean) {
+    // Save current layout
+    this.GLOBALS.WORKSPACE.gridLayout = currentLayout.map(x => Object.assign({}, x)); // Deep copy of an array!
+    this.GLOBALS.WORKSPACE.fullscreenActive = fullscreenActive;
 
+    // Save last location
+    this.GLOBALS.WORKSPACE.cameraLocation = this.UTILS.camera.getCurrentPosition();
+
+    // Save grid layout / dashboard
+    // Since the workspace has its grid layout point to dashboard object, they are always in sync -> done
+    // TODO Save space by comparing dashboard with presets and only save preset name
+  }
+
+  public saveToFile(filename: string): Promise<void> {
+    return new Promise<void>(async (resolve, reject) => {
       let workspaceContent = this.GLOBALS.WORKSPACE.toString();
 
       // Then export file
@@ -98,18 +109,5 @@ export class WorkspaceUtility {
         reject(e);
       }
     });
-  }
-
-  private save(currentLayout: Array<GridsterItem>, fullscreenActive: boolean) {
-    // Save current layout
-    this.GLOBALS.WORKSPACE.gridLayout = currentLayout.map(x => Object.assign({}, x)); // Deep copy of an array!
-    this.GLOBALS.WORKSPACE.fullscreenActive = fullscreenActive;
-
-    // Save last location
-    this.GLOBALS.WORKSPACE.cameraLocation = this.UTILS.camera.getCurrentPosition();
-
-    // Save grid layout / dashboard
-    // Since the workspace has its grid layout point to dashboard object, they are always in sync -> done
-    // TODO Save space by comparing dashboard with presets and only save preset name
   }
 }

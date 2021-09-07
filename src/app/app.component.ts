@@ -96,7 +96,7 @@ export class AppComponent implements OnInit {
       // Open workspace
       else if (e.key === 'o') {
         e.preventDefault();
-        this.handleLoad();
+        await this.handleLoad();
         // document.getElementById('buttonLoad')!.click();
       }
       // Export workspace to file
@@ -269,7 +269,10 @@ export class AppComponent implements OnInit {
   async handleQuickExport(): Promise<void> {
     return new Promise<void>(async (resolve, reject) => {
       // TODO Option for users to enter filename in `Save as...`?
-      await this.UTILS!.workspace.saveToFile(this.dashboard, this.fullscreenActive, Workspace.DEFAULT_WORKSPACE_FILENAME);
+      // Save first
+      await this.handleQuickSave();
+      // Then write the saved workspace
+      await this.UTILS!.workspace.saveToFile(Workspace.DEFAULT_WORKSPACE_FILENAME);
       this.UTILS!.snackBar.show('Workspace exported. Drag and drop this file onto the web client to load.',
         {
           horizontalPosition: 'left',
@@ -322,8 +325,7 @@ export class AppComponent implements OnInit {
   }
 
   async handleNew() {
-    this.GLOBALS!.WORKSPACE = new Workspace();
-    await this.loadWorkspace(this.GLOBALS!.WORKSPACE);
+    await this.loadWorkspace(new Workspace());
   }
 
   async handleToggleValue(value: any) {
