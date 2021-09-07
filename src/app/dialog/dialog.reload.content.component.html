@@ -1,9 +1,9 @@
 <h2 mat-dialog-title>Load workspace</h2>
 <div mat-dialog-content class="mat-typography">
-  <p>A valid workspace from an external file has been detected. How would you like to proceed?</p>
+  <p>Your current workspace is about to be replaced, proceed?</p>
 </div>
 <div mat-dialog-actions style="justify-content: flex-end;">
-  <button mat-button (click)="onSaveThenReload()" cdkFocusInitial> Save then load</button>
-  <button mat-button (click)="onIgnoreAndReload()"> Just load</button>
-  <button mat-button (click)="onCancel()"> Cancel</button>
+  <button mat-button (click)="onSaveThenReload()" cdkFocusInitial>Save then load</button>
+  <button mat-button (click)="onIgnoreAndReload()">Just load</button>
+  <button mat-button (click)="onCancel()">Cancel</button>
 </div>
