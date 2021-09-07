@@ -22,5 +22,10 @@
  */
 
 export class Viewpoint {
-
+  // TODO title, description, maintainer/author
+  // TODO current camera position
+  // TODO current time, time range, time speed multiplier, etc.
+  // TODO List of layers together with activated and deactivated ones
+  // TODO List of default and custom imagery layers and the selected one
+  // TODO List of default and custom terrain layers and the selected one
 }

@@ -9,7 +9,7 @@ export class ViewListComponent {
 
   // TODO Add a button to take screenshot of the current camera
   // TODO Add a button to add the current camera view into the viewpoint list
-  // TODO A viewpoint contains the current CesiumCameraLocation with a title and/or description
+  // TODO See class Viewpoint for the list of attributes contained in each viewpoint
   // TODO Display each viewpoint as a banner with title/description and buttons "Go", "Edit", "Delete" and "Move up/down"
   // TODO Enable moving viewpoints within the list
   // TODO Allow activating/deactivating 3D layers for each individual viewpoint
