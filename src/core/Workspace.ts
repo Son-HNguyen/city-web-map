@@ -289,8 +289,6 @@ area washes and organic edges over a paper texture to add warm pop to any map.\n
     showOnStart: true
   };
 
-  // TODO Attributes and functions for clock/timeline?
-
   constructor(
     title?: string,
     description?: string,
@@ -322,14 +320,13 @@ area washes and organic edges over a paper texture to add warm pop to any map.\n
   }
 
   public static initFrom(workspace: Workspace) {
-    let result = Object.assign(new Workspace(), workspace);
-    return result;
+    return Object.assign(new Workspace(), workspace);
   }
 
   /**
    * Compare a given layout with the defaults and return `left`, `center`, `right` or `undefined`.
    *
-   * @param GridsterItem
+   * @param layout
    */
   public static getLayout(layout: GridsterItem[]): string | undefined {
     if (_.isEqual(Workspace.DEFAULT_LAYOUTS.layoutLeftGlobe, layout)) {
