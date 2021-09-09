@@ -39,6 +39,23 @@ export enum GeocoderService {
 
 export class Workspace {
   // ==============================
+  // ABOUT
+  // ==============================
+  private readonly _about: AboutConfig = {
+    software: 'City Web Map',
+    version: '0.1.0',
+    url: new URL('https://www.3dcitydb.org'),
+    repositories: {
+      github: new URL('https://github.com/3dcitydb/3dcitydb-web-map')
+    },
+    developer: {
+      name: 'Son H. Nguyen (son.nguyen@tum.de)',
+      organization: 'Chair of Geoinformatics, Department of Aerospace and Geodesy, Technical University of Munich',
+      url: new URL('https://www.asg.ed.tum.de/en/gis/home')
+    }
+  };
+
+  // ==============================
   // METADATA
   // ==============================
   private _title: string;
