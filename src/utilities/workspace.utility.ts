@@ -21,7 +21,6 @@
  * limitations under the License.
  */
 
-import {CookieService} from "ngx-cookie-service";
 import {LogService} from "../app/log/log.service";
 import {UtilityService} from "../utils.service";
 import {Workspace} from "../core/Workspace";
@@ -29,28 +28,24 @@ import {GlobalService} from "../global.service";
 import {GridsterItem} from "angular-gridster2";
 
 export class WorkspaceUtility {
-  private cookieService: CookieService;
   private logService: LogService;
   private UTILS: UtilityService;
   private GLOBALS: GlobalService;
 
-  constructor(cookieService: CookieService,
-              logService: LogService,
+  constructor(logService: LogService,
               GLOBALS: GlobalService,
-              UTILS: UtilityService
-  ) {
-    this.cookieService = cookieService;
+              UTILS: UtilityService) {
     this.logService = logService;
     this.GLOBALS = GLOBALS;
     this.UTILS = UTILS;
   }
 
-  public readFromCookies(): Promise<void> {
+  public readFromLocalStorage(): Promise<void> {
     const scope = this;
     return new Promise<void>((resolve, reject) => {
-      const workspaceString = scope.cookieService.get(Workspace.COOKIE_NAMES.workspace);
+      const workspaceString = localStorage.getItem(Workspace.STORAGE_NAME.workspace);
       try {
-        this.GLOBALS!.WORKSPACE = Workspace.initFrom(JSON.parse(workspaceString));
+        this.GLOBALS!.WORKSPACE = Workspace.initFrom(JSON.parse(workspaceString!));
         resolve();
       } catch (e) {
         scope.logService.warn('No compatible workspace found. A default workspace shall be created.');
@@ -60,23 +55,20 @@ export class WorkspaceUtility {
     });
   }
 
-  public saveToCookies(currentLayout?: Array<GridsterItem>, fullscreenActive?: boolean): Promise<number> {
+  public saveToLocalStorage(currentLayout?: Array<GridsterItem>, fullscreenActive?: boolean): Promise<number> {
     return new Promise<number>((resolve, reject) => {
       if (currentLayout != null && fullscreenActive != null) {
         this.save(currentLayout, fullscreenActive);
       }
 
-      // Then set cookies
-      this.cookieService!.set(
-        Workspace.COOKIE_NAMES.workspace,
-        this.GLOBALS.WORKSPACE.toString(),
-        Workspace.COOKIE_EXPIRE);
+      // Then set local storage
+      localStorage.setItem(Workspace.STORAGE_NAME.workspace, this.GLOBALS.WORKSPACE.toString());
 
-      // Check cookie size
-      const cookieWorkspace = this.cookieService.get(Workspace.COOKIE_NAMES.workspace);
+      // Check stored size
+      const cookieWorkspace = localStorage.getItem(Workspace.STORAGE_NAME.workspace);
       const Buffer = require('buffer/').Buffer;
-      const bytes = Buffer.byteLength(encodeURI(cookieWorkspace), Workspace.STRING_ENCODING);
-      this.logService!.info('Save current workspace in cookies, size = ' + bytes + " Bytes");
+      const bytes = Buffer.byteLength(encodeURI(cookieWorkspace!), Workspace.STRING_ENCODING);
+      this.logService!.info('Save current workspace in local storage, size = ' + bytes + " Bytes");
 
       resolve(bytes);
     });

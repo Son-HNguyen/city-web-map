@@ -1,5 +1,4 @@
 import {Directive, ElementRef, OnInit} from '@angular/core';
-import {CookieService} from 'ngx-cookie-service';
 import {DesktopExtension} from '../extensions/desktop.extension';
 import {MobileExtension} from '../extensions/mobile.extension';
 import {LogService} from './log/log.service';
@@ -15,12 +14,10 @@ import {NominatimExtension} from "../extensions/nominatim.extension";
 })
 export class CesiumDirective implements OnInit {
 
-  constructor(
-    private cookieService?: CookieService,
-    private logService?: LogService,
-    private el?: ElementRef,
-    private GLOBALS?: GlobalService,
-    private UTILS?: UtilityService) {
+  constructor(private logService?: LogService,
+              private el?: ElementRef,
+              private GLOBALS?: GlobalService,
+              private UTILS?: UtilityService) {
   }
 
   async ngOnInit() {

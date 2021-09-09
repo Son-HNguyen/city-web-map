@@ -155,10 +155,9 @@ export class Workspace {
   private _fullscreenActive: boolean;
 
   // ==============================
-  // COOKIES
+  // LOCAL STORAGE
   // ==============================
-  public static readonly COOKIE_EXPIRE: number = 7;
-  public static readonly COOKIE_NAMES: CookieNamesConfig = {
+  public static readonly STORAGE_NAME: StorageNameConfig = {
     workspace: 'workspace'
   };
   public static readonly STRING_ENCODING: string = 'utf16';
@@ -532,7 +531,7 @@ export interface GridItemPos {
   globe: number
 }
 
-export interface CookieNamesConfig {
+export interface StorageNameConfig {
   workspace: string
 }
 

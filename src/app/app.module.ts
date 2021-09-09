@@ -8,7 +8,6 @@ import {MatIconModule} from '@angular/material/icon';
 import {_MatMenuDirectivesModule, MatMenuModule} from '@angular/material/menu';
 import {BrowserModule} from '@angular/platform-browser';
 import {APP_INITIALIZER, Injector, NgModule} from '@angular/core';
-import {CookieService} from 'ngx-cookie-service';
 
 import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
@@ -175,7 +174,6 @@ import { ImageryLayerPickerComponent } from './imagery-layer-picker/imagery-laye
   ],
   providers: [
     {provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: {appearance: 'fill'}},
-    CookieService,
     LogService,
     LogPublishersService,
     GlobalService,
@@ -197,5 +195,5 @@ export class AppModule {
 }
 
 export function appInitCookie(provider: UtilityService) {
-  return () => provider.appInitCookie();
+  return () => provider.appInitStorage();
 }

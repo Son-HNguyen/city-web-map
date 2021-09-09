@@ -27,7 +27,6 @@ import {DialogUtility} from "./utilities/dialog.utility";
 import {OsUtility} from "./utilities/os.utility";
 import {SnackBarUtility} from "./utilities/snack-bar.utility";
 import {WorkspaceUtility} from "./utilities/workspace.utility";
-import {CookieService} from "ngx-cookie-service";
 import {LogService} from "./app/log/log.service";
 import {GlobalService} from "./global.service";
 
@@ -39,19 +38,17 @@ export class UtilityService {
   private readonly _os: OsUtility;
   private readonly _workspace: WorkspaceUtility;
 
-  constructor(
-    private cookieService?: CookieService,
-    private logService?: LogService,
-    private GLOBALS?: GlobalService) {
+  constructor(private logService?: LogService,
+              private GLOBALS?: GlobalService) {
     this._camera = new CameraUtility(this.GLOBALS!);
     this._dialog = new DialogUtility();
     this._snackBar = new SnackBarUtility();
     this._os = new OsUtility();
-    this._workspace = new WorkspaceUtility(this.cookieService!, this.logService!, this.GLOBALS!, this);
+    this._workspace = new WorkspaceUtility(this.logService!, this.GLOBALS!, this);
   }
 
-  public appInitCookie(): Promise<void> {
-    return this._workspace.readFromCookies();
+  public appInitStorage(): Promise<void> {
+    return this._workspace.readFromLocalStorage();
   }
 
   get camera(): CameraUtility {

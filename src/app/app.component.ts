@@ -1,5 +1,4 @@
 import {ChangeDetectionStrategy, Component, HostListener, OnInit, ViewEncapsulation} from '@angular/core';
-import {CookieService} from 'ngx-cookie-service';
 import {CompactType, DisplayGrid, GridsterConfig, GridsterItem, GridType} from "angular-gridster2";
 import {UtilityService} from "../utils.service";
 import {GlobalService} from "../global.service";
@@ -33,7 +32,6 @@ export class AppComponent implements OnInit {
   // TODO Add option to enter, use, save and import Cesium ion access tokens
 
   constructor(
-    private cookieService?: CookieService,
     private GLOBALS?: GlobalService,
     private UTILS?: UtilityService,
     private LOGGER?: LogService,
@@ -251,19 +249,20 @@ export class AppComponent implements OnInit {
     // TODO QR code for sharing (small) workspaces?
     // TODO Add option to login to save settings and set custom share URLs? -> passportjs
     // Quick save
-    let cookieSize: number;
+    let storedSize: number;
     if (this.workspaceLoaded) {
       // A new valid workspace (such as from external file, or triggered by reset) found
-      cookieSize = await this.UTILS!.workspace.saveToCookies();
+      storedSize = await this.UTILS!.workspace.saveToLocalStorage();
     } else {
       // Check if fullscreen is activated
       if (this.fullscreenActive && this.savedDashboard != null) {
-        cookieSize = await this.UTILS!.workspace.saveToCookies(this.savedDashboard, this.fullscreenActive);
+        storedSize = await this.UTILS!.workspace.saveToLocalStorage(this.savedDashboard, this.fullscreenActive);
       } else {
-        cookieSize = await this.UTILS!.workspace.saveToCookies(this.dashboard, this.fullscreenActive);
+        storedSize = await this.UTILS!.workspace.saveToLocalStorage(this.dashboard, this.fullscreenActive);
       }
     }
-    this.UTILS!.snackBar.show('Workspace saved (space allocated ' + Math.round(cookieSize / 4096 * 100) + '%).');
+    this.UTILS!.snackBar.show('Workspace saved (space allocated ' +
+      Math.round(storedSize / 1024 * 1000) / 1000 + 'KB).');
   }
 
   async handleQuickExport(): Promise<void> {
@@ -284,7 +283,7 @@ export class AppComponent implements OnInit {
 
   async handleSaveAs() {
     // Display options to save
-    // TODO Add option to save in cookie, JSON file, URL, pastebin, etc.
+    // TODO Add option to save in JSON file, URL, pastebin, etc.
     // TODO Here show in a modal window what is going to be saved and the user can choose/change
     this.UTILS!.dialog.info('Options to save');
   }
