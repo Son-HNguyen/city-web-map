@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { MenuContextComponent } from './menu-context.component';
+import { WorkspaceViewComponent } from './workspace-view.component';
 
-describe('MenuContextComponent', () => {
-  let component: MenuContextComponent;
-  let fixture: ComponentFixture<MenuContextComponent>;
+describe('WorkspaceViewComponent', () => {
+  let component: WorkspaceViewComponent;
+  let fixture: ComponentFixture<WorkspaceViewComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ MenuContextComponent ]
+      declarations: [ WorkspaceViewComponent ]
     })
     .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(MenuContextComponent);
+    fixture = TestBed.createComponent(WorkspaceViewComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

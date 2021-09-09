@@ -1,11 +1,11 @@
-import {Component} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 
 @Component({
-  selector: 'app-view-list',
-  templateUrl: './view-list.component.html',
-  styleUrls: ['./view-list.component.css'] // TODO Add banner / background images for each view
+  selector: 'app-workspace-view',
+  templateUrl: './workspace-view.component.html',
+  styleUrls: ['./workspace-view.component.css'] // TODO Add banner / background images for each view point
 })
-export class ViewListComponent {
+export class WorkspaceViewComponent {
 
   // TODO Add a button to take screenshot of the current camera
   // TODO Add a button to add the current camera view into the viewpoint list

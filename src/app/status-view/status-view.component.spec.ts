@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { LayerListComponent } from './layer-list.component';
+import { StatusViewComponent } from './status-view.component';
 
-describe('LayerListComponent', () => {
-  let component: LayerListComponent;
-  let fixture: ComponentFixture<LayerListComponent>;
+describe('StatusViewComponent', () => {
+  let component: StatusViewComponent;
+  let fixture: ComponentFixture<StatusViewComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ LayerListComponent ]
+      declarations: [ StatusViewComponent ]
     })
     .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(LayerListComponent);
+    fixture = TestBed.createComponent(StatusViewComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

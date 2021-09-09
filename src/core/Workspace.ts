@@ -70,87 +70,42 @@ export class Workspace {
   // LAYOUT
   // ==============================
   private _gridLayout: Array<GridsterItem>;
+  // Gridlayout in 20 X 20
+  // NOTE: DO NOT CHANGE THE ORDER OF THE APPS WITHIN THE LAYOUT (e.g. Menu bar is at index 0, etc.)
+  // IF THE LAYOUT HAS BEEN CHANGED, MAKE SURE TO ADJUST THE INDICES OF gridster-item IN app.component.hml ACCORDINGLY
   public static readonly DEFAULT_LAYOUTS: GridLayouts = {
     layoutLeftGlobe: [
       {cols: 20, rows: 1, y: 0, x: 0}, // Menu bar
-      {cols: 12, rows: 2, y: 1, x: 0}, // Nav
-      {cols: 12, rows: 2, y: 19, x: 0}, // Status
-      {cols: 5, rows: 10, y: 1, x: 12}, // Info
-      {cols: 5, rows: 10, y: 11, x: 12}, // View list
-      {cols: 3, rows: 5, y: 1, x: 17}, // Layer list
-      {cols: 3, rows: 12, y: 6, x: 17}, // Context menu
-      {cols: 3, rows: 3, y: 18, x: 17}, // Menu
-      {cols: 12, rows: 16, y: 3, x: 0} // Cesium app
+      {cols: 3, rows: 9, y: 1, x: 14}, // Workspace View
+      {cols: 3, rows: 9, y: 10, x: 14}, // Detail View
+      {cols: 3, rows: 18, y: 1, x: 17}, // Info View
+      {cols: 14, rows: 18, y: 1, x: 0}, // Cesium app
+      {cols: 20, rows: 1, y: 19, x: 0} // Status View
     ],
     layoutCenterGlobe: [
       {cols: 20, rows: 1, y: 0, x: 0}, // Menu bar
-      {cols: 3, rows: 5, y: 1, x: 0}, // Layer list
-      {cols: 3, rows: 12, y: 6, x: 0}, // Context menu
-      {cols: 3, rows: 3, y: 18, x: 0}, // Menu
-      {cols: 12, rows: 2, y: 1, x: 3}, // Nav
-      {cols: 5, rows: 10, y: 1, x: 15}, // Info
-      {cols: 5, rows: 10, y: 11, x: 15}, // View list
-      {cols: 12, rows: 2, y: 19, x: 3}, // Status
-      {cols: 12, rows: 16, y: 3, x: 3} // Cesium app
+      {cols: 3, rows: 9, y: 1, x: 0}, // Workspace View
+      {cols: 3, rows: 9, y: 10, x: 0}, // Detail View
+      {cols: 3, rows: 18, y: 1, x: 17}, // Info View
+      {cols: 14, rows: 18, y: 1, x: 3}, // Cesium app
+      {cols: 20, rows: 1, y: 19, x: 0} // Status View
     ],
     layoutRightGlobe: [
       {cols: 20, rows: 1, y: 0, x: 0}, // Menu bar
-      {cols: 3, rows: 5, y: 1, x: 0}, // Layer list
-      {cols: 3, rows: 12, y: 6, x: 0}, // Context menu
-      {cols: 3, rows: 3, y: 18, x: 0}, // Menu
-      {cols: 5, rows: 10, y: 1, x: 3}, // Info
-      {cols: 5, rows: 10, y: 11, x: 3}, // View list
-      {cols: 12, rows: 2, y: 1, x: 8}, // Nav
-      {cols: 12, rows: 2, y: 19, x: 8}, // Status
-      {cols: 12, rows: 16, y: 3, x: 8} // Cesium app
+      {cols: 3, rows: 9, y: 1, x: 0}, // Workspace View
+      {cols: 3, rows: 9, y: 10, x: 0}, // Detail View
+      {cols: 3, rows: 18, y: 1, x: 3}, // Info View
+      {cols: 14, rows: 18, y: 1, x: 6}, // Cesium app
+      {cols: 20, rows: 1, y: 19, x: 0} // Status View
     ],
     layoutFullscreen: [
       {cols: 0, rows: 0, y: 0, x: 0}, // Menu bar
-      {cols: 0, rows: 0, y: 0, x: 0}, // Layer list
-      {cols: 0, rows: 0, y: 0, x: 0}, // Context menu
-      {cols: 0, rows: 0, y: 0, x: 0}, // Menu
-      {cols: 0, rows: 0, y: 0, x: 0}, // Nav
-      {cols: 0, rows: 0, y: 0, x: 0}, // Info
-      {cols: 0, rows: 0, y: 0, x: 0}, // View list
-      {cols: 0, rows: 0, y: 0, x: 0}, // Status
-      {cols: 20, rows: 21, y: 0, x: 0} // Cesium app
+      {cols: 0, rows: 0, y: 0, x: 0}, // Workspace View
+      {cols: 0, rows: 0, y: 0, x: 0}, // Detail View
+      {cols: 0, rows: 0, y: 0, x: 0}, // Info View
+      {cols: 20, rows: 20, y: 0, x: 0}, // Cesium app
+      {cols: 0, rows: 0, y: 0, x: 0} // Status View
     ]
-  };
-  private _itemPos: GridItemPos; // Index position of gridster items within a dashboard array
-  public static readonly DEFAULT_ITEM_POS_LAYOUTS: GridItemPositions = {
-    layoutLeftGlobe: {
-      menuBar: 0,
-      nav: 1,
-      status: 2,
-      info: 3,
-      viewList: 4,
-      layerList: 5,
-      menuContext: 6,
-      menu: 7,
-      globe: 8
-    },
-    layoutCenterGlobe: {
-      menuBar: 0,
-      layerList: 1,
-      menuContext: 2,
-      menu: 3,
-      nav: 4,
-      info: 5,
-      viewList: 6,
-      status: 7,
-      globe: 8
-    },
-    layoutRightGlobe: {
-      menuBar: 0,
-      layerList: 1,
-      menuContext: 2,
-      menu: 3,
-      info: 4,
-      viewList: 5,
-      nav: 6,
-      status: 7,
-      globe: 8
-    }
   };
   private _fullscreenActive: boolean;
 
@@ -329,7 +284,6 @@ area washes and organic edges over a paper texture to add warm pop to any map.\n
     timeline?: TimeLineConfig,
     viewpoints?: Array<Viewpoint>,
     gridLayout?: Array<GridsterItem>,
-    itemPos?: GridItemPos,
     fullscreenActive?: boolean,
     cameraLocation?: CesiumCameraLocation,
     geocoder?: GeocoderConfig,
@@ -344,7 +298,6 @@ area washes and organic edges over a paper texture to add warm pop to any map.\n
     this._timeline = (timeline == null) ? Workspace.DEFAULT_TIMELINE : timeline;
     this._viewpoints = (viewpoints == null) ? [] : viewpoints;
     this._gridLayout = (gridLayout == null) ? Workspace.DEFAULT_LAYOUTS.layoutCenterGlobe : gridLayout;
-    this._itemPos = (itemPos == null) ? Workspace.DEFAULT_ITEM_POS_LAYOUTS.layoutCenterGlobe : itemPos;
     this._fullscreenActive = (fullscreenActive == null) ? false : fullscreenActive;
     this._cameraLocation = (cameraLocation == null) ? Workspace.DEFAULT_CAMERA_LOCATION : cameraLocation;
     this._geocoder = (geocoder == null) ? Workspace.DEFAULT_GEOCODER : geocoder;
@@ -381,6 +334,9 @@ area washes and organic edges over a paper texture to add warm pop to any map.\n
   // ==============================
   // GETTER
   // ==============================
+  get about(): AboutConfig {
+    return this._about;
+  }
 
   get title(): string {
     return this._title;
@@ -418,10 +374,6 @@ area washes and organic edges over a paper texture to add warm pop to any map.\n
     return this._gridLayout;
   }
 
-  get itemPos(): GridItemPos {
-    return this._itemPos;
-  }
-
   get fullscreenActive(): boolean {
     return this._fullscreenActive;
   }
@@ -441,7 +393,6 @@ area washes and organic edges over a paper texture to add warm pop to any map.\n
   // ==============================
   // SETTER
   // ==============================
-
   set title(value: string) {
     this._title = value;
   }
@@ -478,10 +429,6 @@ area washes and organic edges over a paper texture to add warm pop to any map.\n
     this._gridLayout = value;
   }
 
-  set itemPos(value: GridItemPos) {
-    this._itemPos = value;
-  }
-
   set fullscreenActive(value: boolean) {
     this._fullscreenActive = value;
   }
@@ -499,6 +446,20 @@ area washes and organic edges over a paper texture to add warm pop to any map.\n
   }
 }
 
+interface AboutConfig {
+  software: string,
+  version: string,
+  url: URL,
+  repositories: {
+    github: URL
+  },
+  developer: {
+    name: string,
+    organization: string,
+    url: URL
+  }
+}
+
 export interface TimeLineConfig {
   autoplay: boolean,
   current: Date,
@@ -511,24 +472,6 @@ export interface GridLayouts {
   layoutCenterGlobe: Array<GridsterItem>,
   layoutRightGlobe: Array<GridsterItem>,
   layoutFullscreen: Array<GridsterItem>
-}
-
-export interface GridItemPositions {
-  layoutLeftGlobe: GridItemPos,
-  layoutCenterGlobe: GridItemPos,
-  layoutRightGlobe: GridItemPos
-}
-
-export interface GridItemPos {
-  menuBar: number,
-  layerList: number,
-  menuContext: number,
-  menu: number,
-  nav: number,
-  info: number,
-  viewList: number,
-  status: number,
-  globe: number
 }
 
 export interface StorageNameConfig {

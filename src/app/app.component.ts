@@ -2,7 +2,7 @@ import {ChangeDetectionStrategy, Component, HostListener, OnInit, ViewEncapsulat
 import {CompactType, DisplayGrid, GridsterConfig, GridsterItem, GridType} from "angular-gridster2";
 import {UtilityService} from "../utils.service";
 import {GlobalService} from "../global.service";
-import {GridItemPos, Workspace} from "../core/Workspace";
+import {Workspace} from "../core/Workspace";
 import {MatDialog, MatDialogRef, MatDialogState} from "@angular/material/dialog";
 import {CheatSheetContentComponent} from "./cheat-sheet/cheat-sheet.component";
 import {LogService} from "./log/log.service";
@@ -19,10 +19,8 @@ export class AppComponent implements OnInit {
   title = 'city-web-map';
   options!: GridsterConfig;
   dashboard!: Array<GridsterItem>;
-  itemPos!: GridItemPos;
   changedLayout: string | undefined;
   savedDashboard: Array<GridsterItem> | undefined;
-  savedItemPos: GridItemPos | undefined;
   fullscreenActive: boolean;
 
   cheatSheetDialog!: MatDialogRef<CheatSheetContentComponent>;
@@ -38,7 +36,6 @@ export class AppComponent implements OnInit {
     private matDialog?: MatDialog) {
     this.changedLayout = undefined;
     this.savedDashboard = undefined;
-    this.savedItemPos = undefined;
     this.fullscreenActive = false;
     this.workspaceLoaded = false;
   }
@@ -47,7 +44,6 @@ export class AppComponent implements OnInit {
     const scope = this;
     return new Promise<void>((resolve, reject) => {
       scope.dashboard = Workspace.DEFAULT_LAYOUTS.layoutCenterGlobe.map(x => Object.assign({}, x)); // Deep copy of an array!
-      scope.itemPos = Object.assign({}, Workspace.DEFAULT_ITEM_POS_LAYOUTS.layoutCenterGlobe); // Deep copy of an object!
       this.fullscreenActive = false;
       resolve();
     });
@@ -160,10 +156,6 @@ export class AppComponent implements OnInit {
         if (nestedScope.GLOBALS!.WORKSPACE.gridLayout != null && nestedScope.GLOBALS!.WORKSPACE.gridLayout.length !== 0) {
           // If a grid layout already exists in the last/current workspace -> use it
           nestedScope.dashboard = nestedScope.GLOBALS!.WORKSPACE.gridLayout.map(x => Object.assign({}, x)); // Deep copy of an array!
-        }
-        if (nestedScope.GLOBALS!.WORKSPACE.itemPos != null) {
-          // If a grid layout already exists in the last/current workspace -> use it
-          nestedScope.itemPos = Object.assign({}, nestedScope.GLOBALS!.WORKSPACE.itemPos); // Deep copy of an object!
         }
         nestedScope.fullscreenActive = nestedScope.GLOBALS!.WORKSPACE.fullscreenActive;
         resolve();
@@ -332,19 +324,16 @@ export class AppComponent implements OnInit {
       switch (value) {
         case "left": {
           this.dashboard = Workspace.DEFAULT_LAYOUTS.layoutLeftGlobe.map(x => Object.assign({}, x));
-          this.itemPos = Object.assign({}, Workspace.DEFAULT_ITEM_POS_LAYOUTS.layoutLeftGlobe);
           this.changedLayout = 'left';
           break;
         }
         case "center": {
           this.dashboard = Workspace.DEFAULT_LAYOUTS.layoutCenterGlobe.map(x => Object.assign({}, x));
-          this.itemPos = Object.assign({}, Workspace.DEFAULT_ITEM_POS_LAYOUTS.layoutCenterGlobe);
           this.changedLayout = 'center';
           break;
         }
         case "right": {
           this.dashboard = Workspace.DEFAULT_LAYOUTS.layoutRightGlobe.map(x => Object.assign({}, x));
-          this.itemPos = Object.assign({}, Workspace.DEFAULT_ITEM_POS_LAYOUTS.layoutRightGlobe);
           this.changedLayout = 'right';
           break;
         }

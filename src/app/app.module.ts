@@ -17,9 +17,13 @@ import {
   DialogConfirmComponent,
   DialogConfirmContentComponent,
   DialogErrorComponent,
-  DialogErrorContentComponent, DialogImageryLayerPickerComponent, DialogImageryLayerPickerContentComponent,
+  DialogErrorContentComponent,
+  DialogImageryLayerPickerComponent,
+  DialogImageryLayerPickerContentComponent,
   DialogInfoComponent,
-  DialogInfoContentComponent, DialogLoadComponent, DialogLoadContentComponent,
+  DialogInfoContentComponent,
+  DialogLoadComponent,
+  DialogLoadContentComponent,
   DialogReloadComponent,
   DialogReloadContentComponent,
   DialogSearchComponent,
@@ -31,13 +35,6 @@ import {LogPublishersService} from './log/log-publishers.service';
 import {LogService} from './log/log.service';
 import {GridsterModule} from "angular-gridster2";
 import {MatSelectModule} from "@angular/material/select";
-import {MenuComponent} from './menu/menu.component';
-import {NavComponent} from './nav/nav.component';
-import {InfoComponent} from './info/info.component';
-import {StatusComponent} from './status/status.component';
-import {MenuContextComponent} from './menu-context/menu-context.component';
-import {ViewListComponent} from './view-list/view-list.component';
-import {LayerListComponent} from './layer-list/layer-list.component';
 import {UtilityService} from "../utils.service";
 import {MatButtonToggleModule} from "@angular/material/button-toggle";
 import {CheatSheetComponent, CheatSheetContentComponent} from './cheat-sheet/cheat-sheet.component';
@@ -63,7 +60,11 @@ import {MatRadioModule} from "@angular/material/radio";
 import {MatCheckboxModule} from "@angular/material/checkbox";
 import {MatSlideToggleModule} from "@angular/material/slide-toggle";
 import {NgxDropzoneModule} from "ngx-dropzone";
-import { ImageryLayerPickerComponent } from './imagery-layer-picker/imagery-layer-picker.component';
+import {ImageryLayerPickerComponent} from './imagery-layer-picker/imagery-layer-picker.component';
+import {WorkspaceViewComponent} from './workspace-view/workspace-view.component';
+import {DetailViewComponent} from './detail-view/detail-view.component';
+import {StatusViewComponent} from './status-view/status-view.component';
+import {InfoViewComponent} from './info-view/info-view.component';
 
 @NgModule({
   declarations: [
@@ -85,13 +86,6 @@ import { ImageryLayerPickerComponent } from './imagery-layer-picker/imagery-laye
     DialogLoadContentComponent,
     DialogImageryLayerPickerComponent,
     DialogImageryLayerPickerContentComponent,
-    MenuComponent,
-    NavComponent,
-    InfoComponent,
-    StatusComponent,
-    MenuContextComponent,
-    ViewListComponent,
-    LayerListComponent,
     CheatSheetComponent,
     CheatSheetContentComponent,
     SnackBarComponent,
@@ -103,7 +97,11 @@ import { ImageryLayerPickerComponent } from './imagery-layer-picker/imagery-laye
     SearchLocationComponent,
     TimelineComponent,
     SettingsComponent,
-    ImageryLayerPickerComponent
+    ImageryLayerPickerComponent,
+    WorkspaceViewComponent,
+    DetailViewComponent,
+    StatusViewComponent,
+    InfoViewComponent
   ],
   entryComponents: [
     DialogInfoComponent,

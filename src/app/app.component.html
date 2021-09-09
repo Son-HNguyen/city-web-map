@@ -1,8 +1,8 @@
 <gridster [options]="options"
           (dragover)="handleDragOver($event)"
           (drop)="handleDropSuccess($event)">
-  <gridster-item *ngIf="itemPos.menuBar >= 0"
-                 [item]="dashboard[itemPos.menuBar]"
+  <!-- Menu Bar -->
+  <gridster-item [item]="dashboard[0]"
                  (itemChange)="layoutChanged()">
     <span color="primary"><b>&nbsp;city-web-map&nbsp;</b></span>
     <button id="buttonLoad"
@@ -47,43 +47,23 @@
       <img src="/assets/images/thirdParty/GitHub-Mark-32px.png" width="30%"/>&nbsp;GitHub
     </button>
   </gridster-item>
-  <gridster-item *ngIf="itemPos.layerList >= 0"
-                 [item]="dashboard[itemPos.layerList]"
+  <!-- Workspace View -->
+  <gridster-item [item]="dashboard[1]"
                  (itemChange)="layoutChanged()">
-    <app-layer-list></app-layer-list>
+    <app-workspace-view></app-workspace-view>
   </gridster-item>
-  <gridster-item *ngIf="itemPos.menuContext >= 0"
-                 [item]="dashboard[itemPos.menuContext]"
+  <!-- Detail View -->
+  <gridster-item [item]="dashboard[2]"
                  (itemChange)="layoutChanged()">
-    <app-menu-context></app-menu-context>
+    <app-detail-view></app-detail-view>
   </gridster-item>
-  <gridster-item *ngIf="itemPos.menu >= 0"
-                 [item]="dashboard[itemPos.menu]"
+  <!-- Info View -->
+  <gridster-item [item]="dashboard[3]"
                  (itemChange)="layoutChanged()">
-    <app-menu></app-menu>
+    <app-info-view></app-info-view>
   </gridster-item>
-  <gridster-item *ngIf="itemPos.nav >= 0"
-                 [item]="dashboard[itemPos.nav]"
-                 (itemChange)="layoutChanged()">
-    <app-nav></app-nav>
-  </gridster-item>
-  <gridster-item *ngIf="itemPos.info >= 0"
-                 [item]="dashboard[itemPos.info]"
-                 (itemChange)="layoutChanged()">
-    <app-info></app-info>
-  </gridster-item>
-  <gridster-item *ngIf="itemPos.viewList >= 0"
-                 [item]="dashboard[itemPos.viewList]"
-                 (itemChange)="layoutChanged()">
-    <app-view-list></app-view-list>
-  </gridster-item>
-  <gridster-item *ngIf="itemPos.status >= 0"
-                 [item]="dashboard[itemPos.status]"
-                 (itemChange)="layoutChanged()">
-    <app-status></app-status>
-  </gridster-item>
-  <gridster-item *ngIf="itemPos.globe >= 0"
-                 [item]="dashboard[itemPos.globe]"
+  <!-- Globe / Cesium -->
+  <gridster-item [item]="dashboard[4]"
                  (itemChange)="layoutChanged()">
     <div appCesium></div>
     <div class="corner-top corner-left">
@@ -109,5 +89,10 @@
                       (fullscreenActiveChange)="handleFullscreen($event)">
       </app-fullscreen>
     </div>
+  </gridster-item>
+  <!-- Status View -->
+  <gridster-item [item]="dashboard[5]"
+                 (itemChange)="layoutChanged()">
+    <app-status-view></app-status-view>
   </gridster-item>
 </gridster>
