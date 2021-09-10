@@ -27,7 +27,7 @@ import {LogService} from '../log/log.service';
 import {FormControl} from "@angular/forms";
 import {Observable, of} from "rxjs";
 import {map, startWith} from "rxjs/operators";
-import {GlobalService} from "../../global.service";
+import {GlobalService} from "../../services/global.service";
 import {NominatimExtension} from "../../extensions/nominatim.extension";
 import * as Cesium from "cesium";
 import {GeocoderService, Workspace} from "../../core/Workspace";

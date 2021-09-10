@@ -25,10 +25,10 @@
  */
 
 import * as Cesium from 'cesium';
-import {UtilityService} from "../utils.service";
+import {UtilityService} from "../services/utils.service";
 import {Injectable} from "@angular/core";
 import {AppModule} from "../app/app.module";
-import {GlobalService} from "../global.service";
+import {GlobalService} from "../services/global.service";
 
 /**
  * GPS Geolocation with device orientation in real-time.

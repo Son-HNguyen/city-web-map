@@ -25,10 +25,10 @@
  */
 
 import {GpsExtension} from './gps.extension';
-import {UtilityService} from "../utils.service";
+import {UtilityService} from "../services/utils.service";
 import {AppModule} from "../app/app.module";
 import {Injectable} from "@angular/core";
-import {GlobalService} from "../global.service";
+import {GlobalService} from "../services/global.service";
 import {Workspace} from "../core/Workspace";
 
 @Injectable()

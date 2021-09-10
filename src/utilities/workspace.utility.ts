@@ -22,9 +22,9 @@
  */
 
 import {LogService} from "../app/log/log.service";
-import {UtilityService} from "../utils.service";
+import {UtilityService} from "../services/utils.service";
 import {Workspace} from "../core/Workspace";
-import {GlobalService} from "../global.service";
+import {GlobalService} from "../services/global.service";
 import {GridsterItem} from "angular-gridster2";
 
 export class WorkspaceUtility {

@@ -1,7 +1,7 @@
 import {ChangeDetectionStrategy, Component, HostListener, OnInit, ViewEncapsulation} from '@angular/core';
 import {CompactType, DisplayGrid, GridsterConfig, GridsterItem, GridType} from "angular-gridster2";
-import {UtilityService} from "../utils.service";
-import {GlobalService} from "../global.service";
+import {UtilityService} from "../services/utils.service";
+import {GlobalService} from "../services/global.service";
 import {Workspace} from "../core/Workspace";
 import {MatDialog, MatDialogRef, MatDialogState} from "@angular/material/dialog";
 import {CheatSheetContentComponent} from "./cheat-sheet/cheat-sheet.component";

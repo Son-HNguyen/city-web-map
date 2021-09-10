@@ -1,5 +1,5 @@
 import {Component, EventEmitter, Input, OnInit, Output, SimpleChanges} from '@angular/core';
-import {GlobalService} from "../../global.service";
+import {GlobalService} from "../../services/global.service";
 import {Workspace} from "../../core/Workspace";
 
 @Component({

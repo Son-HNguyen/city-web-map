@@ -1,5 +1,5 @@
 import {Component} from '@angular/core';
-import {UtilityService} from "../../utils.service";
+import {UtilityService} from "../../services/utils.service";
 import {Workspace} from "../../core/Workspace";
 
 @Component({

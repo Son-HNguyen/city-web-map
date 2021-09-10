@@ -4,8 +4,8 @@ import {MobileExtension} from '../extensions/mobile.extension';
 import {LogService} from './log/log.service';
 import * as cesium from "cesium";
 import * as Cesium from "cesium";
-import {UtilityService} from "../utils.service";
-import {GlobalService} from "../global.service";
+import {UtilityService} from "../services/utils.service";
+import {GlobalService} from "../services/global.service";
 import {GeocoderService} from "../core/Workspace";
 import {NominatimExtension} from "../extensions/nominatim.extension";
 

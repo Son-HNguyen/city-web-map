@@ -1,6 +1,6 @@
 import {ChangeDetectorRef, Component, EventEmitter, OnDestroy, OnInit, Output} from '@angular/core';
 import {FormControl, FormGroup} from "@angular/forms";
-import {GlobalService} from "../../global.service";
+import {GlobalService} from "../../services/global.service";
 import * as Cesium from "cesium";
 import {Subscription, timer} from "rxjs";
 import {map, share} from "rxjs/operators";

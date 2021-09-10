@@ -1,6 +1,6 @@
 import {Component} from '@angular/core';
-import {UtilityService} from "../../utils.service";
-import {GlobalService} from "../../global.service";
+import {UtilityService} from "../../services/utils.service";
+import {GlobalService} from "../../services/global.service";
 
 @Component({
   selector: 'app-imagery-layer-picker',

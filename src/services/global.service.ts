@@ -21,7 +21,7 @@
  * limitations under the License.
  */
 
-import {Workspace} from "./core/Workspace";
+import {Workspace} from "../core/Workspace";
 import {Injectable} from "@angular/core";
 
 @Injectable()
