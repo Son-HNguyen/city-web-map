@@ -30,13 +30,13 @@
         color="accent"
         (click)="handleSpeed()">
   <mat-icon matBadge="{{ speedMultiplier.display }}"
-            matBadgeColor="primary"
+            matBadgeColor="warn"
             [matBadgeHidden]="speedMultiplier.hidden">
     fast_forward
   </mat-icon>
   <span class="cdk-visually-hidden">Speed multiplier</span>
 </button>
 
-<button id="buttonTimeDisplay" mat-stroked-button color="accent" disabled>{{ currentTimeString }}</button>
+<mat-label id="buttonTimeDisplay">{{ currentTimeString }}</mat-label>
 
 <button id="buttonResetTimeline" hidden (click)="handleReset()"></button>

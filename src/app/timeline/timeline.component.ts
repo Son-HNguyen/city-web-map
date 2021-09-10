@@ -31,7 +31,7 @@ export class TimelineComponent implements OnInit, OnDestroy {
     PAUSE: {
       icon: 'pause',
       tooltip: 'Pause time',
-      color: 'primary'
+      color: 'warn'
     }
   }
 
