@@ -13,6 +13,7 @@ export class WorkspaceViewComponent {
   // TODO Display each viewpoint as a banner with title/description and buttons "Go", "Edit", "Delete" and "Move up/down"
   // TODO Enable moving viewpoints within the list
   // TODO Allow activating/deactivating 3D layers for each individual viewpoint
+  // TODO -> Display declared layers as chips (with insert/delete) for quick selection for each viewpoint?
   // TODO Allow additionally a different list of 3D layers for each individual viewpoint -> store in a project?
 
   // TODO Structure/Model:

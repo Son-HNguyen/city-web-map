@@ -35,7 +35,7 @@ import {LogPublishersService} from './log/log-publishers.service';
 import {LogService} from './log/log.service';
 import {GridsterModule} from "angular-gridster2";
 import {MatSelectModule} from "@angular/material/select";
-import {UtilityService} from "../utils.service";
+import {UtilityService} from "../services/utils.service";
 import {MatButtonToggleModule} from "@angular/material/button-toggle";
 import {CheatSheetComponent, CheatSheetContentComponent} from './cheat-sheet/cheat-sheet.component';
 import {MatDividerModule} from "@angular/material/divider";
@@ -102,7 +102,8 @@ import { SwitchThemeComponent } from './switch-theme/switch-theme.component';
     WorkspaceViewComponent,
     DetailViewComponent,
     StatusViewComponent,
-    InfoViewComponent
+    InfoViewComponent,
+    SwitchThemeComponent
   ],
   entryComponents: [
     DialogInfoComponent,

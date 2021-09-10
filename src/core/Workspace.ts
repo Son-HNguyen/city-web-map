@@ -127,6 +127,11 @@ export class Workspace {
   private _fullscreenActive: boolean;
 
   // ==============================
+  // THEME
+  // ==============================
+  private _darkTheme: boolean;
+
+  // ==============================
   // LOCAL STORAGE
   // ==============================
   public static readonly STORAGE_NAME: StorageNameConfig = {
@@ -300,6 +305,7 @@ area washes and organic edges over a paper texture to add warm pop to any map.\n
     viewpoints?: Array<Viewpoint>,
     gridLayout?: Array<GridsterItem>,
     fullscreenActive?: boolean,
+    darkTheme?: boolean,
     cameraLocation?: CesiumCameraLocation,
     geocoder?: GeocoderConfig,
     imageryLayerIndex?: number
@@ -314,6 +320,7 @@ area washes and organic edges over a paper texture to add warm pop to any map.\n
     this._viewpoints = (viewpoints == null) ? [] : viewpoints;
     this._gridLayout = (gridLayout == null) ? Workspace.DEFAULT_LAYOUTS.layoutCenterGlobe : gridLayout;
     this._fullscreenActive = (fullscreenActive == null) ? false : fullscreenActive;
+    this._darkTheme = (darkTheme == null) ? false : darkTheme;
     this._cameraLocation = (cameraLocation == null) ? Workspace.DEFAULT_CAMERA_LOCATION : cameraLocation;
     this._geocoder = (geocoder == null) ? Workspace.DEFAULT_GEOCODER : geocoder;
     this._imageryLayerIndex = (imageryLayerIndex == null) ? Workspace.DEFAULT_IMAGERY_LAYER.index : imageryLayerIndex;
@@ -392,6 +399,10 @@ area washes and organic edges over a paper texture to add warm pop to any map.\n
     return this._fullscreenActive;
   }
 
+  get darkTheme(): boolean {
+    return this._darkTheme;
+  }
+
   get cameraLocation(): CesiumCameraLocation {
     return this._cameraLocation;
   }
@@ -445,6 +456,10 @@ area washes and organic edges over a paper texture to add warm pop to any map.\n
 
   set fullscreenActive(value: boolean) {
     this._fullscreenActive = value;
+  }
+
+  set darkTheme(value: boolean) {
+    this._darkTheme = value;
   }
 
   set cameraLocation(value: CesiumCameraLocation) {

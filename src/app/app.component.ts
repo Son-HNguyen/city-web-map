@@ -150,7 +150,7 @@ export class AppComponent implements OnInit {
 
     const scope = this;
 
-    async function loadSavedWorkspace(): Promise<void> {
+    async function loadLayoutFromSavedWorkspace(): Promise<void> {
       const nestedScope = scope;
       return new Promise<void>((resolve, reject) => {
         if (nestedScope.GLOBALS!.WORKSPACE.gridLayout != null && nestedScope.GLOBALS!.WORKSPACE.gridLayout.length !== 0) {
@@ -162,10 +162,14 @@ export class AppComponent implements OnInit {
       });
     }
 
-    await loadSavedWorkspace();
+    await loadLayoutFromSavedWorkspace();
 
     // Check if fullscreen is activated
     await this.handleFullscreen(this.fullscreenActive);
+  }
+
+  handleSwitchTheme(useDarkTheme: boolean) {
+    this.GLOBALS!.WORKSPACE.darkTheme = useDarkTheme;
   }
 
   handleDragOver(event: DragEvent) {

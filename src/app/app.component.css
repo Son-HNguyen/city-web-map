@@ -10,14 +10,11 @@
   background-color: #008CBA;
 }
 
-.custom-off {
-  display: none;
-}
-
 /* TODO Adjust styling */
 
 /*
 gridster {
+  background: #121212 !important;
 }
 
 gridster-item {

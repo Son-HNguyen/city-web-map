@@ -23,6 +23,9 @@
  *
  */
 
+@import 'src/themes/light.scss';
+@import 'src/themes/dark.scss';
+
 /* Cesium */
 html, body, div[appCesium] {
   width: 100%;
@@ -33,7 +36,7 @@ html, body, div[appCesium] {
 }
 
 /* Custom widgets at the corners of the Cesium app */
-.corner-left, .corner-right, .corner-top, corner-bottom {
+.corner-left, .corner-right, .corner-top, .corner-bottom {
   position: absolute;
   display: inline-block;
 }
@@ -69,7 +72,9 @@ html, body, div[appCesium] {
   top: -999em;
 }
 
+
 /* GPS button */
+/*
 .tracking-ori-activated,
 .tracking-ori-activated:hover {
   background-size: cover;
@@ -93,6 +98,7 @@ html, body, div[appCesium] {
   background-position: center center;
   background-repeat: no-repeat;
 }
+*/
 
 html, body {
   height: 100%;
