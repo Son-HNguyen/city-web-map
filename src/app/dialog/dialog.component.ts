@@ -434,7 +434,9 @@ export class DialogLoadContentComponent {
 
   onLoad() {
     this.data.file = this.files.length === 0 ? undefined : this.files[0];
-    this.dialogRef.close();
+    if (this.data.file != null) {
+      this.dialogRef.close();
+    }
   }
 }
 
