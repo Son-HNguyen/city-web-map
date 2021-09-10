@@ -63,8 +63,13 @@
                  (itemChange)="layoutChanged()">
     <app-info-view></app-info-view>
   </gridster-item>
-  <!-- Globe / Cesium -->
+  <!-- Status View -->
   <gridster-item [item]="dashboard[4]"
+                 (itemChange)="layoutChanged()">
+    <app-status-view></app-status-view>
+  </gridster-item>
+  <!-- Globe / Cesium -->
+  <gridster-item [item]="dashboard[5]"
                  (itemChange)="layoutChanged()">
     <div appCesium></div>
     <div class="corner-top corner-left">
@@ -90,10 +95,5 @@
                       (fullscreenActiveChange)="handleFullscreen($event)">
       </app-fullscreen>
     </div>
-  </gridster-item>
-  <!-- Status View -->
-  <gridster-item [item]="dashboard[5]"
-                 (itemChange)="layoutChanged()">
-    <app-status-view></app-status-view>
   </gridster-item>
 </gridster>

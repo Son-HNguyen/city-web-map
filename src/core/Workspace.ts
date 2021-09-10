@@ -96,32 +96,34 @@ export class Workspace {
       {cols: 3, rows: 9, y: 1, x: 14}, // Workspace View
       {cols: 3, rows: 9, y: 10, x: 14}, // Detail View
       {cols: 3, rows: 18, y: 1, x: 17}, // Info View
-      {cols: 14, rows: 18, y: 1, x: 0}, // Cesium app
-      {cols: 20, rows: 1, y: 19, x: 0} // Status View
+      {cols: 20, rows: 1, y: 19, x: 0}, // Status View
+      {cols: 14, rows: 18, y: 1, x: 0} // Cesium app
+
     ],
     layoutCenterGlobe: [
       {cols: 20, rows: 1, y: 0, x: 0}, // Menu bar
       {cols: 3, rows: 9, y: 1, x: 0}, // Workspace View
       {cols: 3, rows: 9, y: 10, x: 0}, // Detail View
       {cols: 3, rows: 18, y: 1, x: 17}, // Info View
-      {cols: 14, rows: 18, y: 1, x: 3}, // Cesium app
-      {cols: 20, rows: 1, y: 19, x: 0} // Status View
+      {cols: 20, rows: 1, y: 19, x: 0}, // Status View
+      {cols: 14, rows: 18, y: 1, x: 3} // Cesium app
+
     ],
     layoutRightGlobe: [
       {cols: 20, rows: 1, y: 0, x: 0}, // Menu bar
       {cols: 3, rows: 9, y: 1, x: 0}, // Workspace View
       {cols: 3, rows: 9, y: 10, x: 0}, // Detail View
       {cols: 3, rows: 18, y: 1, x: 3}, // Info View
-      {cols: 14, rows: 18, y: 1, x: 6}, // Cesium app
-      {cols: 20, rows: 1, y: 19, x: 0} // Status View
+      {cols: 20, rows: 1, y: 19, x: 0}, // Status View
+      {cols: 14, rows: 18, y: 1, x: 6} // Cesium app
     ],
-    layoutFullscreen: [
+    layoutFullscreen: [ // TODO Do not move elements, only make globe fullscreen
       {cols: 0, rows: 0, y: 0, x: 0}, // Menu bar
       {cols: 0, rows: 0, y: 0, x: 0}, // Workspace View
       {cols: 0, rows: 0, y: 0, x: 0}, // Detail View
       {cols: 0, rows: 0, y: 0, x: 0}, // Info View
-      {cols: 20, rows: 20, y: 0, x: 0}, // Cesium app
-      {cols: 0, rows: 0, y: 0, x: 0} // Status View
+      {cols: 0, rows: 0, y: 0, x: 0}, // Status View
+      {cols: 20, rows: 20, y: 0, x: 0} // Cesium app
     ]
   };
   private _fullscreenActive: boolean;
