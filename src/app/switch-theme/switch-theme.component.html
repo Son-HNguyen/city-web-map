@@ -1,6 +1,7 @@
-<mat-slide-toggle [color]="color"
+<mat-slide-toggle id="toggleSwitchTheme"
+                  [color]="color"
                   [checked]="useDarkTheme"
                   (change)="handleSwitchTheme($event.checked)"
-                  matTooltip="Toggle between light and dark mode">
+                  matTooltip="Toggle between light and dark mode | Ctrl+Alt+D">
   Dark theme
 </mat-slide-toggle>

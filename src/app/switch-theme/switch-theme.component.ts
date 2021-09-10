@@ -23,7 +23,11 @@ export class SwitchThemeComponent implements OnInit {
     this.doSwitchTheme();
   }
 
-  handleSwitchTheme(useDarkTheme: boolean) {
+  handleSwitchTheme(useDarkTheme?: boolean) {
+    if (useDarkTheme == null) {
+      // Triggered manually by hotkey/shortcut
+      useDarkTheme = !this.useDarkTheme;
+    }
     this.useDarkTheme = useDarkTheme;
     this.GLOBALS!.WORKSPACE.darkTheme = useDarkTheme;
     this.doSwitchTheme();

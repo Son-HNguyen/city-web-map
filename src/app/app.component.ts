@@ -70,14 +70,19 @@ export class AppComponent implements OnInit {
       e.preventDefault();
       document.getElementById("buttonSearch")!.click();
     }
-
     // Fullscreen
     else if (e.key === 'F11') {
       e.preventDefault();
       document.getElementById("buttonFullscreen")!.click();
     } else if (e.ctrlKey) {
+      // Open workspace
+      if (e.key === 'o') {
+        e.preventDefault();
+        await this.handleLoad();
+        // document.getElementById('buttonLoad')!.click();
+      }
       // Save workspace
-      if (e.key === 's') {
+      else if (e.key === 's') {
         e.preventDefault();
         if (e.altKey) {
           await this.handleSaveAs();
@@ -86,19 +91,21 @@ export class AppComponent implements OnInit {
           await this.handleQuickSave();
           // document.getElementById('buttonQuickSaveWorkspace')!.click();
         }
-      }
-      // Open workspace
-      else if (e.key === 'o') {
-        e.preventDefault();
-        await this.handleLoad();
-        // document.getElementById('buttonLoad')!.click();
-      }
-      // Export workspace to file
-      else if (e.altKey) {
-        if (e.key === 'x') {
+      } else if (e.altKey) {
+        // Toggle between light and dark mode
+        if (e.key === 'd') {
           e.preventDefault();
-          await this.handleQuickExport();
-          // document.getElementById('buttonQuickExport')!.click();
+          document.getElementById('toggleSwitchTheme')!.dispatchEvent(new Event('change'));
+        }
+        // Select imagery (base) layer
+        else if (e.key === 'i') {
+          e.preventDefault();
+          document.getElementById('buttonImageryLayerPicker')!.click();
+        }
+        // Fly to default location
+        else if (e.key === 'h') {
+          e.preventDefault();
+          document.getElementById('buttonFlyHome')!.click();
         }
         // New workspace
         else if (e.key === 'n') {
@@ -106,15 +113,11 @@ export class AppComponent implements OnInit {
           await this.handleNew();
           // document.getElementById('buttonNewWorkspace')!.click();
         }
-        // Fly to default location
-        else if (e.key === 'h') {
+        // Export workspace to file
+        else if (e.key === 'x') {
           e.preventDefault();
-          document.getElementById('buttonFlyHome')!.click();
-        }
-        // Select imagery (base) layer
-        else if (e.key === 'i') {
-          e.preventDefault();
-          document.getElementById('buttonImageryLayerPicker')!.click();
+          await this.handleQuickExport();
+          // document.getElementById('buttonQuickExport')!.click();
         }
       }
     }
