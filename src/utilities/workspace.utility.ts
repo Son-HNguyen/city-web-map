@@ -23,9 +23,8 @@
 
 import {LogService} from "../app/log/log.service";
 import {UtilityService} from "../services/utils.service";
-import {Workspace} from "../core/Workspace";
+import {GridLayoutType, Workspace} from "../core/Workspace";
 import {GlobalService} from "../services/global.service";
-import {GridsterItem} from "angular-gridster2";
 
 export class WorkspaceUtility {
   private logService: LogService;
@@ -44,18 +43,18 @@ export class WorkspaceUtility {
     const scope = this;
     return new Promise<void>((resolve, reject) => {
       const workspaceString = localStorage.getItem(Workspace.STORAGE_NAME.workspace);
-      try {
-        this.GLOBALS!.WORKSPACE = Workspace.initFrom(JSON.parse(workspaceString!));
-        resolve();
-      } catch (e) {
+      const workspace = Workspace.initFrom(workspaceString);
+      if (workspace == null) {
         scope.logService.warn('No compatible workspace found. A default workspace shall be created.');
         this.GLOBALS!.WORKSPACE = new Workspace();
-        resolve();
+      } else {
+        this.GLOBALS!.WORKSPACE = workspace;
       }
+      resolve();
     });
   }
 
-  public saveToLocalStorage(currentLayout?: Array<GridsterItem>, fullscreenActive?: boolean): Promise<number> {
+  public saveToLocalStorage(currentLayout?: GridLayoutType, fullscreenActive?: boolean): Promise<number> {
     return new Promise<number>((resolve, reject) => {
       if (currentLayout != null && fullscreenActive != null) {
         this.save(currentLayout, fullscreenActive);
@@ -74,9 +73,9 @@ export class WorkspaceUtility {
     });
   }
 
-  private save(currentLayout: Array<GridsterItem>, fullscreenActive: boolean) {
+  private save(currentLayout: GridLayoutType, fullscreenActive: boolean) {
     // Save current layout
-    this.GLOBALS.WORKSPACE.gridLayout = currentLayout.map(x => Object.assign({}, x)); // Deep copy of an array!
+    this.GLOBALS.WORKSPACE.gridLayout = Object.assign({}, currentLayout);
     this.GLOBALS.WORKSPACE.fullscreenActive = fullscreenActive;
 
     // Save last location

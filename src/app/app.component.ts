@@ -1,8 +1,15 @@
 import {ChangeDetectionStrategy, Component, HostListener, OnInit, ViewEncapsulation} from '@angular/core';
-import {CompactType, DisplayGrid, GridsterConfig, GridsterItem, GridType} from "angular-gridster2";
+import {
+  CompactType,
+  DisplayGrid,
+  GridsterConfig,
+  GridsterItem,
+  GridsterItemComponentInterface,
+  GridType
+} from "angular-gridster2";
 import {UtilityService} from "../services/utils.service";
 import {GlobalService} from "../services/global.service";
-import {Workspace} from "../core/Workspace";
+import {GridLayoutType, Workspace} from "../core/Workspace";
 import {MatDialog, MatDialogRef, MatDialogState} from "@angular/material/dialog";
 import {CheatSheetContentComponent} from "./cheat-sheet/cheat-sheet.component";
 import {LogService} from "./log/log.service";
@@ -18,9 +25,8 @@ import {DialogReloadPrompt} from "./dialog/dialog.component";
 export class AppComponent implements OnInit {
   title = 'city-web-map';
   options!: GridsterConfig;
-  dashboard!: Array<GridsterItem>;
-  changedLayout: string | undefined;
-  savedDashboard: Array<GridsterItem> | undefined;
+  dashboard!: GridLayoutType;
+  savedGlobePosition: GridsterItem | undefined;
   fullscreenActive: boolean;
 
   cheatSheetDialog!: MatDialogRef<CheatSheetContentComponent>;
@@ -29,21 +35,18 @@ export class AppComponent implements OnInit {
 
   // TODO Add option to enter, use, save and import Cesium ion access tokens
 
-  constructor(
-    private GLOBALS?: GlobalService,
-    private UTILS?: UtilityService,
-    private LOGGER?: LogService,
-    private matDialog?: MatDialog) {
-    this.changedLayout = undefined;
-    this.savedDashboard = undefined;
+  constructor(private GLOBALS?: GlobalService,
+              private UTILS?: UtilityService,
+              private LOGGER?: LogService,
+              private matDialog?: MatDialog) {
+    this.savedGlobePosition = undefined;
     this.fullscreenActive = false;
     this.workspaceLoaded = false;
   }
 
   async initLayout(): Promise<void> {
-    const scope = this;
     return new Promise<void>((resolve, reject) => {
-      scope.dashboard = Workspace.DEFAULT_LAYOUTS.layoutCenterGlobe.map(x => Object.assign({}, x)); // Deep copy of an array!
+      this.dashboard = Object.assign({}, Workspace.DEFAULT_LAYOUT);
       this.fullscreenActive = false;
       resolve();
     });
@@ -139,6 +142,7 @@ export class AppComponent implements OnInit {
       maxCols: 20,
       maxRows: 21,
       pushItems: true,
+      pushResizeItems: true,
       draggable: {
         enabled: true
       },
@@ -151,24 +155,21 @@ export class AppComponent implements OnInit {
 
     await this.initLayout();
 
-    const scope = this;
-
-    async function loadLayoutFromSavedWorkspace(): Promise<void> {
-      const nestedScope = scope;
-      return new Promise<void>((resolve, reject) => {
-        if (nestedScope.GLOBALS!.WORKSPACE.gridLayout != null && nestedScope.GLOBALS!.WORKSPACE.gridLayout.length !== 0) {
-          // If a grid layout already exists in the last/current workspace -> use it
-          nestedScope.dashboard = nestedScope.GLOBALS!.WORKSPACE.gridLayout.map(x => Object.assign({}, x)); // Deep copy of an array!
-        }
-        nestedScope.fullscreenActive = nestedScope.GLOBALS!.WORKSPACE.fullscreenActive;
-        resolve();
-      });
-    }
-
-    await loadLayoutFromSavedWorkspace();
+    await this.loadLayoutFromSavedWorkspace();
 
     // Check if fullscreen is activated
     await this.handleFullscreen(this.fullscreenActive);
+  }
+
+  private async loadLayoutFromSavedWorkspace(): Promise<void> {
+    return new Promise<void>((resolve, reject) => {
+      if (this.GLOBALS!.WORKSPACE.gridLayout != null) {
+        // If a grid layout already exists in the last/current workspace -> use it
+        this.dashboard = Object.assign({}, this.GLOBALS!.WORKSPACE.gridLayout);
+      }
+      this.fullscreenActive = this.GLOBALS!.WORKSPACE.fullscreenActive;
+      resolve();
+    });
   }
 
   handleSwitchTheme(useDarkTheme: boolean) {
@@ -254,8 +255,13 @@ export class AppComponent implements OnInit {
       storedSize = await this.UTILS!.workspace.saveToLocalStorage();
     } else {
       // Check if fullscreen is activated
-      if (this.fullscreenActive && this.savedDashboard != null) {
-        storedSize = await this.UTILS!.workspace.saveToLocalStorage(this.savedDashboard, this.fullscreenActive);
+      if (this.fullscreenActive && this.savedGlobePosition != null) {
+        let tmpDashboard = Object.assign({}, this.dashboard);
+        tmpDashboard.globe.layout.x = this.savedGlobePosition.x;
+        tmpDashboard.globe.layout.y = this.savedGlobePosition.y;
+        tmpDashboard.globe.layout.cols = this.savedGlobePosition.cols;
+        tmpDashboard.globe.layout.rows = this.savedGlobePosition.rows;
+        storedSize = await this.UTILS!.workspace.saveToLocalStorage(tmpDashboard, this.fullscreenActive);
       } else {
         storedSize = await this.UTILS!.workspace.saveToLocalStorage(this.dashboard, this.fullscreenActive);
       }
@@ -287,102 +293,88 @@ export class AppComponent implements OnInit {
     this.UTILS!.dialog.info('Options to save');
   }
 
-  // TODO Refactor/Remove?
-  //  (reason: when a new workspace is created, all widgets and components need to be reloaded as well
-  //  -> use the function reload similarly to eternal files as well for consistent behaviours and less maintenance)
-  async handleNew_Backup() {
-    // TODO Ask if the current workspace needs to be saved first before a new one is created
-
-    const scope = this;
-
-    async function createNewWorkspace(): Promise<void> {
-      const nestedScope = scope;
-      return new Promise<void>(async (resolve, reject) => {
-        if (nestedScope.options && nestedScope.options.api && nestedScope.options.api.optionsChanged) {
-          nestedScope.GLOBALS!.WORKSPACE = new Workspace();
-
-          // TODO Apply new workspace to widgets (timeline, etc.)
-
-          // Reset timeline
-          document.getElementById('buttonResetTimeline')!.click();
-
-          await nestedScope.initLayout();
-          await nestedScope.options.api.optionsChanged();
-          resolve();
-        }
-      });
-    }
-
-    await createNewWorkspace();
-
-    await this.UTILS!.camera.flyToPosition(this.GLOBALS!.WORKSPACE.cameraLocation);
-
-    this.layoutChanged();
-
-    this.UTILS!.snackBar.show('A new workspace has been created.');
-  }
-
   async handleNew() {
     await this.loadWorkspace(new Workspace());
   }
 
-  async handleToggleValue(value: any) {
-    if (this.options.api && this.options.api.optionsChanged) {
-      switch (value) {
-        case "left": {
-          this.dashboard = Workspace.DEFAULT_LAYOUTS.layoutLeftGlobe.map(x => Object.assign({}, x));
-          this.changedLayout = 'left';
-          break;
-        }
-        case "center": {
-          this.dashboard = Workspace.DEFAULT_LAYOUTS.layoutCenterGlobe.map(x => Object.assign({}, x));
-          this.changedLayout = 'center';
-          break;
-        }
-        case "right": {
-          this.dashboard = Workspace.DEFAULT_LAYOUTS.layoutRightGlobe.map(x => Object.assign({}, x));
-          this.changedLayout = 'right';
-          break;
-        }
-      }
-      await this.options.api.optionsChanged();
+  eventResizeStart(item: GridsterItem, itemComponent: GridsterItemComponentInterface, event: MouseEvent): void {
+    let scope = this;
+    console.info('eventStart', item, itemComponent, event);
+    if (item.x === 0 && item.y === 0) {
+
     }
   }
 
-  layoutChanged() {
+  handleGridOnResize(index: number) {
+    console.log("OK");
+    switch (index) {
+      case 0:
+        // Menu bar
+        return;
+      case 1:
+        // Workspace view
+        this.dashboard.detailView.layout.cols = this.dashboard.workspaceView.layout.cols;
+        return;
+      case 2:
+        // Detail view
+        return;
+      case 3:
+        // Info view
+        return;
+      case 4:
+        // Status view
+        return;
+      case 5:
+        // Globe
+        console.log(this.dashboard.globe);
+        return;
+    }
+  }
+
+  layoutChanged(event: { item: GridsterItem, itemComponent: GridsterItemComponentInterface }, index: number) {
     // Check if the current grid layout is one of the default values
-    this.changedLayout = Workspace.getLayout(this.dashboard);
+    // TODO Sometimes this does not update the changedLayout flag?
+
+
   }
 
   async handleFullscreen(fullscreenActive: boolean) {
     this.fullscreenActive = fullscreenActive;
 
-    const scope = this;
-
-    async function activateFullscreen(): Promise<void> {
-      const nestedScope = scope;
-      return new Promise<void>(async (resolve, reject) => {
-        if (nestedScope.options && nestedScope.options.api && nestedScope.options.api.optionsChanged) {
-          if (nestedScope.fullscreenActive) {
-            // Save current layout
-            nestedScope.savedDashboard = nestedScope.dashboard.map(x => Object.assign({}, x));
-            // Activate fullscreen
-            nestedScope.dashboard = Workspace.DEFAULT_LAYOUTS.layoutFullscreen.map(x => Object.assign({}, x));
-          } else if (nestedScope.savedDashboard != null) {
-            // Restore saved layout
-            nestedScope.dashboard = nestedScope.savedDashboard.map(x => Object.assign({}, x));
-          }
-          await nestedScope.options.api.optionsChanged();
-          resolve();
-        }
-      });
-    }
-
-    await activateFullscreen();
+    await this.activateFullscreen();
 
     if (this.fullscreenActive) {
       // TODO Add enums / static const for changeable hotkeys?
       this.UTILS!.snackBar.show('Press F11 to exit fullscreen.');
     }
+  }
+
+  private async activateFullscreen(): Promise<void> {
+    return new Promise<void>(async (resolve, reject) => {
+      if (this.options && this.options.api && this.options.api.optionsChanged) {
+        if (this.fullscreenActive) {
+          // Save current layout
+          this.savedGlobePosition = {
+            x: this.dashboard.globe.layout.x,
+            y: this.dashboard.globe.layout.y,
+            cols: this.dashboard.globe.layout.cols,
+            rows: this.dashboard.globe.layout.rows
+          };
+          // Activate fullscreen
+          this.dashboard.globe.layout.x = 0;
+          this.dashboard.globe.layout.y = 0;
+          this.dashboard.globe.layout.cols = this.dashboard.globe.layout.maxItemCols!;
+          this.dashboard.globe.layout.rows = this.dashboard.globe.layout.maxItemRows!;
+        } else if (this.savedGlobePosition != null) {
+          // Restore saved layout
+          this.dashboard.globe.layout.x = this.savedGlobePosition.x;
+          this.dashboard.globe.layout.y = this.savedGlobePosition.y;
+          this.dashboard.globe.layout.cols = this.savedGlobePosition.cols;
+          this.dashboard.globe.layout.rows = this.savedGlobePosition.rows;
+        }
+        await this.options.api.optionsChanged();
+        resolve();
+      }
+    });
   }
 }

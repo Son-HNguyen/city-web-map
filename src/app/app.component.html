@@ -1,9 +1,54 @@
+<!-- TODO Use GUI like Windows/Mac for modal dialogs? -->
+<!-- TODO Such as https://stackblitz.com/edit/fu7sh9--run?file=app/app.component.ts -->
+<!-- TODO Run this program like a window application? Such as using Election? -->
+
+<div class="content">
+
+</div>
+<div class="content">
+  <rsz-layout class="row" [directions]="['bottom']" [rFlex]="true">
+    <rsz-layout class="cell" [directions]="['right']" [rFlex]="true">
+      <p>Cell Content 1</p>
+    </rsz-layout>
+    <rsz-layout class="cell" [directions]="['none']" [rFlex]="false">
+      <p>Cell Content 2</p>
+    </rsz-layout>
+  </rsz-layout>
+  <rsz-layout class="row" [directions]="['none']" [rFlex]="false">
+    <rsz-layout class="cell" [directions]="['right']" [rFlex]="true">
+      <p>Cell Content 3</p>
+    </rsz-layout>
+    <rsz-layout class="cell" [directions]="['none']" [rFlex]="false">
+      <p>Cell Content 4</p>
+    </rsz-layout>
+  </rsz-layout>
+</div>
+
+<div class="content cols">
+  <rsz-layout class="row" [directions]="['right']" [rFlex]="true">
+    <rsz-layout class="cell" [directions]="['bottom']" [rFlex]="true">
+      <p>Cell Content 1</p>
+    </rsz-layout>
+    <rsz-layout class="cell" [directions]="['none']" [rFlex]="false">
+      <p>Cell Content 2</p>
+    </rsz-layout>
+  </rsz-layout>
+  <rsz-layout class="row" [directions]="['none']" [rFlex]="false">
+    <rsz-layout class="cell" [directions]="['bottom']" [rFlex]="true">
+      <p>Cell Content 3</p>
+    </rsz-layout>
+    <rsz-layout class="cell" [directions]="['none']" [rFlex]="false">
+      <p>Cell Content 4</p>
+    </rsz-layout>
+  </rsz-layout>
+</div>
+
 <gridster [options]="options"
           (dragover)="handleDragOver($event)"
           (drop)="handleDropSuccess($event)">
   <!-- Menu Bar -->
-  <gridster-item [item]="dashboard[0]"
-                 (itemChange)="layoutChanged()">
+  <gridster-item [item]="dashboard.menuBar.layout"
+                 (itemChange)="layoutChanged($event, 0)">
     <span color="primary"><b>&nbsp;city-web-map&nbsp;</b></span>
     <button id="buttonLoad"
             mat-stroked-button
@@ -33,9 +78,6 @@
             matTooltip="Create new workspace | Ctrl+Alt+N" (click)="handleNew()">
       <span class="material-icons">add_box</span>&nbsp;New
     </button>
-    <app-button-toggle-layout (buttonToggleValue)="handleToggleValue($event)"
-                              [changedLayout]="changedLayout">
-    </app-button-toggle-layout>
     <app-settings></app-settings>
     <app-cheat-sheet></app-cheat-sheet>
     <button mat-stroked-button
@@ -49,31 +91,29 @@
     <app-switch-theme></app-switch-theme>
   </gridster-item>
   <!-- Workspace View -->
-  <gridster-item [item]="dashboard[1]"
-                 (itemChange)="layoutChanged()">
+  <gridster-item [item]="dashboard.workspaceView.layout">
     <app-workspace-view></app-workspace-view>
   </gridster-item>
   <!-- Detail View -->
-  <gridster-item [item]="dashboard[2]"
-                 (itemChange)="layoutChanged()">
+  <gridster-item [item]="dashboard.detailView.layout"
+                 (itemChange)="layoutChanged($event, 2)">
     <app-detail-view></app-detail-view>
   </gridster-item>
   <!-- Info View -->
-  <gridster-item [item]="dashboard[3]"
-                 (itemChange)="layoutChanged()">
+  <gridster-item [item]="dashboard.infoView.layout"
+                 (itemChange)="layoutChanged($event, 3)">
     <app-info-view></app-info-view>
   </gridster-item>
   <!-- Status View -->
-  <gridster-item [item]="dashboard[4]"
-                 (itemChange)="layoutChanged()">
+  <gridster-item [item]="dashboard.statusView.layout"
+                 (itemChange)="layoutChanged($event, 4)">
     <app-status-view></app-status-view>
   </gridster-item>
   <!-- Globe / Cesium -->
-  <gridster-item [item]="dashboard[5]"
-                 (itemChange)="layoutChanged()">
+  <gridster-item [item]="dashboard.globe.layout"
+                 (itemChange)="layoutChanged($event, 5)">
     <div appCesium></div>
     <div class="corner-top corner-left">
-      <app-move-cesium></app-move-cesium>
       <!-- TODO Add app shadow -->
       <!-- TODO Add app 3D/2D -->
     </div>
