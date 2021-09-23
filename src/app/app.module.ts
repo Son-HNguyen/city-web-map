@@ -5,7 +5,7 @@ import {MatNativeDateModule, MatOptionModule} from '@angular/material/core';
 import {MatDialogModule} from '@angular/material/dialog';
 import {MAT_FORM_FIELD_DEFAULT_OPTIONS, MatFormFieldModule} from '@angular/material/form-field';
 import {MatIconModule} from '@angular/material/icon';
-import {_MatMenuDirectivesModule, MatMenuModule} from '@angular/material/menu';
+import {MatMenuModule} from '@angular/material/menu';
 import {BrowserModule} from '@angular/platform-browser';
 import {APP_INITIALIZER, Injector, NgModule} from '@angular/core';
 
@@ -43,9 +43,7 @@ import {MatTooltipModule} from "@angular/material/tooltip";
 import {SnackBarComponent, SnackBarContentComponent} from './snack-bar/snack-bar.component';
 import {MatSnackBarModule} from "@angular/material/snack-bar";
 import {GlobalService} from "../services/global.service";
-import {ButtonToggleLayoutComponent} from './button-toggle-layout/button-toggle-layout.component';
 import {FullscreenComponent} from './fullscreen/fullscreen.component';
-import {MoveCesiumComponent} from './move-cesium/move-cesium.component';
 import {FlyHomeComponent} from './fly-home/fly-home.component';
 import {SearchLocationComponent} from './search-location/search-location.component';
 import {TimelineComponent} from './timeline/timeline.component';
@@ -65,7 +63,8 @@ import {WorkspaceViewComponent} from './workspace-view/workspace-view.component'
 import {DetailViewComponent} from './detail-view/detail-view.component';
 import {StatusViewComponent} from './status-view/status-view.component';
 import {InfoViewComponent} from './info-view/info-view.component';
-import { SwitchThemeComponent } from './switch-theme/switch-theme.component';
+import {SwitchThemeComponent} from './switch-theme/switch-theme.component';
+import {NgxResizableModule} from "@3dgenomes/ngx-resizable";
 
 @NgModule({
   declarations: [
@@ -91,9 +90,7 @@ import { SwitchThemeComponent } from './switch-theme/switch-theme.component';
     CheatSheetContentComponent,
     SnackBarComponent,
     SnackBarContentComponent,
-    ButtonToggleLayoutComponent,
     FullscreenComponent,
-    MoveCesiumComponent,
     FlyHomeComponent,
     SearchLocationComponent,
     TimelineComponent,
@@ -138,7 +135,6 @@ import { SwitchThemeComponent } from './switch-theme/switch-theme.component';
     MatNativeDateModule,
     ReactiveFormsModule,
     MatButtonModule,
-    _MatMenuDirectivesModule,
     MatIconModule,
     MatMenuModule,
     GridsterModule,
@@ -157,7 +153,8 @@ import { SwitchThemeComponent } from './switch-theme/switch-theme.component';
     MatRadioModule,
     MatCheckboxModule,
     MatSlideToggleModule,
-    NgxDropzoneModule
+    NgxDropzoneModule,
+    NgxResizableModule
   ],
   bootstrap: [
     AppComponent,

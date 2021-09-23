@@ -28,7 +28,7 @@ import {Viewpoint} from "./Viewpoint";
 import {CesiumCameraLocation} from "../utilities/camera.utility";
 import {GridsterItem} from "angular-gridster2";
 import {DatePickerTimeRange, SpeedMultipliers} from "../app/timeline/timeline.component";
-import _ = require("lodash");
+import {isEqual} from "lodash";
 
 export enum GeocoderService {
   CARTOGRAPHIC = 'Cartographic',
@@ -86,45 +86,87 @@ export class Workspace {
   // ==============================
   // LAYOUT
   // ==============================
-  private _gridLayout: Array<GridsterItem>;
+  private _gridLayout: GridLayoutType;
   // Gridlayout in 20 X 20
-  // NOTE: DO NOT CHANGE THE ORDER OF THE APPS WITHIN THE LAYOUT (e.g. Menu bar is at index 0, etc.)
-  // IF THE LAYOUT HAS BEEN CHANGED, MAKE SURE TO ADJUST THE INDICES OF gridster-item IN app.component.hml ACCORDINGLY
-  public static readonly DEFAULT_LAYOUTS: GridLayouts = {
-    layoutLeftGlobe: [
-      {cols: 20, rows: 1, y: 0, x: 0}, // Menu bar
-      {cols: 3, rows: 9, y: 1, x: 14}, // Workspace View
-      {cols: 3, rows: 9, y: 10, x: 14}, // Detail View
-      {cols: 3, rows: 18, y: 1, x: 17}, // Info View
-      {cols: 20, rows: 1, y: 19, x: 0}, // Status View
-      {cols: 14, rows: 18, y: 1, x: 0} // Cesium app
-
-    ],
-    layoutCenterGlobe: [
-      {cols: 20, rows: 1, y: 0, x: 0}, // Menu bar
-      {cols: 3, rows: 9, y: 1, x: 0}, // Workspace View
-      {cols: 3, rows: 9, y: 10, x: 0}, // Detail View
-      {cols: 3, rows: 18, y: 1, x: 17}, // Info View
-      {cols: 20, rows: 1, y: 19, x: 0}, // Status View
-      {cols: 14, rows: 18, y: 1, x: 3} // Cesium app
-
-    ],
-    layoutRightGlobe: [
-      {cols: 20, rows: 1, y: 0, x: 0}, // Menu bar
-      {cols: 3, rows: 9, y: 1, x: 0}, // Workspace View
-      {cols: 3, rows: 9, y: 10, x: 0}, // Detail View
-      {cols: 3, rows: 18, y: 1, x: 3}, // Info View
-      {cols: 20, rows: 1, y: 19, x: 0}, // Status View
-      {cols: 14, rows: 18, y: 1, x: 6} // Cesium app
-    ],
-    layoutFullscreen: [ // TODO Do not move elements, only make globe fullscreen
-      {cols: 0, rows: 0, y: 0, x: 0}, // Menu bar
-      {cols: 0, rows: 0, y: 0, x: 0}, // Workspace View
-      {cols: 0, rows: 0, y: 0, x: 0}, // Detail View
-      {cols: 0, rows: 0, y: 0, x: 0}, // Info View
-      {cols: 0, rows: 0, y: 0, x: 0}, // Status View
-      {cols: 20, rows: 20, y: 0, x: 0} // Cesium app
-    ]
+  public static readonly DEFAULT_LAYOUT: GridLayoutType = {
+    menuBar: {
+      index: 0,
+      layout: {
+        cols: 20,
+        rows: 1,
+        x: 0,
+        y: 0,
+        dragEnabled: false,
+        resizeEnabled: false
+      }
+    },
+    workspaceView: {
+      index: 1,
+      layout: {
+        cols: 3,
+        rows: 9,
+        x: 0,
+        y: 1,
+        dragEnabled: false,
+        minItemCols: 0,
+        maxItemCols: 10,
+        minItemRows: 3,
+        maxItemRows: 15
+      }
+    },
+    detailView: {
+      index: 2,
+      layout: {
+        cols: 3,
+        rows: 9,
+        x: 0,
+        y: 10,
+        dragEnabled: false,
+        minItemCols: 0,
+        maxItemCols: 10,
+        minItemRows: 3,
+        maxItemRows: 15
+      }
+    },
+    infoView: {
+      index: 3,
+      layout: {
+        cols: 3,
+        rows: 18,
+        x: 17,
+        y: 1,
+        dragEnabled: false,
+        minItemCols: 0,
+        maxItemCols: 10,
+        minItemRows: 18,
+        maxItemRows: 18
+      }
+    },
+    statusView: {
+      index: 4,
+      layout: {
+        cols: 20,
+        rows: 1,
+        x: 0,
+        y: 19,
+        dragEnabled: false,
+        resizeEnabled: false
+      }
+    },
+    globe: {
+      index: 5,
+      layout: {
+        cols: 14,
+        rows: 18,
+        x: 3,
+        y: 1,
+        dragEnabled: false,
+        minItemCols: 10,
+        maxItemCols: 20,
+        minItemRows: 18,
+        maxItemRows: 20
+      }
+    }
   };
   private _fullscreenActive: boolean;
 
@@ -305,7 +347,7 @@ area washes and organic edges over a paper texture to add warm pop to any map.\n
     terrainLayers?: Array<TerrainLayer>,
     timeline?: TimeLineConfig,
     viewpoints?: Array<Viewpoint>,
-    gridLayout?: Array<GridsterItem>,
+    gridLayout?: GridLayoutType,
     fullscreenActive?: boolean,
     darkTheme?: boolean,
     cameraLocation?: CesiumCameraLocation,
@@ -320,7 +362,7 @@ area washes and organic edges over a paper texture to add warm pop to any map.\n
     this._terrainLayers = (terrainLayers == null) ? [] : terrainLayers;
     this._timeline = (timeline == null) ? Workspace.DEFAULT_TIMELINE : timeline;
     this._viewpoints = (viewpoints == null) ? [] : viewpoints;
-    this._gridLayout = (gridLayout == null) ? Workspace.DEFAULT_LAYOUTS.layoutCenterGlobe : gridLayout;
+    this._gridLayout = (gridLayout == null) ? Workspace.DEFAULT_LAYOUT : gridLayout;
     this._fullscreenActive = (fullscreenActive == null) ? false : fullscreenActive;
     this._darkTheme = (darkTheme == null) ? false : darkTheme;
     this._cameraLocation = (cameraLocation == null) ? Workspace.DEFAULT_CAMERA_LOCATION : cameraLocation;
@@ -328,8 +370,23 @@ area washes and organic edges over a paper texture to add warm pop to any map.\n
     this._imageryLayerIndex = (imageryLayerIndex == null) ? Workspace.DEFAULT_IMAGERY_LAYER.index : imageryLayerIndex;
   }
 
-  public static initFrom(workspace: Workspace) {
-    return Object.assign(new Workspace(), workspace);
+  // Init and type check
+  public static initFrom(workspaceString: string | null): Workspace | undefined {
+    let workspace = {};
+    try {
+      if (workspaceString == null || workspaceString.trim().length === 0) {
+        throw new Error();
+      } else {
+        workspace = Object.assign(new Workspace(), JSON.parse(workspaceString));
+        // TODO Type check JSON string vs Workspace
+        if (workspace instanceof Workspace) {
+          return workspace;
+        }
+        throw new Error();
+      }
+    } catch (e) {
+      return undefined;
+    }
   }
 
   /**
@@ -337,17 +394,8 @@ area washes and organic edges over a paper texture to add warm pop to any map.\n
    *
    * @param layout
    */
-  public static getLayout(layout: GridsterItem[]): string | undefined {
-    if (_.isEqual(Workspace.DEFAULT_LAYOUTS.layoutLeftGlobe, layout)) {
-      return 'left';
-    }
-    if (_.isEqual(Workspace.DEFAULT_LAYOUTS.layoutCenterGlobe, layout)) {
-      return 'center';
-    }
-    if (_.isEqual(Workspace.DEFAULT_LAYOUTS.layoutRightGlobe, layout)) {
-      return 'right';
-    }
-    return undefined;
+  public static isLayoutDefault(layout: GridLayoutType): boolean {
+    return isEqual(Workspace.DEFAULT_LAYOUT, layout);
   }
 
   public toString(): string {
@@ -393,7 +441,7 @@ area washes and organic edges over a paper texture to add warm pop to any map.\n
     return this._viewpoints;
   }
 
-  get gridLayout(): Array<GridsterItem> {
+  get gridLayout(): GridLayoutType {
     return this._gridLayout;
   }
 
@@ -452,7 +500,7 @@ area washes and organic edges over a paper texture to add warm pop to any map.\n
     this._viewpoints = value;
   }
 
-  set gridLayout(value: Array<GridsterItem>) {
+  set gridLayout(value: GridLayoutType) {
     this._gridLayout = value;
   }
 
@@ -498,11 +546,19 @@ export interface TimeLineConfig {
   range: DatePickerTimeRange | undefined;
 }
 
-export interface GridLayouts {
-  layoutLeftGlobe: Array<GridsterItem>,
-  layoutCenterGlobe: Array<GridsterItem>,
-  layoutRightGlobe: Array<GridsterItem>,
-  layoutFullscreen: Array<GridsterItem>
+// TODO Convention: Rename all interface names to ...Type?
+export interface GridLayoutType {
+  menuBar: IndexedGridItemType,
+  workspaceView: IndexedGridItemType,
+  detailView: IndexedGridItemType,
+  infoView: IndexedGridItemType,
+  statusView: IndexedGridItemType,
+  globe: IndexedGridItemType
+}
+
+interface IndexedGridItemType {
+  index: number,
+  layout: GridsterItem
 }
 
 export interface StorageNameConfig {
