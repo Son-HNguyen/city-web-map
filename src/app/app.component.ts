@@ -140,14 +140,14 @@ export class AppComponent implements OnInit {
       displayGrid: DisplayGrid.None,
       compactType: CompactType.None,
       maxCols: 20,
-      maxRows: 21,
+      maxRows: 20,
       pushItems: true,
       pushResizeItems: true,
       draggable: {
         enabled: true
       },
       resizable: {
-        enabled: true
+        enabled: true,
       }
     };
 
@@ -297,45 +297,67 @@ export class AppComponent implements OnInit {
     await this.loadWorkspace(new Workspace());
   }
 
-  eventResizeStart(item: GridsterItem, itemComponent: GridsterItemComponentInterface, event: MouseEvent): void {
-    let scope = this;
-    console.info('eventStart', item, itemComponent, event);
-    if (item.x === 0 && item.y === 0) {
-
-    }
-  }
-
-  handleGridOnResize(index: number) {
-    console.log("OK");
-    switch (index) {
-      case 0:
-        // Menu bar
-        return;
-      case 1:
-        // Workspace view
-        this.dashboard.detailView.layout.cols = this.dashboard.workspaceView.layout.cols;
-        return;
-      case 2:
-        // Detail view
-        return;
-      case 3:
-        // Info view
-        return;
-      case 4:
-        // Status view
-        return;
-      case 5:
-        // Globe
-        console.log(this.dashboard.globe);
-        return;
-    }
-  }
-
   layoutChanged(event: { item: GridsterItem, itemComponent: GridsterItemComponentInterface }, index: number) {
-    // Check if the current grid layout is one of the default values
-    // TODO Sometimes this does not update the changedLayout flag?
+    let menuBar = this.dashboard.menuBar.layout;
+    let workspaceView = this.dashboard.workspaceView.layout;
+    let detailView = this.dashboard.detailView.layout;
+    let infoView = this.dashboard.infoView.layout;
+    let statusView = this.dashboard.statusView.layout;
+    let globe = this.dashboard.globe.layout;
+    const maxCols = this.options.maxCols!;
+    const maxRows = this.options.maxRows!;
 
+    if (this.options.api != null && this.options.api.optionsChanged != null) {
+      switch (index) {
+        case 0:
+          // Menu bar
+          break;
+        case 1:
+          // Workspace view
+          // Cols
+          detailView.cols = workspaceView.cols;
+          globe.cols = maxCols - infoView.cols - workspaceView.cols;
+          // Rows
+          detailView.rows = maxRows - menuBar.rows - workspaceView.rows - statusView.rows;
+          // Position
+          globe.x = workspaceView.x + workspaceView.cols;
+          detailView.y = menuBar.rows + workspaceView.rows;
+          break;
+        case 2:
+          // Detail view
+          // Cols
+          workspaceView.cols = detailView.cols;
+          globe.cols = maxCols - infoView.cols - detailView.cols;
+          // Rows
+          workspaceView.rows = maxRows - menuBar.rows - detailView.rows - statusView.rows;
+          // Position
+          globe.x = detailView.x + detailView.cols;
+          break;
+        case 3:
+          // Info view
+          // Cols
+          globe.cols = maxCols - workspaceView.cols - infoView.cols;
+          break;
+        case 4:
+          // Status view
+          break;
+        case 5:
+          // Globe
+          // Cols
+          if (globe.x !== workspaceView.x + workspaceView.cols) {
+            // Left side has been resized
+            workspaceView.cols = globe.x;
+            detailView.cols = globe.x;
+          } else if (globe.x + globe.cols !== infoView.x) {
+            // Right side has been resized
+            infoView.x = globe.x + globe.cols;
+            infoView.cols = maxCols - workspaceView.cols - globe.cols;
+          }
+          break;
+      }
 
+      this.options.api.optionsChanged();
+    }
   }
 
   async handleFullscreen(fullscreenActive: boolean) {
