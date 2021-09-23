@@ -28,7 +28,7 @@ import {Viewpoint} from "./Viewpoint";
 import {CesiumCameraLocation} from "../utilities/camera.utility";
 import {GridsterItem} from "angular-gridster2";
 import {DatePickerTimeRange, SpeedMultipliers} from "../app/timeline/timeline.component";
-import _ = require("lodash");
+import {isEqual} from "lodash";
 
 export enum GeocoderService {
   CARTOGRAPHIC = 'Cartographic',
@@ -378,6 +378,7 @@ area washes and organic edges over a paper texture to add warm pop to any map.\n
         throw new Error();
       } else {
         workspace = Object.assign(new Workspace(), JSON.parse(workspaceString));
+        // TODO Type check JSON string vs Workspace
         if (workspace instanceof Workspace) {
           return workspace;
         }
@@ -394,7 +395,7 @@ area washes and organic edges over a paper texture to add warm pop to any map.\n
    * @param layout
    */
   public static isLayoutDefault(layout: GridLayoutType): boolean {
-    return _.isEqual(Workspace.DEFAULT_LAYOUT, layout);
+    return isEqual(Workspace.DEFAULT_LAYOUT, layout);
   }
 
   public toString(): string {
