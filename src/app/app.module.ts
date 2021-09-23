@@ -5,7 +5,7 @@ import {MatNativeDateModule, MatOptionModule} from '@angular/material/core';
 import {MatDialogModule} from '@angular/material/dialog';
 import {MAT_FORM_FIELD_DEFAULT_OPTIONS, MatFormFieldModule} from '@angular/material/form-field';
 import {MatIconModule} from '@angular/material/icon';
-import {_MatMenuDirectivesModule, MatMenuModule} from '@angular/material/menu';
+import {MatMenuModule} from '@angular/material/menu';
 import {BrowserModule} from '@angular/platform-browser';
 import {APP_INITIALIZER, Injector, NgModule} from '@angular/core';
 
@@ -135,7 +135,6 @@ import {NgxResizableModule} from "@3dgenomes/ngx-resizable";
     MatNativeDateModule,
     ReactiveFormsModule,
     MatButtonModule,
-    _MatMenuDirectivesModule,
     MatIconModule,
     MatMenuModule,
     GridsterModule,
