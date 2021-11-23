@@ -23,15 +23,31 @@
 
 import {Workspace} from "../core/Workspace";
 import {Injectable} from "@angular/core";
+import {Globe, GlobeEngine} from "../globe/Globe";
+import {CesiumGlobe} from "../globe/CesiumGlobe";
 
 @Injectable()
 export class GlobalService {
   private _WORKSPACE: Workspace;
-  private _CESIUM_VIEWER: any;
-  private _CESIUM_CAMERA: any;
+  private _GLOBE: Globe;
 
   constructor() {
     this._WORKSPACE = new Workspace();
+    // Create the globe depending on the engine type given in the workspace
+    switch (this._WORKSPACE.globeEngine) {
+      case GlobeEngine.CESIUM:
+      default:
+        this._GLOBE = new CesiumGlobe();
+        break;
+    }
+  }
+
+  get GLOBE(): Globe {
+    return this._GLOBE;
+  }
+
+  set GLOBE(value: Globe) {
+    this._GLOBE = value;
   }
 
   get WORKSPACE(): Workspace {
@@ -40,21 +56,5 @@ export class GlobalService {
 
   set WORKSPACE(value: Workspace) {
     this._WORKSPACE = value;
-  }
-
-  get CESIUM_VIEWER(): any {
-    return this._CESIUM_VIEWER;
-  }
-
-  set CESIUM_VIEWER(value: any) {
-    this._CESIUM_VIEWER = value;
-  }
-
-  get CESIUM_CAMERA(): any {
-    return this._CESIUM_CAMERA;
-  }
-
-  set CESIUM_CAMERA(value: any) {
-    this._CESIUM_CAMERA = value;
   }
 }

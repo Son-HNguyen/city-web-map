@@ -26,8 +26,6 @@
 
 import * as Cesium from 'cesium';
 import {UtilityService} from "../services/utils.service";
-import {Injectable} from "@angular/core";
-import {AppModule} from "../app/app.module";
 import {GlobalService} from "../services/global.service";
 
 /**
@@ -143,18 +141,18 @@ export class GpsExtension {
       } else {
         const restartView = (_callback: () => void): void => {
           scope._firstActivated = false;
-          this.GLOBALS!.CESIUM_CAMERA.cancelFlight();
+          this.GLOBALS!.GLOBE.CAMERA.cancelFlight();
           _callback();
         };
 
         restartView((): void => {
-          this.GLOBALS!.CESIUM_CAMERA.flyTo({
+          this.GLOBALS!.GLOBE.CAMERA.flyTo({
             destination: Cesium.Cartesian3.fromRadians(
-              this.GLOBALS!.CESIUM_CAMERA.positionCartographic.longitude,
-              this.GLOBALS!.CESIUM_CAMERA.positionCartographic.latitude,
+              this.GLOBALS!.GLOBE.CAMERA.positionCartographic.longitude,
+              this.GLOBALS!.GLOBE.CAMERA.positionCartographic.latitude,
               250),
             orientation: {
-              heading: this.GLOBALS!.CESIUM_CAMERA.heading,
+              heading: this.GLOBALS!.GLOBE.CAMERA.heading,
               pitch: Cesium.Math.toRadians(-75),
               roll: 0
             }
@@ -290,7 +288,7 @@ export class GpsExtension {
           if (!scope._firstActivated) {
             oriBeta = 0;
           } else {
-            oriBeta = this.GLOBALS!.CESIUM_CAMERA.pitch;
+            oriBeta = this.GLOBALS!.GLOBE.CAMERA.pitch;
           }
           oriGamma = 0;
           oriHeight = 2;
@@ -324,7 +322,7 @@ export class GpsExtension {
           setFirstPersonView();
         }
 
-        this.GLOBALS!.CESIUM_CAMERA.flyTo({
+        this.GLOBALS!.GLOBE.CAMERA.flyTo({
           destination: Cesium.Cartesian3.fromDegrees(toPosition.coords.longitude, toPosition.coords.latitude, oriHeight),
           orientation: {
             heading: oriAlpha,

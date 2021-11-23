@@ -1,5 +1,6 @@
 import {Component} from '@angular/core';
 import {UtilityService} from "../../services/utils.service";
+import {GlobalService} from "../../services/global.service";
 import {Workspace} from "../../core/Workspace";
 
 @Component({
@@ -9,11 +10,14 @@ import {Workspace} from "../../core/Workspace";
 })
 export class FlyHomeComponent {
 
-  constructor(private UTILS?: UtilityService) {
+  constructor(
+    private GLOBALS?: GlobalService,
+    private UTILS?: UtilityService
+  ) {
   }
 
   async handleButtonFlyHome() {
-    await this.UTILS!.camera.flyToPosition(Workspace.DEFAULT_CAMERA_LOCATION);
+    await this.GLOBALS!.GLOBE.CAMERA.flyToPosition(Workspace.DEFAULT_CAMERA_LOCATION);
     this.UTILS!.snackBar.show('The camera has been moved to the default location.')
   }
 }

@@ -30,8 +30,8 @@ import {map, startWith} from "rxjs/operators";
 import {GlobalService} from "../../services/global.service";
 import {NominatimExtension} from "../../extensions/nominatim.extension";
 import * as Cesium from "cesium";
-import {GeocoderService, Workspace} from "../../core/Workspace";
 import {NgxDropzoneChangeEvent} from "ngx-dropzone";
+import {GeocoderService, ImageryLayersType} from "../../globe/Globe";
 
 /**
  * Information dialog
@@ -233,7 +233,7 @@ export class DialogSearchContentComponent implements OnInit {
     this.data.search = '';
     this.data.confirmed = false;
 
-    let geocoderViewModel = this.GLOBALS!.CESIUM_VIEWER.geocoder.viewModel;
+    let geocoderViewModel = this.GLOBALS!.GLOBE.VIEWER.geocoder.viewModel;
     this.suggestionNames = geocoderViewModel.suggestions;
     this.filteredSuggestionNames = of(this.suggestionNames);
 
@@ -247,7 +247,7 @@ export class DialogSearchContentComponent implements OnInit {
       startWith(''),
       // debounceTime(100),
       map(value => {
-        let geocoderViewModel = this.GLOBALS!.CESIUM_VIEWER.geocoder.viewModel;
+        let geocoderViewModel = this.GLOBALS!.GLOBE.VIEWER.geocoder.viewModel;
         geocoderViewModel._searchText = value;
         return;
       })
@@ -266,13 +266,13 @@ export class DialogSearchContentComponent implements OnInit {
 
   onSelectedSuggestion(destination: any) {
     this.data.confirmed = true;
-    this.GLOBALS!.CESIUM_CAMERA.flyTo({
+    this.GLOBALS!.GLOBE.CAMERA.flyTo({
       destination: destination
     });
   }
 
   private onClick(destination?: any) {
-    let geocoderViewModel = this.GLOBALS!.CESIUM_VIEWER.geocoder.viewModel;
+    let geocoderViewModel = this.GLOBALS!.GLOBE.VIEWER.geocoder.viewModel;
     if (this.checkedAutocomplete) {
       if (this.suggestionNames.length === 0) {
         return;
@@ -305,7 +305,7 @@ export class DialogSearchContentComponent implements OnInit {
   switchGeocoder(selectedValue: GeocoderService) {
     // The geocoderServices array has two objects:
     // CartographicGeocoderService (should be always enabled) and a selectable
-    let geocoderServices = this.GLOBALS!.CESIUM_VIEWER.geocoder.viewModel._geocoderServices;
+    let geocoderServices = this.GLOBALS!.GLOBE.VIEWER.geocoder.viewModel._geocoderServices;
     geocoderServices.pop(); // remove the last object in the array
     this.GLOBALS!.WORKSPACE.geocoder.geocoderServices.pop();
     this.GLOBALS!.WORKSPACE.geocoder.geocoderServices.push(selectedValue);
@@ -315,7 +315,7 @@ export class DialogSearchContentComponent implements OnInit {
         return;
       case GeocoderService.CESIUM_ION:
         geocoderServices.push(new Cesium.IonGeocoderService({
-          scene: this.GLOBALS!.CESIUM_VIEWER.scene
+          scene: this.GLOBALS!.GLOBE.VIEWER.scene
         }));
         return;
     }
@@ -323,7 +323,7 @@ export class DialogSearchContentComponent implements OnInit {
 
   handleCheckboxAutocomplete(checked: boolean) {
     console.log(this.checkedAutocomplete);
-    this.GLOBALS!.CESIUM_VIEWER.geocoder.viewModel.autoComplete = checked;
+    this.GLOBALS!.GLOBE.VIEWER.geocoder.viewModel.autoComplete = checked;
     this.GLOBALS!.WORKSPACE.geocoder.autocomplete = checked;
     this.checkedAutocomplete = checked;
   }
@@ -464,13 +464,14 @@ export class DialogImageryLayerPickerComponent {
   styleUrls: ['dialog.imagery.content.component.css']
 })
 export class DialogImageryLayerPickerContentComponent {
-  imageryLayers = Workspace.DEFAULT_CESIUM_IMAGERY_LAYER_COLLECTION_INFO;
+  imageryLayers: ImageryLayersType;
 
   constructor(
     public dialogRef: MatDialogRef<DialogImageryLayerPickerContentComponent>,
     @Inject(MAT_DIALOG_DATA) public data: DialogImageryLayerPickerData,
     public LOGGER: LogService,
     private GLOBALS?: GlobalService) {
+    this.imageryLayers = this.GLOBALS!.GLOBE.DEFAULT_IMAGERY_LAYERS;
   }
 
   noSort(): number {
@@ -482,8 +483,8 @@ export class DialogImageryLayerPickerContentComponent {
   }
 
   onSelect(index: number) {
-    const imageryProviders = this.GLOBALS!.CESIUM_VIEWER.baseLayerPicker.viewModel.imageryProviderViewModels;
-    this.GLOBALS!.CESIUM_VIEWER.baseLayerPicker.viewModel.selectedImagery =
+    const imageryProviders = this.GLOBALS!.GLOBE.VIEWER.baseLayerPicker.viewModel.imageryProviderViewModels;
+    this.GLOBALS!.GLOBE.VIEWER.baseLayerPicker.viewModel.selectedImagery =
       imageryProviders[index];
     this.GLOBALS!.WORKSPACE.imageryLayerIndex = index;
     this.dialogRef.close();

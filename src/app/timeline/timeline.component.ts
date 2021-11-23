@@ -1,10 +1,10 @@
-import {ChangeDetectorRef, Component, EventEmitter, OnDestroy, OnInit, Output} from '@angular/core';
+import {ChangeDetectorRef, Component, OnDestroy, OnInit} from '@angular/core';
 import {FormControl, FormGroup} from "@angular/forms";
 import {GlobalService} from "../../services/global.service";
 import * as Cesium from "cesium";
+import {ClockRange} from "cesium";
 import {Subscription, timer} from "rxjs";
 import {map, share} from "rxjs/operators";
-import {ClockRange} from "cesium";
 
 export enum SpeedMultipliers {
   NORMAL,
@@ -93,7 +93,7 @@ export class TimelineComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     // Set loop between time range
-    this.GLOBALS!.CESIUM_VIEWER.clock.clockRange = ClockRange.LOOP_STOP;
+    this.GLOBALS!.GLOBE.VIEWER.clock.clockRange = ClockRange.LOOP_STOP;
 
     // Load from previous workspace
     const savedTimeline = this.GLOBALS!.WORKSPACE.timeline;
@@ -103,7 +103,7 @@ export class TimelineComponent implements OnInit, OnDestroy {
       if (savedTimeline.current != null) {
         const savedCurrentDate = new Date(savedTimeline.current);
         this.currentTimeString = this.displayDate(savedCurrentDate);
-        this.GLOBALS!.CESIUM_VIEWER.clock.currentTime = Cesium.JulianDate.fromDate(savedCurrentDate);
+        this.GLOBALS!.GLOBE.VIEWER.clock.currentTime = Cesium.JulianDate.fromDate(savedCurrentDate);
       }
       // Set speed multiplier from previous workspace
       if (savedTimeline.multiplier != null) {
@@ -132,7 +132,7 @@ export class TimelineComponent implements OnInit, OnDestroy {
       .pipe(
         map(() => {
           if (this.timeActivated) {
-            return Cesium.JulianDate.toDate(this.GLOBALS!.CESIUM_VIEWER.clock.currentTime);
+            return Cesium.JulianDate.toDate(this.GLOBALS!.GLOBE.VIEWER.clock.currentTime);
           }
           return undefined;
         }),
@@ -178,7 +178,7 @@ export class TimelineComponent implements OnInit, OnDestroy {
 
   handlePlay(update?: boolean) {
     // Get clock in Cesium
-    let clock = this.GLOBALS!.CESIUM_VIEWER.clock;
+    let clock = this.GLOBALS!.GLOBE.VIEWER.clock;
 
     if (update == null || update) {
       this.timeActivated = !this.timeActivated;
@@ -207,7 +207,7 @@ export class TimelineComponent implements OnInit, OnDestroy {
 
   handleToPresent() {
     const currentDate = new Date();
-    this.GLOBALS!.CESIUM_VIEWER.clock.currentTime = Cesium.JulianDate.fromDate(currentDate);
+    this.GLOBALS!.GLOBE.VIEWER.clock.currentTime = Cesium.JulianDate.fromDate(currentDate);
     this.GLOBALS!.WORKSPACE.timeline.current = new Date(currentDate.valueOf()); // Save to workspace
     this.currentTimeString = this.displayDate(currentDate);
 
@@ -228,7 +228,7 @@ export class TimelineComponent implements OnInit, OnDestroy {
     hidden = TimelineComponent.DEFAULT_SPEED_MULTIPLIERS[multiplierEnum].hidden;
 
     // Set multiplier in Cesium
-    this.GLOBALS!.CESIUM_VIEWER.clock.multiplier = multiplierValue;
+    this.GLOBALS!.GLOBE.VIEWER.clock.multiplier = multiplierValue;
 
     // Save to workspace
     this.GLOBALS!.WORKSPACE.timeline.multiplier = multiplierEnum;
@@ -256,9 +256,9 @@ export class TimelineComponent implements OnInit, OnDestroy {
       };
     }
 
-    this.GLOBALS!.CESIUM_VIEWER.clock.startTime =
+    this.GLOBALS!.GLOBE.VIEWER.clock.startTime =
       Cesium.JulianDate.fromDate(new Date(this.timeRangeControl.value.start.valueOf()));
-    this.GLOBALS!.CESIUM_VIEWER.clock.stopTime =
+    this.GLOBALS!.GLOBE.VIEWER.clock.stopTime =
       Cesium.JulianDate.fromDate(new Date(this.timeRangeControl.value.end.valueOf()));
 
     // Save to workspace

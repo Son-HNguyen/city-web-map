@@ -22,7 +22,6 @@
  */
 
 import {Injectable} from '@angular/core';
-import {CameraUtility} from "../utilities/camera.utility";
 import {DialogUtility} from "../utilities/dialog.utility";
 import {OsUtility} from "../utilities/os.utility";
 import {SnackBarUtility} from "../utilities/snack-bar.utility";
@@ -32,7 +31,6 @@ import {GlobalService} from "./global.service";
 
 @Injectable()
 export class UtilityService {
-  private readonly _camera: CameraUtility;
   private readonly _dialog: DialogUtility;
   private readonly _snackBar: SnackBarUtility;
   private readonly _os: OsUtility;
@@ -40,7 +38,6 @@ export class UtilityService {
 
   constructor(private logService?: LogService,
               private GLOBALS?: GlobalService) {
-    this._camera = new CameraUtility(this.GLOBALS!);
     this._dialog = new DialogUtility();
     this._snackBar = new SnackBarUtility();
     this._os = new OsUtility();
@@ -49,10 +46,6 @@ export class UtilityService {
 
   public appInitStorage(): Promise<void> {
     return this._workspace.readFromLocalStorage();
-  }
-
-  get camera(): CameraUtility {
-    return this._camera;
   }
 
   get dialog(): DialogUtility {

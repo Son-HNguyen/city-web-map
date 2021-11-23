@@ -79,7 +79,7 @@ export class WorkspaceUtility {
     this.GLOBALS.WORKSPACE.fullscreenActive = fullscreenActive;
 
     // Save last location
-    this.GLOBALS.WORKSPACE.cameraLocation = this.UTILS.camera.getCurrentPosition();
+    this.GLOBALS.WORKSPACE.cameraLocation = this.GLOBALS.GLOBE.getCurrentCameraLocation();
 
     // Save grid layout / dashboard
     // Since the workspace has its grid layout point to dashboard object, they are always in sync -> done

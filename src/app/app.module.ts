@@ -11,7 +11,7 @@ import {APP_INITIALIZER, Injector, NgModule} from '@angular/core';
 
 import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
-import {CesiumDirective} from './cesium.directive';
+import {GlobeDirective} from './globe.directive';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {
   DialogConfirmComponent,
@@ -69,7 +69,7 @@ import {NgxResizableModule} from "@3dgenomes/ngx-resizable";
 @NgModule({
   declarations: [
     AppComponent,
-    CesiumDirective,
+    GlobeDirective,
     DialogInfoContentComponent,
     DialogInfoComponent,
     DialogConfirmContentComponent,
