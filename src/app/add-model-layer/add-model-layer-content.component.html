@@ -27,13 +27,24 @@
   <div>
     <mat-form-field appearance="fill">
       <mat-label>Name of the layer</mat-label>
-      <input matInput cdkFocusInitial [(ngModel)]="data.name">
+      <input matInput
+             cdkFocusInitial
+             [(ngModel)]="data.name"
+             placeholder="Example building models"
+             [formControl]="name"
+             required>
+      <mat-error *ngIf="name.invalid">{{getNameErrorMessage()}}</mat-error>
     </mat-form-field>
   </div>
   <div>
     <mat-form-field appearance="fill">
-      <mat-label>URL of the layer</mat-label>
-      <input matInput [(ngModel)]="data.url">
+      <mat-label>URL of the 3DCityDB VIS or Cesium 3D Tiles</mat-label>
+      <input matInput
+             [(ngModel)]="data.url"
+             placeholder="https://www.example.com/master.json"
+             [formControl]="url"
+             required>
+      <mat-error *ngIf="url.invalid">{{getUrlErrorMessage()}}</mat-error>
     </mat-form-field>
   </div>
 
