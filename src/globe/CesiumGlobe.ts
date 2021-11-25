@@ -25,6 +25,8 @@ import {CameraLocation, GeocoderService, Globe, ImageryLayersType} from "./Globe
 import * as Cesium from "cesium";
 import {GeocoderType} from "../core/Workspace";
 import {NominatimExtension} from "../extensions/nominatim.extension";
+import {ModelLayer} from "../core/ModelLayer";
+import {LogService} from "../services/log.service";
 
 export class CesiumGlobe extends Globe {
   public CAMERA: any;
@@ -32,7 +34,7 @@ export class CesiumGlobe extends Globe {
   public readonly DEFAULT_IMAGERY_LAYERS: ImageryLayersType;
   public readonly DEFAULT_IMAGERY_LAYER_INDEX: number;
 
-  constructor() {
+  constructor(private LOGGER?: LogService) {
     super();
     // Default info for all available imagery layers in Cesium
     // Texts taken from
@@ -237,5 +239,24 @@ contributed by the GIS User Community.\nhttp://www.esri.com",
       }
     }
     this.VIEWER.geocoder.viewModel._geocoderServices = geocoderServices;
+  }
+
+  public addKMLModelLayer(modelLayer: ModelLayer): Promise<void> {
+    return new Promise<void>((resolve, reject) => {
+      Cesium.KmlDataSource.load(
+        modelLayer.url.toString(), // TODO Check for proxy? https://github.com/3dcitydb/3dcitydb-web-map/blob/c4eebdca6fe89ed964c97959dc73f379fe04fbab/js/CitydbKmlLayer.js#L456
+        {
+          camera: this.CAMERA,
+          canvas: this.VIEWER.scene.canvas,
+          clampToGround: true // TODO Add option to toggle clampToGround and save it in the model layer info
+        }
+      ).then((kmlDataSource) => {
+        this.VIEWER.dataSources.add(kmlDataSource);
+        resolve();
+      }).catch((error) => {
+        this.LOGGER!.error('Could not add KML layer to globe: ' + error);
+        reject();
+      })
+    });
   }
 }

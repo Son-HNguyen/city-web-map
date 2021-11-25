@@ -12,7 +12,7 @@ import {GlobalService} from "../services/global.service";
 import {GridLayoutType, Workspace} from "../core/Workspace";
 import {MatDialog, MatDialogRef, MatDialogState} from "@angular/material/dialog";
 import {CheatSheetContentComponent} from "./cheat-sheet/cheat-sheet.component";
-import {LogService} from "./log/log.service";
+import {LogService} from "../services/log.service";
 import {DialogReloadPrompt} from "./dialog/dialog.component";
 
 @Component({

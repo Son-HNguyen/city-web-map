@@ -5,7 +5,7 @@ import {
   MatSnackBarHorizontalPosition,
   MatSnackBarRef, MatSnackBarVerticalPosition
 } from "@angular/material/snack-bar";
-import {LogService} from "../log/log.service";
+import {LogService} from "../../services/log.service";
 
 export interface SnackbarData {
   message: string;

@@ -1,0 +1,48 @@
+<!--
+  ~ City Web Map
+  ~ http://www.3dcitydb.org/
+  ~
+  ~ Copyright 2015 - 2021
+  ~ Chair of Geoinformatics
+  ~ Department of Aerospace and Geodesy
+  ~ Technical University of Munich, Germany
+  ~ https://www.gis.lrg.tum.de/
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~    http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<h2 mat-dialog-title>Add model layer</h2>
+<mat-dialog-content class="mat-typography">
+  <h3>General information</h3>
+  <div>
+    <mat-form-field appearance="fill">
+      <mat-label>Name of the layer</mat-label>
+      <input matInput cdkFocusInitial [(ngModel)]="data.name">
+    </mat-form-field>
+  </div>
+  <div>
+    <mat-form-field appearance="fill">
+      <mat-label>URL of the layer</mat-label>
+      <input matInput [(ngModel)]="data.url">
+    </mat-form-field>
+  </div>
+
+  <mat-divider></mat-divider>
+
+  <h3>Others</h3>
+
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button (click)="onNoClick()">Cancel</button>
+  <button mat-button [mat-dialog-close]="data" color="primary">ADD LAYER</button>
+</mat-dialog-actions>

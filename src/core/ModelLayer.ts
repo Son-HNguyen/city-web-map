@@ -22,5 +22,34 @@
  */
 
 export abstract class ModelLayer {
+  private _url: URL;
+  private _name: string;
 
+  constructor(options: ModelLayerOptionsType) {
+    this._url = options.url;
+    this._name = options.name;
+  }
+
+  public abstract addToGlobe(): Promise<void>;
+
+  get url(): URL {
+    return this._url;
+  }
+
+  set url(value: URL) {
+    this._url = value;
+  }
+
+  get name(): string {
+    return this._name;
+  }
+
+  set name(value: string) {
+    this._name = value;
+  }
+}
+
+export interface ModelLayerOptionsType {
+  url: URL,
+  name: string
 }

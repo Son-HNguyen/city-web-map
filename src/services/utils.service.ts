@@ -26,7 +26,7 @@ import {DialogUtility} from "../utilities/dialog.utility";
 import {OsUtility} from "../utilities/os.utility";
 import {SnackBarUtility} from "../utilities/snack-bar.utility";
 import {WorkspaceUtility} from "../utilities/workspace.utility";
-import {LogService} from "../app/log/log.service";
+import {LogService} from "./log.service";
 import {GlobalService} from "./global.service";
 
 @Injectable()

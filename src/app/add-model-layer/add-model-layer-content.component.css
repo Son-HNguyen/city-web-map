@@ -21,8 +21,15 @@
  * limitations under the License.
  */
 
-import {ModelLayer} from "./ModelLayer";
+div {
+  margin: 10px;
+}
 
-export class SimpleLayer extends ModelLayer {
+mat-divider {
+  margin-top: 15px;
+  margin-bottom: 10px;
+}
 
+mat-form-field {
+  width: 500px;
 }

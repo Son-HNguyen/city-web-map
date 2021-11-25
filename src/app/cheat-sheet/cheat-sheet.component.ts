@@ -1,6 +1,6 @@
 import {Component} from '@angular/core';
 import {MatDialog} from "@angular/material/dialog";
-import {LogService} from "../log/log.service";
+import {LogService} from "../../services/log.service";
 
 @Component({
   selector: 'app-cheat-sheet',
@@ -12,7 +12,8 @@ export class CheatSheetComponent {
 
   constructor(
     public dialog: MatDialog,
-    public logger: LogService) {
+    public logger: LogService
+  ) {
   }
 
   openCheatSheet() {

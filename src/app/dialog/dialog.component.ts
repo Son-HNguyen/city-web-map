@@ -23,7 +23,7 @@
 
 import {Component, Inject, OnInit} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from '@angular/material/dialog';
-import {LogService} from '../log/log.service';
+import {LogService} from '../../services/log.service';
 import {FormControl} from "@angular/forms";
 import {Observable, of} from "rxjs";
 import {map, startWith} from "rxjs/operators";

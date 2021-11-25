@@ -22,6 +22,7 @@
  */
 
 import {GeocoderType} from "../core/Workspace";
+import {ModelLayer} from "../core/ModelLayer";
 
 export enum GlobeEngine {
   CESIUM = "cesium"
@@ -49,6 +50,8 @@ export abstract class Globe {
   public abstract setImageryLayer(index: number): any;
 
   public abstract setGeocoder(geocoder: GeocoderType): void;
+
+  public abstract addKMLModelLayer(modelLayer: ModelLayer): Promise<void>;
 }
 
 export interface ImageryLayersType {

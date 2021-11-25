@@ -1,7 +1,7 @@
 import {Directive, ElementRef, OnInit} from '@angular/core';
 import {DesktopExtension} from '../extensions/desktop.extension';
 import {MobileExtension} from '../extensions/mobile.extension';
-import {LogService} from './log/log.service';
+import {LogService} from '../services/log.service';
 import {UtilityService} from "../services/utils.service";
 import {GlobalService} from "../services/global.service";
 

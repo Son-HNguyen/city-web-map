@@ -21,6 +21,6 @@
  * limitations under the License.
  */
 
-export class BaseLayer {
-  
+export class ImageryLayer {
+
 }

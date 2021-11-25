@@ -24,5 +24,9 @@
 import {ModelLayer} from "./ModelLayer";
 
 export class Cesium3DTilesLayer extends ModelLayer {
+  addToGlobe(): Promise<void> {
+    // TODO Implement
+    return Promise.resolve();
+  }
 
 }

@@ -31,8 +31,8 @@ import {
   DialogWarningComponent,
   DialogWarningContentComponent
 } from './dialog/dialog.component';
-import {LogPublishersService} from './log/log-publishers.service';
-import {LogService} from './log/log.service';
+import {LogPublishersService} from '../services/log-publishers.service';
+import {LogService} from '../services/log.service';
 import {GridsterModule} from "angular-gridster2";
 import {MatSelectModule} from "@angular/material/select";
 import {UtilityService} from "../services/utils.service";
@@ -65,6 +65,7 @@ import {StatusViewComponent} from './status-view/status-view.component';
 import {InfoViewComponent} from './info-view/info-view.component';
 import {SwitchThemeComponent} from './switch-theme/switch-theme.component';
 import {NgxResizableModule} from "@3dgenomes/ngx-resizable";
+import {AddModelLayerComponent, AddModelLayerContentComponent} from './add-model-layer/add-model-layer.component';
 
 @NgModule({
   declarations: [
@@ -100,7 +101,10 @@ import {NgxResizableModule} from "@3dgenomes/ngx-resizable";
     DetailViewComponent,
     StatusViewComponent,
     InfoViewComponent,
-    SwitchThemeComponent
+    SwitchThemeComponent,
+    AddModelLayerComponent,
+    AddModelLayerContentComponent
+
   ],
   entryComponents: [
     DialogInfoComponent,
@@ -122,7 +126,9 @@ import {NgxResizableModule} from "@3dgenomes/ngx-resizable";
     CheatSheetComponent,
     CheatSheetContentComponent,
     SnackBarComponent,
-    SnackBarContentComponent
+    SnackBarContentComponent,
+    AddModelLayerComponent,
+    AddModelLayerContentComponent
   ],
   imports: [
     BrowserModule,

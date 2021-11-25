@@ -21,7 +21,7 @@
  * limitations under the License.
  */
 
-import {LogService} from "../app/log/log.service";
+import {LogService} from "../services/log.service";
 import {UtilityService} from "../services/utils.service";
 import {GridLayoutType, Workspace} from "../core/Workspace";
 import {GlobalService} from "../services/global.service";
