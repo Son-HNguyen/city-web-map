@@ -24,10 +24,12 @@
 export abstract class ModelLayer {
   private _url: URL;
   private _name: string;
+  private _description: string;
 
   constructor(options: ModelLayerOptionsType) {
     this._url = options.url;
     this._name = options.name;
+    this._description = options.description;
   }
 
   public abstract addToGlobe(): Promise<void>;
@@ -47,9 +49,18 @@ export abstract class ModelLayer {
   set name(value: string) {
     this._name = value;
   }
+
+  get description(): string {
+    return this._description;
+  }
+
+  set description(value: string) {
+    this._description = value;
+  }
 }
 
 export interface ModelLayerOptionsType {
   url: URL,
-  name: string
+  name: string,
+  description: string
 }

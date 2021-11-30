@@ -15,6 +15,7 @@ export class AddModelLayerComponent {
   static opened: boolean = false;
   name: string;
   url: string;
+  description: string;
 
   constructor(
     public dialog: MatDialog,
@@ -23,6 +24,7 @@ export class AddModelLayerComponent {
   ) {
     this.name = '';
     this.url = '';
+    this.description = '';
   }
 
   handleAddModelLayer() {
@@ -31,7 +33,8 @@ export class AddModelLayerComponent {
         {
           data: {
             name: this.name,
-            url: this.url
+            url: this.url,
+            description: this.description
           }
         });
       AddModelLayerComponent.opened = true;
@@ -39,7 +42,26 @@ export class AddModelLayerComponent {
       dialogRef.afterClosed().subscribe(async data => {
         AddModelLayerComponent.opened = false;
         if (data != null) {
-          await this.GLOBAL!.GLOBE.addKMLModelLayer(new CitydbLayer(data)); // TODO Add generalized layer, not only KML
+          // Store entered input for next time
+          this.name = data.name;
+          this.url = data.url;
+          this.description = data.description;
+          // Add model layer
+          let layer = new CitydbLayer(data); // TODO Separate class for KML?
+          await this.GLOBAL!.GLOBE.addKMLModelLayer(layer); // TODO Add generalized layer, not only KML
+          // Save the camera position for this layer
+          let cameraPosition = this.GLOBAL!.GLOBE.getCurrentCameraLocation();
+          console.log(cameraPosition); // TODO Delete comment
+
+          // TODO Add a drop down list to choose the type of layers
+          // TODO Based on the selected layer, adjust the form control validators for URL (.json, .kml, etc.)
+
+          // TODO Add an option to fly to the layer after adding
+
+          // TODO Save the current camera after flying to the layer to the list of layers for later
+
+          // TODO Add layer to the list
+          this.GLOBAL!.WORKSPACE.modelLayers.push(layer);
         }
       });
     }

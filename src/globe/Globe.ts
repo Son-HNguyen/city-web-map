@@ -52,6 +52,8 @@ export abstract class Globe {
   public abstract setGeocoder(geocoder: GeocoderType): void;
 
   public abstract addKMLModelLayer(modelLayer: ModelLayer): Promise<void>;
+
+  public abstract flyToObjects(objects: any): Promise<void>;
 }
 
 export interface ImageryLayersType {

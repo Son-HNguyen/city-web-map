@@ -47,6 +47,17 @@
       <mat-error *ngIf="url.invalid">{{getUrlErrorMessage()}}</mat-error>
     </mat-form-field>
   </div>
+  <div>
+    <mat-form-field appearance="fill">
+      <mat-label>Description</mat-label>
+      <textarea matInput
+                [(ngModel)]="data.description"
+                placeholder="Example layer description"
+                cdkTextareaAutosize
+                cdkAutosizeMinRows="1"
+                cdkAutosizeMaxRows="10"></textarea>
+    </mat-form-field>
+  </div>
 
   <mat-divider></mat-divider>
 

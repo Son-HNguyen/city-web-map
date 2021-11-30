@@ -242,21 +242,35 @@ contributed by the GIS User Community.\nhttp://www.esri.com",
   }
 
   public addKMLModelLayer(modelLayer: ModelLayer): Promise<void> {
-    return new Promise<void>((resolve, reject) => {
-      Cesium.KmlDataSource.load(
-        modelLayer.url.toString(), // TODO Check for proxy? https://github.com/3dcitydb/3dcitydb-web-map/blob/c4eebdca6fe89ed964c97959dc73f379fe04fbab/js/CitydbKmlLayer.js#L456
-        {
-          camera: this.CAMERA,
-          canvas: this.VIEWER.scene.canvas,
-          clampToGround: true // TODO Add option to toggle clampToGround and save it in the model layer info
-        }
-      ).then((kmlDataSource) => {
+    return new Promise<void>(async (resolve, reject) => {
+      try {
+        let kmlDataSource = await Cesium.KmlDataSource.load(
+          modelLayer.url.toString(), // TODO Check for proxy? https://github.com/3dcitydb/3dcitydb-web-map/blob/c4eebdca6fe89ed964c97959dc73f379fe04fbab/js/CitydbKmlLayer.js#L456
+          {
+            camera: this.CAMERA,
+            canvas: this.VIEWER.scene.canvas,
+            clampToGround: true // TODO Add option to toggle clampToGround and save it in the model layer info
+          }
+        );
         this.VIEWER.dataSources.add(kmlDataSource);
+        // Fly to the added layer
+        await this.flyToObjects(kmlDataSource.entities);
         resolve();
-      }).catch((error) => {
+      } catch (error) {
         this.LOGGER!.error('Could not add KML layer to globe: ' + error);
         reject();
-      })
+      }
+    });
+  }
+
+  public flyToObjects(objects: any): Promise<void> {
+    return new Promise<void>(async (resolve, reject) => {
+      try {
+        this.VIEWER.flyTo(objects);
+        resolve();
+      } catch (error) {
+        reject();
+      }
     });
   }
 }
