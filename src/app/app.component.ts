@@ -294,7 +294,7 @@ export class AppComponent implements OnInit {
   }
 
   async handleNew() {
-    await this.loadWorkspace(new Workspace());
+    await this.loadWorkspace(new Workspace({}));
   }
 
   layoutChanged(event: { item: GridsterItem, itemComponent: GridsterItemComponentInterface }, index: number) {

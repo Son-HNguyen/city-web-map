@@ -32,7 +32,7 @@ export class GlobalService {
   private _GLOBE: Globe;
 
   constructor() {
-    this._WORKSPACE = new Workspace();
+    this._WORKSPACE = new Workspace({});
     // Create the globe depending on the engine type given in the workspace
     switch (this._WORKSPACE.globeEngine) {
       case GlobeEngine.CESIUM:

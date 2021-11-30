@@ -207,47 +207,31 @@ export class Workspace {
     showOnStart: true
   };
 
-  constructor(
-    title?: string,
-    description?: string,
-    maintainer?: string,
-    globeEngine?: GlobeEngine,
-    modelLayers?: Array<ModelLayer>,
-    baseLayers?: Array<ImageryLayer>,
-    terrainLayers?: Array<TerrainLayer>,
-    timeline?: TimeLineType,
-    viewpoints?: Array<Viewpoint>,
-    gridLayout?: GridLayoutType,
-    fullscreenActive?: boolean,
-    darkTheme?: boolean,
-    cameraLocation?: CameraLocation,
-    geocoder?: GeocoderType,
-    imageryLayerIndex?: number
-  ) {
-    this._title = (title == null) ? "Workspace title" : title;
-    this._description = (description == null) ? "Workspace description" : description;
-    this._maintainer = (maintainer == null) ? "Workspace maintainer" : maintainer;
-    this._globeEngine = (globeEngine == null) ? GlobeEngine.CESIUM : globeEngine;
-    this._modelLayers = (modelLayers == null) ? [] : modelLayers;
-    this._baseLayers = (baseLayers == null) ? [] : baseLayers;
-    this._terrainLayers = (terrainLayers == null) ? [] : terrainLayers;
-    this._timeline = (timeline == null) ?
+  constructor(options: ConstructorOptionType) {
+    this._title = (options.title == null) ? "Workspace title" : options.title;
+    this._description = (options.description == null) ? "Workspace description" : options.description;
+    this._maintainer = (options.maintainer == null) ? "Workspace maintainer" : options.maintainer;
+    this._globeEngine = (options.globeEngine == null) ? GlobeEngine.CESIUM : options.globeEngine;
+    this._modelLayers = (options.modelLayers == null) ? [] : options.modelLayers;
+    this._baseLayers = (options.baseLayers == null) ? [] : options.baseLayers;
+    this._terrainLayers = (options.terrainLayers == null) ? [] : options.terrainLayers;
+    this._timeline = (options.timeline == null) ?
       {
         autoplay: false,
         current: new Date(),
         multiplier: SpeedMultipliers.NORMAL,
         range: undefined
       }
-      : timeline;
-    this._viewpoints = (viewpoints == null) ? [] : viewpoints;
-    this._gridLayout = (gridLayout == null) ? Workspace.DEFAULT_LAYOUT : gridLayout;
-    this._fullscreenActive = (fullscreenActive == null) ? false : fullscreenActive;
-    this._darkTheme = (darkTheme == null) ? false : darkTheme;
-    this._cameraLocation = (cameraLocation == null) ? Workspace.DEFAULT_CAMERA_LOCATION : cameraLocation;
-    this._geocoder = (geocoder == null) ? Workspace.DEFAULT_GEOCODER : geocoder;
+      : options.timeline;
+    this._viewpoints = (options.viewpoints == null) ? [] : options.viewpoints;
+    this._gridLayout = (options.gridLayout == null) ? Workspace.DEFAULT_LAYOUT : options.gridLayout;
+    this._fullscreenActive = (options.fullscreenActive == null) ? false : options.fullscreenActive;
+    this._darkTheme = (options.darkTheme == null) ? false : options.darkTheme;
+    this._cameraLocation = (options.cameraLocation == null) ? Workspace.DEFAULT_CAMERA_LOCATION : options.cameraLocation;
+    this._geocoder = (options.geocoder == null) ? Workspace.DEFAULT_GEOCODER : options.geocoder;
     // Imagery layer index = -1 means not yet set
     // and will be set later by calling updateImageryLayerIndex() depending on the type of globe engine
-    this._imageryLayerIndex = (imageryLayerIndex == null) ? -1 : imageryLayerIndex;
+    this._imageryLayerIndex = (options.imageryLayerIndex == null) ? -1 : options.imageryLayerIndex;
   }
 
   // Init and type check
@@ -257,7 +241,7 @@ export class Workspace {
       if (workspaceString == null || workspaceString.trim().length === 0) {
         throw new Error();
       } else {
-        workspace = Object.assign(new Workspace(), JSON.parse(workspaceString));
+        workspace = Object.assign(new Workspace({}), JSON.parse(workspaceString));
         // TODO Type check JSON string vs Workspace
         if (workspace instanceof Workspace) {
           return workspace;
@@ -423,6 +407,24 @@ export class Workspace {
   set imageryLayerIndex(value: number) {
     this._imageryLayerIndex = value;
   }
+}
+
+interface ConstructorOptionType {
+  title?: string,
+  description?: string,
+  maintainer?: string,
+  globeEngine?: GlobeEngine,
+  modelLayers?: Array<ModelLayer>,
+  baseLayers?: Array<ImageryLayer>,
+  terrainLayers?: Array<TerrainLayer>,
+  timeline?: TimeLineType,
+  viewpoints?: Array<Viewpoint>,
+  gridLayout?: GridLayoutType,
+  fullscreenActive?: boolean,
+  darkTheme?: boolean,
+  cameraLocation?: CameraLocation,
+  geocoder?: GeocoderType,
+  imageryLayerIndex?: number,
 }
 
 interface AboutType {

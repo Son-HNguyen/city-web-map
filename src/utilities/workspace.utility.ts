@@ -46,7 +46,7 @@ export class WorkspaceUtility {
       const workspace = Workspace.initFrom(workspaceString);
       if (workspace == null) {
         scope.logService.warn('No compatible workspace found. A default workspace shall be created.');
-        this.GLOBALS!.WORKSPACE = new Workspace();
+        this.GLOBALS!.WORKSPACE = new Workspace({});
       } else {
         this.GLOBALS!.WORKSPACE = workspace;
       }
