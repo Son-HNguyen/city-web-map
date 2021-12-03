@@ -21,12 +21,23 @@
  * limitations under the License.
  */
 
-import {ModelLayer} from "./ModelLayer";
+import {LayerTypes, ModelLayer, ModelLayerOptionsType} from "./ModelLayer";
+import {LogService} from "../services/log.service";
+import {GlobalService} from "../services/global.service";
 
-export class Cesium3DTilesLayer extends ModelLayer {
-  addToGlobe(): Promise<void> {
-    // TODO Implement
-    return Promise.resolve();
+export class CityDBTilesModelLayer extends ModelLayer {
+  constructor(
+    options: ModelLayerOptionsType,
+    private LOGGER?: LogService,
+    private GLOBALS?: GlobalService
+  ) {
+    super(options);
+    this.type = LayerTypes.CITYDB_TILES;
   }
 
+  public addToGlobe(): Promise<void> {
+    return new Promise<void>((resolve, reject) => {
+      // TODO Implement
+    });
+  }
 }

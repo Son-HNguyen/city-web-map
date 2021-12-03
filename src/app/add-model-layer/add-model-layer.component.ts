@@ -1,19 +1,19 @@
-import {Component, Inject} from '@angular/core';
+import {Component, Inject, OnInit} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from "@angular/material/dialog";
 import {LogService} from "../../services/log.service";
-import {ModelLayerOptionsType} from "../../core/ModelLayer";
+import {LayerTypes, ModelLayer, ModelLayerOptionsType} from "../../core/ModelLayer";
 import {GlobalService} from "../../services/global.service";
-import {CitydbLayer} from "../../core/CitydbLayer";
-import {AbstractControl, FormControl, ValidationErrors, Validators} from "@angular/forms";
+import {AbstractControl, FormBuilder, FormControl, FormGroup, ValidationErrors, Validators} from "@angular/forms";
 
 @Component({
   selector: 'app-add-model-layer',
   templateUrl: './add-model-layer.component.html',
   styleUrls: ['./add-model-layer.component.css']
 })
-export class AddModelLayerComponent {
+export class AddModelLayerComponent implements OnInit {
   static opened: boolean = false;
   name: string;
+  type: LayerTypes;
   url: string;
   description: string;
 
@@ -23,8 +23,18 @@ export class AddModelLayerComponent {
     private GLOBAL?: GlobalService
   ) {
     this.name = '';
+    this.type = LayerTypes.CITYDB_TILES;
     this.url = '';
     this.description = '';
+  }
+
+  async ngOnInit(): Promise<void> {
+    // Add model layers saved from previous sessions to the globe
+    for (const modelLayer of this.GLOBAL!.WORKSPACE.modelLayers) {
+      if (modelLayer.activated) {
+        await this.GLOBAL!.GLOBE.addModelLayer(modelLayer, false);
+      }
+    }
   }
 
   handleAddModelLayer() {
@@ -33,6 +43,7 @@ export class AddModelLayerComponent {
         {
           data: {
             name: this.name,
+            type: this.type,
             url: this.url,
             description: this.description
           }
@@ -44,14 +55,18 @@ export class AddModelLayerComponent {
         if (data != null) {
           // Store entered input for next time
           this.name = data.name;
+          this.type = data.type;
           this.url = data.url;
           this.description = data.description;
-          // Add model layer
-          let layer = new CitydbLayer(data); // TODO Separate class for KML?
-          await this.GLOBAL!.GLOBE.addKMLModelLayer(layer); // TODO Add generalized layer, not only KML
-          // Save the camera position for this layer
-          let cameraPosition = this.GLOBAL!.GLOBE.getCurrentCameraLocation();
-          console.log(cameraPosition); // TODO Delete comment
+          // Create model layer and add to the globe
+          let modelLayer: ModelLayer = await this.GLOBAL!.GLOBE.addModelLayer(data, true);
+          // Add layer to the list in workspace
+          this.GLOBAL!.WORKSPACE.modelLayers.push(modelLayer);
+          modelLayer.activated = true; // TODO Add option to deactivate model layers
+
+          // TODO Display layer list
+
+          // TODO Save the camera position for this layer
 
           // TODO Add a drop down list to choose the type of layers
           // TODO Based on the selected layer, adjust the form control validators for URL (.json, .kml, etc.)
@@ -60,8 +75,7 @@ export class AddModelLayerComponent {
 
           // TODO Save the current camera after flying to the layer to the list of layers for later
 
-          // TODO Add layer to the list
-          this.GLOBAL!.WORKSPACE.modelLayers.push(layer);
+
         }
       });
     }
@@ -73,16 +87,44 @@ export class AddModelLayerComponent {
   templateUrl: './add-model-layer-content.component.html',
   styleUrls: ['./add-model-layer-content.component.css']
 })
-export class AddModelLayerContentComponent {
-  name = new FormControl('', [Validators.required]);
-  url = new FormControl('', [Validators.required,
-    AddModelLayerContentComponent.urlValidator,
-    AddModelLayerContentComponent.urlFileExtensionValidator]);
+export class AddModelLayerContentComponent implements OnInit {
+  name: string;
+  type: string = LayerTypes.CITYDB_TILES;
+  types = [
+    {value: LayerTypes.KML, viewValue: 'KML (.kml, .kmz, .czml)'},
+    {value: LayerTypes.CITYDB_TILES, viewValue: '3DCityDB Tiles (.json)'},
+    {value: LayerTypes.CESIUM_3D_TILES, viewValue: 'Cesium 3D Tiles (.json)'}
+  ];
+  url: string;
+  description: string;
+
+  modelLayerForm: FormGroup;
 
   constructor(
+    fb: FormBuilder,
     public dialogRef: MatDialogRef<AddModelLayerContentComponent>,
     @Inject(MAT_DIALOG_DATA) public data: ModelLayerOptionsType,
+    private GLOBAL?: GlobalService
   ) {
+    this.name = data.name;
+    this.type = data.type;
+    this.url = data.url.toString();
+    this.description = data.description;
+
+    this.modelLayerForm = fb.group({
+      name: new FormControl(this.name, [Validators.required]),
+      type: new FormControl(this.type, [Validators.required]),
+      url: new FormControl(this.url, [Validators.required,
+        this.urlDuplicateValidator.bind(this)]),
+      description: new FormControl(this.description)
+    })
+  }
+
+  ngOnInit(): void {
+    // Change the validators based on the selected layer type
+    this.modelLayerForm.controls.type.valueChanges.subscribe(type => {
+
+    });
   }
 
   onNoClick(): void {
@@ -90,7 +132,7 @@ export class AddModelLayerContentComponent {
   }
 
   getNameErrorMessage() {
-    if (this.name.hasError('required')) {
+    if (this.modelLayerForm.controls.name.hasError('required')) {
       return 'You must enter a value';
     }
 
@@ -98,44 +140,82 @@ export class AddModelLayerContentComponent {
   }
 
   getUrlErrorMessage() {
-    if (this.url.hasError('required')) {
+    if (this.modelLayerForm.controls.url.hasError('required')) {
       return 'You must enter a value';
     }
 
-    if (this.url.hasError('patternUrl')) {
+    if (this.modelLayerForm.controls.url.hasError('patternInvalidUrl')) {
       return 'Not a valid URL';
     }
 
-    if (this.url.hasError('patternUrlFileExtension')) {
-      return 'The URL must refer to a .json, .kml, .kmz or .czml file'; // TODO Update list of allowed file extensions
+    if (this.modelLayerForm.controls.url.hasError('patternEmptyFileExtension')) {
+      return 'The URL must refer to a file';
+    }
+
+    if (this.modelLayerForm.controls.url.hasError('patternUrlKMLFileExtension')) {
+      return 'The URL must refer to a .kml, .kmz or .czml file'; // TODO Update list of allowed file extensions
+    }
+
+    if (this.modelLayerForm.controls.url.hasError('patternUrlCityDBTilesFileExtension')) {
+      return 'The URL must refer to a .json file'; // TODO Update list of allowed file extensions
+    }
+
+    if (this.modelLayerForm.controls.url.hasError('patternUrlCesium3DTilesFileExtension')) {
+      return 'The URL must refer to a .json file'; // TODO Update list of allowed file extensions
+    }
+
+    if (this.modelLayerForm.controls.url.hasError('patternDuplicateUrl')) {
+      return 'A model layer with the same URL already exists';
     }
 
     return '';
   }
 
-  // https://stackoverflow.com/a/65643961/5360833
-  private static urlValidator({value}: AbstractControl): null | ValidationErrors {
+  private urlDuplicateValidator({value}: AbstractControl): null | ValidationErrors {
     try {
-      new URL(value);
-      return null;
-    } catch {
-      return {patternUrl: true};
-    }
-  }
-
-  private static urlFileExtensionValidator({value}: AbstractControl): null | ValidationErrors {
-    try {
+      // Check whether the file extension is correct based on the selected layer type
       const fileExtension = (new URL(value)).toString().split('.').pop();
       if (fileExtension == null || fileExtension.trim() === '') {
-        throw new Error();
+        return {patternEmptyFileExtension: true};
       }
-      let allowedFileExtensions = ['json', 'kml', 'kmz', 'czml']; // TODO Update list of allowed file extensions
-      if (!allowedFileExtensions.includes(fileExtension.trim().toLowerCase())) {
-        throw new Error();
+      let allowedFileExtensions: Array<string> = [];
+      switch (this.type) {
+        case LayerTypes.KML:
+          allowedFileExtensions = ['kml', 'kmz', 'czml'];
+          if (!allowedFileExtensions.includes(fileExtension.trim().toLowerCase())) {
+            return {patternUrlKMLFileExtension: true};
+          }
+          break;
+        case LayerTypes.CITYDB_TILES:
+          allowedFileExtensions = ['json'];
+          if (!allowedFileExtensions.includes(fileExtension.trim().toLowerCase())) {
+            return {patternUrlCityDBTilesFileExtension: true};
+          }
+          break;
+        case LayerTypes.CESIUM_3D_TILES:
+          allowedFileExtensions = ['json'];
+          if (!allowedFileExtensions.includes(fileExtension.trim().toLowerCase())) {
+            return {patternUrlCesium3DTilesFileExtension: true};
+          }
+          break;
       }
-      return null;
-    } catch {
-      return {patternUrlFileExtension: true};
+      // Check whether a to-be-added layer has already been inserted (based on the unique URLs)
+      let modelLayer: ModelLayer;
+      for (modelLayer of this.GLOBAL!.WORKSPACE.modelLayers) {
+        if (new URL(modelLayer.url).pathname === new URL(value).pathname) {
+          return {patternDuplicateUrl: true};
+        }
+      }
+    } catch (error) {
+      return {patternInvalidUrl: true};
+    }
+    return null;
+  }
+
+  onYesClick() {
+    const {value, valid} = this.modelLayerForm;
+    if (valid) {
+      this.dialogRef.close(value);
     }
   }
 }

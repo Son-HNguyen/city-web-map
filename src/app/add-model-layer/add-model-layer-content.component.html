@@ -22,37 +22,50 @@
   -->
 
 <h2 mat-dialog-title>Add model layer</h2>
-<mat-dialog-content class="mat-typography">
+<mat-dialog-content class="mat-typography" [formGroup]="modelLayerForm">
   <h3>General information</h3>
   <div>
     <mat-form-field appearance="fill">
       <mat-label>Name of the layer</mat-label>
       <input matInput
              cdkFocusInitial
-             [(ngModel)]="data.name"
+             value="{{name}}"
              placeholder="Example building models"
-             [formControl]="name"
+             formControlName="name"
              required>
-      <mat-error *ngIf="name.invalid">{{getNameErrorMessage()}}</mat-error>
+      <mat-error *ngIf="modelLayerForm.controls.name.invalid">{{getNameErrorMessage()}}</mat-error>
     </mat-form-field>
   </div>
   <div>
     <mat-form-field appearance="fill">
-      <mat-label>URL of the 3DCityDB VIS or Cesium 3D Tiles</mat-label>
+      <mat-label>Select layer type</mat-label>
+      <mat-select [(value)]="type"
+                  formControlName="type"
+                  required>
+        <mat-option *ngFor="let layerType of types" [value]="layerType.value">
+          {{layerType.viewValue}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+  <div>
+    <mat-form-field appearance="fill">
+      <mat-label>URL to the visualization file(s)</mat-label>
       <input matInput
-             [(ngModel)]="data.url"
+             value="{{url}}"
              placeholder="https://www.example.com/master.json"
-             [formControl]="url"
+             formControlName="url"
              required>
-      <mat-error *ngIf="url.invalid">{{getUrlErrorMessage()}}</mat-error>
+      <mat-error *ngIf="modelLayerForm.controls.url.invalid">{{getUrlErrorMessage()}}</mat-error>
     </mat-form-field>
   </div>
   <div>
     <mat-form-field appearance="fill">
       <mat-label>Description</mat-label>
       <textarea matInput
-                [(ngModel)]="data.description"
+                value="{{description}}"
                 placeholder="Example layer description"
+                formControlName="description"
                 cdkTextareaAutosize
                 cdkAutosizeMinRows="1"
                 cdkAutosizeMaxRows="10"></textarea>
@@ -66,5 +79,5 @@
 </mat-dialog-content>
 <mat-dialog-actions align="end">
   <button mat-button (click)="onNoClick()">Cancel</button>
-  <button mat-button [mat-dialog-close]="data" color="primary">ADD LAYER</button>
+  <button mat-button (click)="onYesClick()" color="primary">ADD LAYER</button>
 </mat-dialog-actions>

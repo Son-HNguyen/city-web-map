@@ -21,38 +21,23 @@
  * limitations under the License.
  */
 
-import {ModelLayer, ModelLayerOptionsType} from "./ModelLayer";
+import {LayerTypes, ModelLayer, ModelLayerOptionsType} from "./ModelLayer";
 import {LogService} from "../services/log.service";
 import {GlobalService} from "../services/global.service";
 
-export class CitydbLayer extends ModelLayer {
+export class Cesium3DTilesModelLayer extends ModelLayer {
   constructor(
     options: ModelLayerOptionsType,
     private LOGGER?: LogService,
     private GLOBALS?: GlobalService
   ) {
     super(options);
+    this.type = LayerTypes.CESIUM_3D_TILES;
   }
 
   public addToGlobe(): Promise<void> {
     return new Promise<void>((resolve, reject) => {
-      const fileExtension = this.url.toString().split('.').pop();
-      if (fileExtension == null || fileExtension.trim() === '') {
-        this.LOGGER!.warn('The given model URL must contain a file extension .json, .kml, .kmz oder .czml!')
-        return reject();
-      }
-      switch (fileExtension.trim().toLowerCase()) {
-        case 'json':
-          break;
-        case 'kml':
-        case 'kmz':
-          return this.GLOBALS!.GLOBE.addKMLModelLayer(this);
-        case 'czml':
-          break;
-        default:
-          this.LOGGER!.warn('The given model URL must contain a file extension .json, .kml, .kmz oder .czml!')
-          return reject();
-      }
+      // TODO Implement
     });
   }
 }

@@ -22,25 +22,22 @@
  */
 
 export abstract class ModelLayer {
-  private _url: URL;
   private _name: string;
+  private _type: LayerTypes;
+  private _url: URL;
   private _description: string;
+  private _activated: boolean; // Whether this layer should be activated in the globe
 
   constructor(options: ModelLayerOptionsType) {
-    this._url = options.url;
     this._name = options.name;
+    this._type = options.type;
+    this._url = options.url;
     this._description = options.description;
+    this._activated = false;
   }
 
+  // The input URL must already be valid
   public abstract addToGlobe(): Promise<void>;
-
-  get url(): URL {
-    return this._url;
-  }
-
-  set url(value: URL) {
-    this._url = value;
-  }
 
   get name(): string {
     return this._name;
@@ -50,6 +47,22 @@ export abstract class ModelLayer {
     this._name = value;
   }
 
+  get type(): LayerTypes {
+    return this._type;
+  }
+
+  set type(value: LayerTypes) {
+    this._type = value;
+  }
+
+  get url(): URL {
+    return this._url;
+  }
+
+  set url(value: URL) {
+    this._url = value;
+  }
+
   get description(): string {
     return this._description;
   }
@@ -57,10 +70,25 @@ export abstract class ModelLayer {
   set description(value: string) {
     this._description = value;
   }
+
+  get activated(): boolean {
+    return this._activated;
+  }
+
+  set activated(value: boolean) {
+    this._activated = value;
+  }
 }
 
 export interface ModelLayerOptionsType {
   url: URL,
+  type: LayerTypes,
   name: string,
   description: string
+}
+
+export enum LayerTypes {
+  KML = 'kml',
+  CITYDB_TILES = 'citydb',
+  CESIUM_3D_TILES = 'cesium'
 }

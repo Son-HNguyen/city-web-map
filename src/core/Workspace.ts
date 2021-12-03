@@ -21,7 +21,7 @@
  * limitations under the License.
  */
 
-import {ModelLayer} from "./ModelLayer";
+import {LayerTypes, ModelLayer} from "./ModelLayer";
 import {ImageryLayer} from "./ImageryLayer";
 import {TerrainLayer} from "./TerrainLayer";
 import {Viewpoint} from "./Viewpoint";
@@ -29,6 +29,9 @@ import {GridsterItem} from "angular-gridster2";
 import {DatePickerTimeRange, SpeedMultipliers} from "../app/timeline/timeline.component";
 import {isEqual} from "lodash";
 import {CameraLocation, GeocoderService, GlobeEngine} from "../globe/Globe";
+import {KMLModelLayer} from "./KMLModelLayer";
+import {CityDBTilesModelLayer} from "./CityDBTilesModelLayer";
+import {Cesium3DTilesModelLayer} from "./Cesium3DTilesModelLayer";
 
 export class Workspace {
   // ==============================
@@ -244,6 +247,33 @@ export class Workspace {
         workspace = Object.assign(new Workspace({}), JSON.parse(workspaceString));
         // TODO Type check JSON string vs Workspace
         if (workspace instanceof Workspace) {
+          // Workspace restored from JSON strings contains elements with type "Object".
+          // They must be reconstructed to correct types.
+
+          // Reconstruct model layers
+          const modelLayers = workspace.modelLayers;
+          workspace.modelLayers = new Array<ModelLayer>();
+          for (const modelLayerStr of modelLayers) {
+            let modelLayer: ModelLayer;
+            let modelLayerType = modelLayerStr.type == null ? modelLayerStr['_type'] : modelLayerStr.type;
+            switch (modelLayerType) { // TODO Add support for more layer types
+              case LayerTypes.KML:
+                modelLayer = Object.assign(new KMLModelLayer(modelLayerStr), modelLayerStr);
+                break;
+              case LayerTypes.CITYDB_TILES:
+                modelLayer = Object.assign(new CityDBTilesModelLayer(modelLayerStr), modelLayerStr);
+                break;
+              case LayerTypes.CESIUM_3D_TILES:
+                modelLayer = Object.assign(new Cesium3DTilesModelLayer(modelLayerStr), modelLayerStr);
+                break;
+            }
+            if (modelLayer != null) {
+              workspace.modelLayers.push(modelLayer);
+            }
+          }
+
+          // TODO Reconstruct other layers and viewpoints
+
           return workspace;
         }
         throw new Error();
@@ -276,6 +306,39 @@ export class Workspace {
 
   public toString(): string {
     return JSON.stringify(this);
+  }
+
+  private replaceUnderscoreFromKeys(object: any): any {
+    if (object == null) {
+      return object;
+    }
+
+    if (Array.isArray(object)) {
+      let result = [];
+      for (const ele of object) {
+        if (typeof ele === 'object') {
+          result.push(this.replaceUnderscoreFromKeys(ele));
+        } else {
+          result.push(ele);
+        }
+      }
+      return result;
+    }
+
+    let result: any = {};
+    for (let key in object) {
+      let value = object[key];
+      while (key.trim().charAt(0) === '_') {
+        key = key.split('_')[1];
+      }
+      if (typeof value === 'object') {
+        result[key] = this.replaceUnderscoreFromKeys(value);
+      } else {
+        result[key] = value;
+      }
+    }
+
+    return result;
   }
 
   // ==============================

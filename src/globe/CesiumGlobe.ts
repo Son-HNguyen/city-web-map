@@ -25,8 +25,11 @@ import {CameraLocation, GeocoderService, Globe, ImageryLayersType} from "./Globe
 import * as Cesium from "cesium";
 import {GeocoderType} from "../core/Workspace";
 import {NominatimExtension} from "../extensions/nominatim.extension";
-import {ModelLayer} from "../core/ModelLayer";
 import {LogService} from "../services/log.service";
+import {KMLModelLayer} from "../core/KMLModelLayer";
+import {CityDBTilesModelLayer} from "../core/CityDBTilesModelLayer";
+import {Cesium3DTilesModelLayer} from "../core/Cesium3DTilesModelLayer";
+import {LayerTypes, ModelLayer, ModelLayerOptionsType} from "../core/ModelLayer";
 
 export class CesiumGlobe extends Globe {
   public CAMERA: any;
@@ -241,7 +244,7 @@ contributed by the GIS User Community.\nhttp://www.esri.com",
     this.VIEWER.geocoder.viewModel._geocoderServices = geocoderServices;
   }
 
-  public addKMLModelLayer(modelLayer: ModelLayer): Promise<void> {
+  public addKMLModelLayer(modelLayer: KMLModelLayer, fly?: boolean): Promise<void> {
     return new Promise<void>(async (resolve, reject) => {
       try {
         let kmlDataSource = await Cesium.KmlDataSource.load(
@@ -254,12 +257,26 @@ contributed by the GIS User Community.\nhttp://www.esri.com",
         );
         this.VIEWER.dataSources.add(kmlDataSource);
         // Fly to the added layer
-        await this.flyToObjects(kmlDataSource.entities);
+        if (fly != null && fly) {
+          await this.flyToObjects(kmlDataSource.entities);
+        }
         resolve();
       } catch (error) {
         this.LOGGER!.error('Could not add KML layer to globe: ' + error);
         reject();
       }
+    });
+  }
+
+  public addCityDBTilesModelLayer(modelLayer: CityDBTilesModelLayer, fly?: boolean): Promise<void> {
+    return new Promise<void>(async (resolve, reject) => {
+      // TODO Implement
+    });
+  }
+
+  public addCesium3DTilesModelLayer(modelLayer: Cesium3DTilesModelLayer, fly?: boolean): Promise<void> {
+    return new Promise<void>(async (resolve, reject) => {
+      // TODO Implement
     });
   }
 

@@ -22,7 +22,10 @@
  */
 
 import {GeocoderType} from "../core/Workspace";
-import {ModelLayer} from "../core/ModelLayer";
+import {KMLModelLayer} from "../core/KMLModelLayer";
+import {CityDBTilesModelLayer} from "../core/CityDBTilesModelLayer";
+import {Cesium3DTilesModelLayer} from "../core/Cesium3DTilesModelLayer";
+import {LayerTypes, ModelLayer, ModelLayerOptionsType} from "../core/ModelLayer";
 
 export enum GlobeEngine {
   CESIUM = "cesium"
@@ -51,9 +54,46 @@ export abstract class Globe {
 
   public abstract setGeocoder(geocoder: GeocoderType): void;
 
-  public abstract addKMLModelLayer(modelLayer: ModelLayer): Promise<void>;
+  public abstract addKMLModelLayer(modelLayer: KMLModelLayer, fly?: boolean): Promise<void>;
+
+  public abstract addCityDBTilesModelLayer(modelLayer: CityDBTilesModelLayer, fly?: boolean): Promise<void>;
+
+  public abstract addCesium3DTilesModelLayer(modelLayer: Cesium3DTilesModelLayer, fly?: boolean): Promise<void>;
 
   public abstract flyToObjects(objects: any): Promise<void>;
+
+  // =================================================
+
+  /**
+   * Add a model layer to the globe.
+   *
+   * @param options Can be an already existing model layer or options to create a new one.
+   * @param fly Fly to the model layer on the globe after adding. Only executes when this is set to true.
+   */
+  public addModelLayer(options: ModelLayerOptionsType | ModelLayer, fly?: boolean): Promise<ModelLayer> {
+    return new Promise<ModelLayer>(async (resolve, reject) => {
+      let result: ModelLayer;
+      switch (options.type) { // TODO Add generalized layer, not only KML
+        case LayerTypes.KML:
+          result = options instanceof ModelLayer ? options : new KMLModelLayer(options);
+          await this.addKMLModelLayer(result, fly);
+          break;
+        case LayerTypes.CITYDB_TILES:
+          result = options instanceof ModelLayer ? options : new CityDBTilesModelLayer(options);
+          await this.addCityDBTilesModelLayer(result, fly);
+          break;
+        case LayerTypes.CESIUM_3D_TILES:
+          result = options instanceof ModelLayer ? options : new Cesium3DTilesModelLayer(options);
+          await this.addCesium3DTilesModelLayer(result, fly);
+          break;
+        default:
+          reject();
+          return;
+      }
+      resolve(result);
+      return;
+    });
+  }
 }
 
 export interface ImageryLayersType {
