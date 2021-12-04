@@ -134,6 +134,7 @@ export class AddModelLayerContentComponent {
       tags: new FormControl(this.tags, [this.tagDuplicateValidator.bind(this)]),
       description: new FormControl(this.description)
     });
+    // Auxiliary control to update mat-chip-list regularly
     this.tagInputControl = new FormControl('', [this.tagInputValidator.bind(this)]);
   }
 
@@ -261,13 +262,12 @@ export class AddModelLayerContentComponent {
   }
 
   private tagInputValidator({value}: AbstractControl): null | ValidationErrors {
-    console.log(value);
+    // The mat-chip-list is not updated as regularly as other inputs --> force update by using patchValue
     this.modelLayerForm.patchValue({tags: this.tags});
     return null;
   }
 
   private tagDuplicateValidator({value}: AbstractControl): null | ValidationErrors {
-    console.log(value);
     // value is this.tags
     if (value != null && value.length > 0 && this.tagInputControl != null
       && this.tagInputControl.value.trim().length > 0) {
