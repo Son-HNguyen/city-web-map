@@ -66,6 +66,8 @@ import {InfoViewComponent} from './info-view/info-view.component';
 import {SwitchThemeComponent} from './switch-theme/switch-theme.component';
 import {NgxResizableModule} from "@3dgenomes/ngx-resizable";
 import {AddModelLayerComponent, AddModelLayerContentComponent} from './add-model-layer/add-model-layer.component';
+import {MatChipsModule} from "@angular/material/chips";
+import {DragDropModule} from "@angular/cdk/drag-drop";
 
 @NgModule({
   declarations: [
@@ -160,7 +162,9 @@ import {AddModelLayerComponent, AddModelLayerContentComponent} from './add-model
     MatCheckboxModule,
     MatSlideToggleModule,
     NgxDropzoneModule,
-    NgxResizableModule
+    NgxResizableModule,
+    MatChipsModule,
+    DragDropModule
   ],
   bootstrap: [
     AppComponent,

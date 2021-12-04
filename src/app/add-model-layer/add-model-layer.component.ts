@@ -4,6 +4,9 @@ import {LogService} from "../../services/log.service";
 import {LayerTypes, ModelLayer, ModelLayerOptionsType} from "../../core/ModelLayer";
 import {GlobalService} from "../../services/global.service";
 import {AbstractControl, FormBuilder, FormControl, FormGroup, ValidationErrors, Validators} from "@angular/forms";
+import {COMMA, ENTER} from "@angular/cdk/keycodes";
+import {MatChipInputEvent} from "@angular/material/chips";
+import {CdkDragDrop, moveItemInArray} from "@angular/cdk/drag-drop";
 
 @Component({
   selector: 'app-add-model-layer',
@@ -15,6 +18,7 @@ export class AddModelLayerComponent implements OnInit {
   name: string;
   type: LayerTypes;
   url: string;
+  tags: Array<string>;
   description: string;
 
   constructor(
@@ -25,6 +29,7 @@ export class AddModelLayerComponent implements OnInit {
     this.name = '';
     this.type = LayerTypes.CITYDB_TILES;
     this.url = '';
+    this.tags = new Array<string>();
     this.description = '';
   }
 
@@ -45,6 +50,7 @@ export class AddModelLayerComponent implements OnInit {
             name: this.name,
             type: this.type,
             url: this.url,
+            tags: this.tags,
             description: this.description
           }
         });
@@ -57,6 +63,7 @@ export class AddModelLayerComponent implements OnInit {
           this.name = data.name;
           this.type = data.type;
           this.url = data.url;
+          this.tags = data.tags;
           this.description = data.description;
           // Create model layer and add to the globe
           let modelLayer: ModelLayer = await this.GLOBAL!.GLOBE.addModelLayer(data, true);
@@ -87,7 +94,7 @@ export class AddModelLayerComponent implements OnInit {
   templateUrl: './add-model-layer-content.component.html',
   styleUrls: ['./add-model-layer-content.component.css']
 })
-export class AddModelLayerContentComponent implements OnInit {
+export class AddModelLayerContentComponent {
   name: string;
   type: string = LayerTypes.CITYDB_TILES;
   types = [
@@ -96,9 +103,17 @@ export class AddModelLayerContentComponent implements OnInit {
     {value: LayerTypes.CESIUM_3D_TILES, viewValue: 'Cesium 3D Tiles (.json)'}
   ];
   url: string;
+
+  // Tags
+  tagSelectable: boolean = false;
+  tagRemovable: boolean = true;
+  tagAddOnBlur: boolean = true;
+  readonly tagSeparatorKeysCodes = [ENTER, COMMA] as const;
+  tags: Array<string>;
   description: string;
 
   modelLayerForm: FormGroup;
+  tagInputControl: FormControl;
 
   constructor(
     fb: FormBuilder,
@@ -109,26 +124,51 @@ export class AddModelLayerContentComponent implements OnInit {
     this.name = data.name;
     this.type = data.type;
     this.url = data.url.toString();
+    this.tags = new Array<string>();
     this.description = data.description;
 
     this.modelLayerForm = fb.group({
       name: new FormControl(this.name, [Validators.required]),
       type: new FormControl(this.type, [Validators.required]),
-      url: new FormControl(this.url, [Validators.required,
-        this.urlDuplicateValidator.bind(this)]),
+      url: new FormControl(this.url, [Validators.required, this.urlDuplicateValidator.bind(this)]),
+      tags: new FormControl(this.tags, [this.tagDuplicateValidator.bind(this)]),
       description: new FormControl(this.description)
-    })
-  }
-
-  ngOnInit(): void {
-    // Change the validators based on the selected layer type
-    this.modelLayerForm.controls.type.valueChanges.subscribe(type => {
-
     });
+    this.tagInputControl = new FormControl('', [this.tagInputValidator.bind(this)]);
   }
 
   onNoClick(): void {
     this.dialogRef.close();
+  }
+
+  onYesClick() {
+    const {value, valid} = this.modelLayerForm;
+    if (valid) {
+      this.dialogRef.close(value);
+    }
+  }
+
+  addTag(event: MatChipInputEvent): void {
+    const value = (event.value || '').trim();
+    if (value != null && value.length > 0) {
+      if (!this.tags.includes(value)) {
+        this.tags.push(value);
+        // Clear the input value
+        event.chipInput!.clear();
+      }
+    }
+  }
+
+  removeTag(tag: string): void {
+    const index = this.tags.indexOf(tag);
+
+    if (index >= 0) {
+      this.tags.splice(index, 1);
+    }
+  }
+
+  dropTag(event: CdkDragDrop<Array<string>>) {
+    moveItemInArray(this.tags, event.previousIndex, event.currentIndex);
   }
 
   getNameErrorMessage() {
@@ -166,6 +206,14 @@ export class AddModelLayerContentComponent implements OnInit {
 
     if (this.modelLayerForm.controls.url.hasError('patternDuplicateUrl')) {
       return 'A model layer with the same URL already exists';
+    }
+
+    return '';
+  }
+
+  getTagErrorMessage() {
+    if (this.modelLayerForm.controls.tags.hasError('patternDuplicateTag')) {
+      return 'This tag already exists';
     }
 
     return '';
@@ -212,10 +260,21 @@ export class AddModelLayerContentComponent implements OnInit {
     return null;
   }
 
-  onYesClick() {
-    const {value, valid} = this.modelLayerForm;
-    if (valid) {
-      this.dialogRef.close(value);
+  private tagInputValidator({value}: AbstractControl): null | ValidationErrors {
+    console.log(value);
+    this.modelLayerForm.patchValue({tags: this.tags});
+    return null;
+  }
+
+  private tagDuplicateValidator({value}: AbstractControl): null | ValidationErrors {
+    console.log(value);
+    // value is this.tags
+    if (value != null && value.length > 0 && this.tagInputControl != null
+      && this.tagInputControl.value.trim().length > 0) {
+      if (value.includes(this.tagInputControl.value.trim())) {
+        return {patternDuplicateTag: true};
+      }
     }
+    return null;
   }
 }

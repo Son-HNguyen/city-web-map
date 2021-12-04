@@ -61,6 +61,35 @@
   </div>
   <div>
     <mat-form-field appearance="fill">
+      <mat-label>Tags (press ENTER or COMMA to separate, tags are (re)movable)</mat-label>
+      <mat-chip-list #chipList
+                     formControlName="tags"
+                     cdkDropList
+                     cdkDropListOrientation="horizontal"
+                     (cdkDropListDropped)="dropTag($event)"
+                     aria-label="Tags">
+        <mat-chip *ngFor="let tag of tags"
+                  cdkDrag
+                  [selectable]="tagSelectable"
+                  [removable]="tagRemovable"
+                  (removed)="removeTag(tag)">
+          {{tag}}
+          <button matChipRemove *ngIf="tagRemovable">
+            <mat-icon>cancel</mat-icon>
+          </button>
+        </mat-chip>
+        <input placeholder="New tag..."
+               [formControl]="tagInputControl"
+               [matChipInputFor]="chipList"
+               [matChipInputSeparatorKeyCodes]="tagSeparatorKeysCodes"
+               [matChipInputAddOnBlur]="tagAddOnBlur"
+               (matChipInputTokenEnd)="addTag($event)">
+      </mat-chip-list>
+      <mat-error *ngIf="modelLayerForm.controls.tags.invalid">{{getTagErrorMessage()}}</mat-error>
+    </mat-form-field>
+  </div>
+  <div>
+    <mat-form-field appearance="fill">
       <mat-label>Description</mat-label>
       <textarea matInput
                 value="{{description}}"

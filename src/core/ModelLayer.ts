@@ -25,6 +25,7 @@ export abstract class ModelLayer {
   private _name: string;
   private _type: LayerTypes;
   private _url: URL;
+  private _tags: Array<string>;
   private _description: string;
   private _activated: boolean; // Whether this layer should be activated in the globe
 
@@ -32,6 +33,7 @@ export abstract class ModelLayer {
     this._name = options.name;
     this._type = options.type;
     this._url = options.url;
+    this._tags = options.tags;
     this._description = options.description;
     this._activated = false;
   }
@@ -63,6 +65,14 @@ export abstract class ModelLayer {
     this._url = value;
   }
 
+  get tags(): Array<string> {
+    return this._tags;
+  }
+
+  set tags(value: Array<string>) {
+    this._tags = value;
+  }
+
   get description(): string {
     return this._description;
   }
@@ -81,9 +91,10 @@ export abstract class ModelLayer {
 }
 
 export interface ModelLayerOptionsType {
-  url: URL,
-  type: LayerTypes,
   name: string,
+  type: LayerTypes,
+  url: URL,
+  tags: Array<string>,
   description: string
 }
 
