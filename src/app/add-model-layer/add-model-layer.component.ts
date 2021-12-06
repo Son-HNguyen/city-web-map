@@ -81,8 +81,6 @@ export class AddModelLayerComponent implements OnInit {
           // TODO Add an option to fly to the layer after adding
 
           // TODO Save the current camera after flying to the layer to the list of layers for later
-
-
         }
       });
     }
@@ -94,7 +92,7 @@ export class AddModelLayerComponent implements OnInit {
   templateUrl: './add-model-layer-content.component.html',
   styleUrls: ['./add-model-layer-content.component.css']
 })
-export class AddModelLayerContentComponent {
+export class AddModelLayerContentComponent implements OnInit {
   name: string;
   type: string = LayerTypes.CITYDB_TILES;
   types = [
@@ -135,7 +133,14 @@ export class AddModelLayerContentComponent {
       description: new FormControl(this.description)
     });
     // Auxiliary control to update mat-chip-list regularly
-    this.tagInputControl = new FormControl('', [this.tagInputValidator.bind(this)]);
+    this.tagInputControl = new FormControl('', []);
+  }
+
+  ngOnInit(): void {
+    this.tagInputControl.valueChanges.subscribe(value => {
+      // The mat-chip-list is not updated as regularly as other inputs --> force update by using patchValue
+      this.modelLayerForm.patchValue({tags: this.tags});
+    })
   }
 
   onNoClick(): void {
@@ -258,12 +263,6 @@ export class AddModelLayerContentComponent {
     } catch (error) {
       return {patternInvalidUrl: true};
     }
-    return null;
-  }
-
-  private tagInputValidator({value}: AbstractControl): null | ValidationErrors {
-    // The mat-chip-list is not updated as regularly as other inputs --> force update by using patchValue
-    this.modelLayerForm.patchValue({tags: this.tags});
     return null;
   }
 
