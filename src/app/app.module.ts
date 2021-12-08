@@ -68,6 +68,7 @@ import {NgxResizableModule} from "@3dgenomes/ngx-resizable";
 import {AddModelLayerComponent, AddModelLayerContentComponent} from './add-model-layer/add-model-layer.component';
 import {MatChipsModule} from "@angular/material/chips";
 import {DragDropModule} from "@angular/cdk/drag-drop";
+import {MatExpansionModule} from "@angular/material/expansion";
 
 @NgModule({
   declarations: [
@@ -164,7 +165,8 @@ import {DragDropModule} from "@angular/cdk/drag-drop";
     NgxDropzoneModule,
     NgxResizableModule,
     MatChipsModule,
-    DragDropModule
+    DragDropModule,
+    MatExpansionModule
   ],
   bootstrap: [
     AppComponent,

@@ -4,3 +4,69 @@
         (click)="handleAddModelLayer()">
   <span class="material-icons">add_box</span>&nbsp;Add model layer
 </button>
+
+<div>
+  <button mat-button (click)="accordion.openAll()">Expand All</button>
+  <button mat-button (click)="accordion.closeAll()">Collapse All</button>
+</div>
+<mat-accordion class="example-headers-align" multi>
+  <mat-expansion-panel *ngFor="let modelLayer of this.GLOBAL!.WORKSPACE.modelLayers" hideToggle>
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        <b>{{modelLayer.name}} </b><i>({{modelLayer.type}})</i>
+      </mat-panel-title>
+      <mat-panel-description>
+        <div class="section-right">
+          <mat-icon *ngIf="modelLayer.activated"
+                    matTooltip="Show/Hide"
+                    class="button-layer"
+                    color="primary"
+                    (click)="handleCurrentModelLayerToggleVisibility($event)">
+            visibility
+          </mat-icon>
+          <mat-icon *ngIf="!modelLayer.activated"
+                    matTooltip="Show/Hide"
+                    class="button-layer"
+                    color="primary"
+                    (click)="handleCurrentModelLayerToggleVisibility($event)">
+            visibility_off
+          </mat-icon>
+          <mat-icon matTooltip="Fly to"
+                    class="button-layer"
+                    color="primary"
+                    (click)="handleCurrentModelLayerFlyTo($event)">
+            travel_explore
+          </mat-icon>
+          <mat-icon matTooltip="Edit"
+                    class="button-layer"
+                    color="primary"
+                    (click)="handleCurrentModelLayerEdit($event)">
+            edit
+          </mat-icon>
+          <mat-icon matTooltip="Copy"
+                    class="button-layer"
+                    color="primary"
+                    (click)="handleCurrentModelLayerCopy($event)">
+            content_copy
+          </mat-icon>
+          <mat-icon matTooltip="Delete"
+                    class="button-layer"
+                    color="warn"
+                    (click)="handleCurrentModelLayerDelete($event)">
+            delete
+          </mat-icon>
+        </div>
+      </mat-panel-description>
+    </mat-expansion-panel-header>
+    <textarea matInput
+              disabled
+              value="{{modelLayer.description}}"
+              cdkTextareaAutosize
+              cdkAutosizeMinRows="2"
+              cdkAutosizeMaxRows="2">
+    </textarea>
+    <mat-chip-list>
+      <mat-chip *ngFor="let tag of modelLayer.tags">{{tag}}</mat-chip>
+    </mat-chip-list>
+  </mat-expansion-panel>
+</mat-accordion>

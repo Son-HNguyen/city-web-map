@@ -1,4 +1,4 @@
-import {Component, Inject, OnInit} from '@angular/core';
+import {Component, Inject, OnInit, ViewChild} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from "@angular/material/dialog";
 import {LogService} from "../../services/log.service";
 import {LayerTypes, ModelLayer, ModelLayerOptionsType} from "../../core/ModelLayer";
@@ -7,6 +7,7 @@ import {AbstractControl, FormBuilder, FormControl, FormGroup, ValidationErrors, 
 import {COMMA, ENTER} from "@angular/cdk/keycodes";
 import {MatChipInputEvent} from "@angular/material/chips";
 import {CdkDragDrop, moveItemInArray} from "@angular/cdk/drag-drop";
+import {MatAccordion} from "@angular/material/expansion";
 
 @Component({
   selector: 'app-add-model-layer',
@@ -14,6 +15,8 @@ import {CdkDragDrop, moveItemInArray} from "@angular/cdk/drag-drop";
   styleUrls: ['./add-model-layer.component.css']
 })
 export class AddModelLayerComponent implements OnInit {
+  @ViewChild(MatAccordion) accordion!: MatAccordion;
+
   static opened: boolean = false;
   name: string;
   type: LayerTypes;
@@ -84,6 +87,41 @@ export class AddModelLayerComponent implements OnInit {
         }
       });
     }
+  }
+
+  handleCurrentModelLayerToggleVisibility(event: MouseEvent) {
+    // Prevent expanding/closing panel when this button has been clicked
+    event.stopPropagation();
+
+    // TODO
+  }
+
+  handleCurrentModelLayerFlyTo(event: MouseEvent) {
+    // Prevent expanding/closing panel when this button has been clicked
+    event.stopPropagation();
+
+    // TODO
+  }
+
+  handleCurrentModelLayerEdit(event: MouseEvent) {
+    // Prevent expanding/closing panel when this button has been clicked
+    event.stopPropagation();
+
+    // TODO
+  }
+
+  handleCurrentModelLayerCopy(event: MouseEvent) {
+    // Prevent expanding/closing panel when this button has been clicked
+    event.stopPropagation();
+
+    // TODO
+  }
+
+  handleCurrentModelLayerDelete(event: MouseEvent) {
+    // Prevent expanding/closing panel when this button has been clicked
+    event.stopPropagation();
+
+    // TODO
   }
 }
 

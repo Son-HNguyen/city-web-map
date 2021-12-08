@@ -1,0 +1,19 @@
+mat-expansion-panel {
+  font-size: xx-small;
+  margin: 5px;
+}
+
+.section-right {
+  position: absolute;
+  right: 10px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.button-layer {
+  padding-left: 2px;
+  padding-right: 2px;
+  margin-left: 0;
+  margin-right: 0;
+  min-width: 0 !important;
+}
