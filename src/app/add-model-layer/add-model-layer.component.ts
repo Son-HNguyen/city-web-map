@@ -8,6 +8,7 @@ import {COMMA, ENTER} from "@angular/cdk/keycodes";
 import {MatChipInputEvent} from "@angular/material/chips";
 import {CdkDragDrop, moveItemInArray} from "@angular/cdk/drag-drop";
 import {MatAccordion} from "@angular/material/expansion";
+import {AddedModelLayerAndObjectOnGlobeType} from "../../globe/Globe";
 
 @Component({
   selector: 'app-add-model-layer',
@@ -23,6 +24,10 @@ export class AddModelLayerComponent implements OnInit {
   url: string;
   tags: Array<string>;
   description: string;
+  activated: boolean;
+
+  // Store model layer representation on globe only locally in runtime, not in Workspace
+  modelLayerObjectsOnGlobe: Array<any>;
 
   constructor(
     public dialog: MatDialog,
@@ -34,14 +39,14 @@ export class AddModelLayerComponent implements OnInit {
     this.url = '';
     this.tags = new Array<string>();
     this.description = '';
+    this.activated = true;
+    this.modelLayerObjectsOnGlobe = [];
   }
 
   async ngOnInit(): Promise<void> {
     // Add model layers saved from previous sessions to the globe
     for (const modelLayer of this.GLOBAL!.WORKSPACE.modelLayers) {
-      if (modelLayer.activated) {
-        await this.GLOBAL!.GLOBE.addModelLayer(modelLayer, false);
-      }
+      await this.addModelLayer(modelLayer, false);
     }
   }
 
@@ -54,7 +59,8 @@ export class AddModelLayerComponent implements OnInit {
             type: this.type,
             url: this.url,
             tags: this.tags,
-            description: this.description
+            description: this.description,
+            activated: this.activated
           }
         });
       AddModelLayerComponent.opened = true;
@@ -68,11 +74,8 @@ export class AddModelLayerComponent implements OnInit {
           this.url = data.url;
           this.tags = data.tags;
           this.description = data.description;
-          // Create model layer and add to the globe
-          let modelLayer: ModelLayer = await this.GLOBAL!.GLOBE.addModelLayer(data, true);
-          // Add layer to the list in workspace
-          this.GLOBAL!.WORKSPACE.modelLayers.push(modelLayer);
-          modelLayer.activated = true; // TODO Add option to deactivate model layers
+          this.activated = data.activated;
+          let addedModelLayerAndObjectOnGlobe = await this.addModelLayer(data);
 
           // TODO Display layer list
 
@@ -89,11 +92,45 @@ export class AddModelLayerComponent implements OnInit {
     }
   }
 
-  handleCurrentModelLayerToggleVisibility(event: MouseEvent) {
+  private addModelLayer(options: ModelLayerOptionsType | ModelLayer, update?: boolean):
+    Promise<AddedModelLayerAndObjectOnGlobeType> {
+    return new Promise<AddedModelLayerAndObjectOnGlobeType>(async (resolve, reject) => {
+      try {
+        // Create model layer and add to the globe
+        let addedModelLayerAndObjectOnGlobe = await this.GLOBAL!.GLOBE.addModelLayer(options, update == null || update);
+        let modelLayer: ModelLayer = addedModelLayerAndObjectOnGlobe.modelLayer;
+        let objectOnGlobe: any = addedModelLayerAndObjectOnGlobe.objectOnGlobe;
+        // Add layer to the list in workspace
+        if (update == null || update) {
+          this.GLOBAL!.WORKSPACE.modelLayers.push(modelLayer);
+        }
+        this.modelLayerObjectsOnGlobe.push(objectOnGlobe);
+        // Activate/Show on globe
+        if (options.activated) {
+          this.GLOBAL!.GLOBE.activateModelLayer(objectOnGlobe); // TODO Add option to deactivate model layers
+        }
+        resolve({modelLayer, objectOnGlobe});
+      } catch (error) {
+        reject();
+      }
+    })
+  }
+
+  handleCurrentModelLayerToggleVisibility(event: MouseEvent, modelLayer: ModelLayer) {
     // Prevent expanding/closing panel when this button has been clicked
     event.stopPropagation();
 
     // TODO
+    const index = this.GLOBAL!.WORKSPACE.modelLayers.findIndex(
+      element => new URL(element.url).pathname === new URL(modelLayer.url).pathname
+    );
+    const modelLayerObjectOnGlobe = this.modelLayerObjectsOnGlobe[index];
+    if (modelLayer.activated) {
+      this.GLOBAL!.GLOBE.deactivateModelLayer(modelLayerObjectOnGlobe);
+    } else {
+      this.GLOBAL!.GLOBE.activateModelLayer(modelLayerObjectOnGlobe);
+    }
+    modelLayer.activated = !modelLayer.activated;
   }
 
   handleCurrentModelLayerFlyTo(event: MouseEvent) {
@@ -146,7 +183,9 @@ export class AddModelLayerContentComponent implements OnInit {
   tagAddOnBlur: boolean = true;
   readonly tagSeparatorKeysCodes = [ENTER, COMMA] as const;
   tags: Array<string>;
+
   description: string;
+  activated: boolean;
 
   modelLayerForm: FormGroup;
   tagInputControl: FormControl;
@@ -162,13 +201,15 @@ export class AddModelLayerContentComponent implements OnInit {
     this.url = data.url.toString();
     this.tags = new Array<string>();
     this.description = data.description;
+    this.activated = data.activated;
 
     this.modelLayerForm = fb.group({
       name: new FormControl(this.name, [Validators.required]),
       type: new FormControl(this.type, [Validators.required]),
       url: new FormControl(this.url, [Validators.required, this.urlDuplicateValidator.bind(this)]),
       tags: new FormControl(this.tags, [this.tagDuplicateValidator.bind(this)]),
-      description: new FormControl(this.description)
+      description: new FormControl(this.description),
+      activated: new FormControl(this.activated)
     });
     // Auxiliary control to update mat-chip-list regularly
     this.tagInputControl = new FormControl('', []);

@@ -21,6 +21,9 @@
  * limitations under the License.
  */
 
+import {LogService} from "../services/log.service";
+import {GlobalService} from "../services/global.service";
+
 export abstract class ModelLayer {
   private _name: string;
   private _type: LayerTypes;
@@ -29,17 +32,16 @@ export abstract class ModelLayer {
   private _description: string;
   private _activated: boolean; // Whether this layer should be activated in the globe
 
-  constructor(options: ModelLayerOptionsType) {
+  constructor(options: ModelLayerOptionsType,
+              protected LOGGER?: LogService,
+              protected GLOBALS?: GlobalService) {
     this._name = options.name;
     this._type = options.type;
     this._url = options.url;
     this._tags = options.tags;
     this._description = options.description;
-    this._activated = false;
+    this._activated = true;
   }
-
-  // The input URL must already be valid
-  public abstract addToGlobe(): Promise<void>;
 
   get name(): string {
     return this._name;
@@ -95,7 +97,8 @@ export interface ModelLayerOptionsType {
   type: LayerTypes,
   url: URL,
   tags: Array<string>,
-  description: string
+  description: string,
+  activated: boolean
 }
 
 export enum LayerTypes {

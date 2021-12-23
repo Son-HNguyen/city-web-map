@@ -23,13 +23,13 @@
 
 import {CameraLocation, GeocoderService, Globe, ImageryLayersType} from "./Globe";
 import * as Cesium from "cesium";
+import {KmlDataSource} from "cesium";
 import {GeocoderType} from "../core/Workspace";
 import {NominatimExtension} from "../extensions/nominatim.extension";
 import {LogService} from "../services/log.service";
 import {KMLModelLayer} from "../core/KMLModelLayer";
 import {CityDBTilesModelLayer} from "../core/CityDBTilesModelLayer";
 import {Cesium3DTilesModelLayer} from "../core/Cesium3DTilesModelLayer";
-import {LayerTypes, ModelLayer, ModelLayerOptionsType} from "../core/ModelLayer";
 
 export class CesiumGlobe extends Globe {
   public CAMERA: any;
@@ -244,8 +244,8 @@ contributed by the GIS User Community.\nhttp://www.esri.com",
     this.VIEWER.geocoder.viewModel._geocoderServices = geocoderServices;
   }
 
-  public addKMLModelLayer(modelLayer: KMLModelLayer, fly?: boolean): Promise<void> {
-    return new Promise<void>(async (resolve, reject) => {
+  public addKMLModelLayer(modelLayer: KMLModelLayer, fly?: boolean): Promise<KmlDataSource> {
+    return new Promise<KmlDataSource>(async (resolve, reject) => {
       try {
         let kmlDataSource = await Cesium.KmlDataSource.load(
           modelLayer.url.toString(), // TODO Check for proxy? https://github.com/3dcitydb/3dcitydb-web-map/blob/c4eebdca6fe89ed964c97959dc73f379fe04fbab/js/CitydbKmlLayer.js#L456
@@ -258,9 +258,9 @@ contributed by the GIS User Community.\nhttp://www.esri.com",
         this.VIEWER.dataSources.add(kmlDataSource);
         // Fly to the added layer
         if (fly != null && fly) {
-          await this.flyToObjects(kmlDataSource.entities);
+          await this.flyToObjects(kmlDataSource.entities); // TODO Move flyToObjects() to super class?
         }
-        resolve();
+        resolve(kmlDataSource);
       } catch (error) {
         this.LOGGER!.error('Could not add KML layer to globe: ' + error);
         reject();
@@ -268,16 +268,24 @@ contributed by the GIS User Community.\nhttp://www.esri.com",
     });
   }
 
-  public addCityDBTilesModelLayer(modelLayer: CityDBTilesModelLayer, fly?: boolean): Promise<void> {
+  public addCityDBTilesModelLayer(modelLayer: CityDBTilesModelLayer, fly?: boolean): Promise<any> { // TODO Replace any with type
     return new Promise<void>(async (resolve, reject) => {
       // TODO Implement
     });
   }
 
-  public addCesium3DTilesModelLayer(modelLayer: Cesium3DTilesModelLayer, fly?: boolean): Promise<void> {
+  public addCesium3DTilesModelLayer(modelLayer: Cesium3DTilesModelLayer, fly?: boolean): Promise<any> { // TODO Replace any with type
     return new Promise<void>(async (resolve, reject) => {
       // TODO Implement
     });
+  }
+
+  public activateModelLayer(objectOnGlobe: any): void {
+    objectOnGlobe.show = true;
+  }
+
+  public deactivateModelLayer(objectOnGlobe: any): void {
+    objectOnGlobe.show = false;
   }
 
   public flyToObjects(objects: any): Promise<void> {

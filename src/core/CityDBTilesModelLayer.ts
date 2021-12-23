@@ -22,22 +22,12 @@
  */
 
 import {LayerTypes, ModelLayer, ModelLayerOptionsType} from "./ModelLayer";
-import {LogService} from "../services/log.service";
-import {GlobalService} from "../services/global.service";
 
 export class CityDBTilesModelLayer extends ModelLayer {
   constructor(
-    options: ModelLayerOptionsType,
-    private LOGGER?: LogService,
-    private GLOBALS?: GlobalService
+    options: ModelLayerOptionsType
   ) {
     super(options);
     this.type = LayerTypes.CITYDB_TILES;
-  }
-
-  public addToGlobe(): Promise<void> {
-    return new Promise<void>((resolve, reject) => {
-      // TODO Implement
-    });
   }
 }

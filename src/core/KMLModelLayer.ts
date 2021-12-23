@@ -22,20 +22,12 @@
  */
 
 import {LayerTypes, ModelLayer, ModelLayerOptionsType} from "./ModelLayer";
-import {LogService} from "../services/log.service";
-import {GlobalService} from "../services/global.service";
 
 export class KMLModelLayer extends ModelLayer {
   constructor(
-    options: ModelLayerOptionsType,
-    private LOGGER?: LogService,
-    private GLOBALS?: GlobalService
+    options: ModelLayerOptionsType
   ) {
     super(options);
     this.type = LayerTypes.KML;
-  }
-
-  public addToGlobe(): Promise<void> {
-    return this.GLOBALS!.GLOBE.addKMLModelLayer(this);
   }
 }

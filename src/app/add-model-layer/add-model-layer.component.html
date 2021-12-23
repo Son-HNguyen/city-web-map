@@ -18,17 +18,17 @@
       <mat-panel-description>
         <div class="section-right">
           <mat-icon *ngIf="modelLayer.activated"
-                    matTooltip="Show/Hide"
+                    matTooltip="Model layer activated"
                     class="button-layer"
                     color="primary"
-                    (click)="handleCurrentModelLayerToggleVisibility($event)">
+                    (click)="handleCurrentModelLayerToggleVisibility($event, modelLayer)">
             visibility
           </mat-icon>
           <mat-icon *ngIf="!modelLayer.activated"
-                    matTooltip="Show/Hide"
+                    matTooltip="Model layer deactivated"
                     class="button-layer"
                     color="primary"
-                    (click)="handleCurrentModelLayerToggleVisibility($event)">
+                    (click)="handleCurrentModelLayerToggleVisibility($event, modelLayer)">
             visibility_off
           </mat-icon>
           <mat-icon matTooltip="Fly to"

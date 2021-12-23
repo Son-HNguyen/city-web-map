@@ -54,11 +54,15 @@ export abstract class Globe {
 
   public abstract setGeocoder(geocoder: GeocoderType): void;
 
-  public abstract addKMLModelLayer(modelLayer: KMLModelLayer, fly?: boolean): Promise<void>;
+  public abstract addKMLModelLayer(modelLayer: KMLModelLayer, fly?: boolean): Promise<any>; // returns an object on globe representing the model layer
 
-  public abstract addCityDBTilesModelLayer(modelLayer: CityDBTilesModelLayer, fly?: boolean): Promise<void>;
+  public abstract addCityDBTilesModelLayer(modelLayer: CityDBTilesModelLayer, fly?: boolean): Promise<any>;
 
-  public abstract addCesium3DTilesModelLayer(modelLayer: Cesium3DTilesModelLayer, fly?: boolean): Promise<void>;
+  public abstract addCesium3DTilesModelLayer(modelLayer: Cesium3DTilesModelLayer, fly?: boolean): Promise<any>;
+
+  public abstract activateModelLayer(objectOnGlobe: any): void;
+
+  public abstract deactivateModelLayer(objectOnGlobe: any): void;
 
   public abstract flyToObjects(objects: any): Promise<void>;
 
@@ -70,27 +74,28 @@ export abstract class Globe {
    * @param options Can be an already existing model layer or options to create a new one.
    * @param fly Fly to the model layer on the globe after adding. Only executes when this is set to true.
    */
-  public addModelLayer(options: ModelLayerOptionsType | ModelLayer, fly?: boolean): Promise<ModelLayer> {
-    return new Promise<ModelLayer>(async (resolve, reject) => {
-      let result: ModelLayer;
+  public addModelLayer(options: ModelLayerOptionsType | ModelLayer, fly?: boolean): Promise<AddedModelLayerAndObjectOnGlobeType> {
+    return new Promise<AddedModelLayerAndObjectOnGlobeType>(async (resolve, reject) => {
+      let modelLayer: ModelLayer;
+      let objectOnGlobe: any;
       switch (options.type) { // TODO Add generalized layer, not only KML
         case LayerTypes.KML:
-          result = options instanceof ModelLayer ? options : new KMLModelLayer(options);
-          await this.addKMLModelLayer(result, fly);
+          modelLayer = options instanceof ModelLayer ? options : new KMLModelLayer(options);
+          objectOnGlobe = await this.addKMLModelLayer(modelLayer, fly);
           break;
         case LayerTypes.CITYDB_TILES:
-          result = options instanceof ModelLayer ? options : new CityDBTilesModelLayer(options);
-          await this.addCityDBTilesModelLayer(result, fly);
+          modelLayer = options instanceof ModelLayer ? options : new CityDBTilesModelLayer(options);
+          objectOnGlobe = await this.addCityDBTilesModelLayer(modelLayer, fly);
           break;
         case LayerTypes.CESIUM_3D_TILES:
-          result = options instanceof ModelLayer ? options : new Cesium3DTilesModelLayer(options);
-          await this.addCesium3DTilesModelLayer(result, fly);
+          modelLayer = options instanceof ModelLayer ? options : new Cesium3DTilesModelLayer(options);
+          objectOnGlobe = await this.addCesium3DTilesModelLayer(modelLayer, fly);
           break;
         default:
           reject();
           return;
       }
-      resolve(result);
+      resolve({modelLayer, objectOnGlobe});
       return;
     });
   }
@@ -127,4 +132,9 @@ export interface CameraLocation {
   heading: number;
   pitch: number;
   roll: number;
+}
+
+export interface AddedModelLayerAndObjectOnGlobeType {
+  modelLayer: ModelLayer,
+  objectOnGlobe: any // The model layer's representation on the selected globe
 }
