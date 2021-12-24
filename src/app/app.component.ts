@@ -329,7 +329,13 @@ export class AppComponent implements OnInit {
           workspaceView.cols = detailView.cols;
           globe.cols = maxCols - infoView.cols - detailView.cols;
           // Rows
-          workspaceView.rows = maxRows - menuBar.rows - detailView.rows - statusView.rows;
+          if (detailView.y === workspaceView.y + workspaceView.rows && detailView.y + detailView.rows !== statusView.y) {
+            // Do not resize when bottom side was changed
+            detailView.rows = statusView.y - detailView.y;
+          } else {
+            // Only resize if the upper side was changed
+            workspaceView.rows = maxRows - menuBar.rows - detailView.rows - statusView.rows;
+          }
           // Position
           globe.x = detailView.x + detailView.cols;
           break;

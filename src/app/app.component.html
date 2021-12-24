@@ -6,7 +6,8 @@
           (drop)="handleDropSuccess($event)">
   <!-- Menu Bar -->
   <gridster-item [item]="dashboard.menuBar.layout"
-                 (itemChange)="layoutChanged($event, 0)">
+                 (itemChange)="layoutChanged($event, 0)"
+                 class="no-resize-cursor">
     <span color="primary"><b>&nbsp;city-web-map&nbsp;</b></span>
     <button id="buttonLoad"
             mat-stroked-button
@@ -50,27 +51,32 @@
   </gridster-item>
   <!-- Workspace View -->
   <gridster-item [item]="dashboard.workspaceView.layout"
-                 (itemChange)="layoutChanged($event, 1)">
+                 (itemChange)="layoutChanged($event, 1)"
+                 class="resize-cursor-e resize-cursor-s">
     <app-workspace-view></app-workspace-view>
   </gridster-item>
   <!-- Detail View -->
   <gridster-item [item]="dashboard.detailView.layout"
-                 (itemChange)="layoutChanged($event, 2)">
+                 (itemChange)="layoutChanged($event, 2)"
+                 class="resize-cursor-n resize-cursor-e">
     <app-detail-view></app-detail-view>
   </gridster-item>
   <!-- Info View -->
   <gridster-item [item]="dashboard.infoView.layout"
-                 (itemChange)="layoutChanged($event, 3)">
+                 (itemChange)="layoutChanged($event, 3)"
+                 class="resize-cursor-w">
     <app-info-view></app-info-view>
   </gridster-item>
   <!-- Status View -->
   <gridster-item [item]="dashboard.statusView.layout"
-                 (itemChange)="layoutChanged($event, 4)">
+                 (itemChange)="layoutChanged($event, 4)"
+                 class="no-resize-cursor">
     <app-status-view></app-status-view>
   </gridster-item>
   <!-- Globe -->
   <gridster-item [item]="dashboard.globe.layout"
-                 (itemChange)="layoutChanged($event, 5)">
+                 (itemChange)="layoutChanged($event, 5)"
+                 class="resize-cursor-w resize-cursor-e">
     <div appGlobe></div>
     <div class="corner-top corner-left">
       <!-- TODO Add app shadow -->

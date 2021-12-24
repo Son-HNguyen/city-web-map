@@ -20,3 +20,28 @@ gridster {
 gridster-item {
 }
 */
+
+/* Hide resize cursor for items that should not be resized (partially) */
+
+.no-resize-cursor,
+.resize-cursor-n div.gridster-item-resizable-handler,
+.resize-cursor-nw div.gridster-item-resizable-handler,
+.resize-cursor-ne div.gridster-item-resizable-handler,
+.resize-cursor-w div.gridster-item-resizable-handler,
+.resize-cursor-s div.gridster-item-resizable-handler,
+.resize-cursor-sw div.gridster-item-resizable-handler,
+.resize-cursor-se div.gridster-item-resizable-handler,
+.resize-cursor-e div.gridster-item-resizable-handler {
+  display: none;
+}
+
+.resize-cursor-n div.gridster-item-resizable-handler.handle-n,
+.resize-cursor-nw div.gridster-item-resizable-handler.handle-nw,
+.resize-cursor-ne div.gridster-item-resizable-handler.handle-ne,
+.resize-cursor-w div.gridster-item-resizable-handler.handle-w,
+.resize-cursor-s div.gridster-item-resizable-handler.handle-s,
+.resize-cursor-sw div.gridster-item-resizable-handler.handle-sw,
+.resize-cursor-se div.gridster-item-resizable-handler.handle-se,
+.resize-cursor-e div.gridster-item-resizable-handler.handle-e {
+  display: block;
+}
