@@ -27,14 +27,13 @@
           <mat-icon *ngIf="!modelLayer.activated"
                     matTooltip="Model layer deactivated"
                     class="button-layer"
-                    color="primary"
                     (click)="handleCurrentModelLayerToggleVisibility($event, modelLayer)">
             visibility_off
           </mat-icon>
           <mat-icon matTooltip="Fly to"
                     class="button-layer"
                     color="primary"
-                    (click)="handleCurrentModelLayerFlyTo($event)">
+                    (click)="handleCurrentModelLayerFlyTo($event, modelLayer)">
             travel_explore
           </mat-icon>
           <mat-icon matTooltip="Edit"

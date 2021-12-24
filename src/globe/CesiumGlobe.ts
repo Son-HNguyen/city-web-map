@@ -258,7 +258,7 @@ contributed by the GIS User Community.\nhttp://www.esri.com",
         this.VIEWER.dataSources.add(kmlDataSource);
         // Fly to the added layer
         if (fly != null && fly) {
-          await this.flyToObjects(kmlDataSource.entities); // TODO Move flyToObjects() to super class?
+          await this.flyToObjects(kmlDataSource); // TODO Move flyToObjects() to super class?
         }
         resolve(kmlDataSource);
       } catch (error) {
@@ -291,7 +291,13 @@ contributed by the GIS User Community.\nhttp://www.esri.com",
   public flyToObjects(objects: any): Promise<void> {
     return new Promise<void>(async (resolve, reject) => {
       try {
-        this.VIEWER.flyTo(objects);
+        if (objects instanceof KmlDataSource) {
+          // TODO Add support for other sources in Cesium
+          this.VIEWER.flyTo((<KmlDataSource>objects).entities);
+        } else {
+          // TODO Add support for other sources in Cesium
+          this.VIEWER.flyTo(objects.entities);
+        }
         resolve();
       } catch (error) {
         reject();

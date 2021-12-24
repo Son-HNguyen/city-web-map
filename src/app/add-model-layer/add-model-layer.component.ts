@@ -116,14 +116,17 @@ export class AddModelLayerComponent implements OnInit {
     })
   }
 
+  private findIndexModelLayer(modelLayer: ModelLayer) {
+    return this.GLOBAL!.WORKSPACE.modelLayers.findIndex(
+      element => new URL(element.url).pathname === new URL(modelLayer.url).pathname
+    );
+  }
+
   handleCurrentModelLayerToggleVisibility(event: MouseEvent, modelLayer: ModelLayer) {
     // Prevent expanding/closing panel when this button has been clicked
     event.stopPropagation();
 
-    // TODO
-    const index = this.GLOBAL!.WORKSPACE.modelLayers.findIndex(
-      element => new URL(element.url).pathname === new URL(modelLayer.url).pathname
-    );
+    const index = this.findIndexModelLayer(modelLayer);
     const modelLayerObjectOnGlobe = this.modelLayerObjectsOnGlobe[index];
     if (modelLayer.activated) {
       this.GLOBAL!.GLOBE.deactivateModelLayer(modelLayerObjectOnGlobe);
@@ -133,11 +136,13 @@ export class AddModelLayerComponent implements OnInit {
     modelLayer.activated = !modelLayer.activated;
   }
 
-  handleCurrentModelLayerFlyTo(event: MouseEvent) {
+  handleCurrentModelLayerFlyTo(event: MouseEvent, modelLayer: ModelLayer) {
     // Prevent expanding/closing panel when this button has been clicked
     event.stopPropagation();
 
-    // TODO
+    const index = this.findIndexModelLayer(modelLayer);
+    const modelLayerObjectOnGlobe = this.modelLayerObjectsOnGlobe[index];
+    this.GLOBAL!.GLOBE.flyToObjects(modelLayerObjectOnGlobe);
   }
 
   handleCurrentModelLayerEdit(event: MouseEvent) {
